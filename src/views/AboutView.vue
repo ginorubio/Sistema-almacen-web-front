@@ -8,7 +8,9 @@
             <h3 class="card-title">About</h3>
           </div>
           <div class="card-body" >
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perferendis consequatur amet magnam officiis temporibus. Voluptas laboriosam dolorem a id rerum. Voluptatem eos saepe voluptates tempore, beatae iure libero consectetur unde!
+            <div v-for="producto in productos">
+              <a href=""> {{producto.descripcion}} - {{producto.precio}} </a>
+            </div>
           </div>
           <div class="card-footer">
             Footer
@@ -29,11 +31,16 @@ export default{
     components:{
       ContentHeader, Content
     },
+    data(){
+      return {
+        productos: []
+      }
+    },
     computed: {
       ...mapState(['token'])
     },
     methods: {
-      async datosProtegidos(){
+      async mostrarProductos(){
         try{
           //ruta para obtener información del back
           const res = await fetch('http://localhost:5000/api/tienda/productos/misproductos',{
@@ -48,6 +55,7 @@ export default{
           */
           const response = await res.json()
           console.log(response)
+          this.productos =  response;
 
 
         }catch(error){
@@ -56,7 +64,7 @@ export default{
       }
     },
     created(){
-      this.datosProtegidos()
+      this.mostrarProductos()
     }
 }
 </script>

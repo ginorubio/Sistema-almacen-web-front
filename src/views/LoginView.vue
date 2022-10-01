@@ -15,7 +15,7 @@
           </div>
           <div>
             <h5>Username</h5>
-            <input class="input" type="email" v-model="usuario.email">
+            <input class="input"  type="email" required v-model="usuario.email">
           </div>
         </div>
         <div class="input-div two">
@@ -24,7 +24,7 @@
           </div>
           <div>
             <h5>Password</h5>
-            <input class="input" type="password"  v-model="usuario.password">
+            <input class="input" type="password" required v-model="usuario.password">
           </div>
         </div>
         <button class="btn" type="submit">login</button>
@@ -57,7 +57,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .wave {
   position: fixed;
   height: 100%;
@@ -121,6 +121,7 @@ form h1{
 .input-div:before{
     left: 50%;
 }
+
 .input-div .one{
     margin-top: 0;
 }
@@ -192,4 +193,37 @@ a:hover{
 .btn:hover{
     background-position: right;
 }
+@media screen and (max-width: 1050px){
+    .container-personalized{
+        grid-gap: 5rem;
+    }
+}
+@media screen and (max-width: 1000px){
+    .form{
+        width: 200px;
+    }
+    .login-container h2{
+        font-size: 2.4rem;
+        margin: 8px 0;
+    }
+    .img img{
+        width: 400px;
+    }
+}
+/**celulares*/
+@media screen and (max-width: 900px){
+    .container-personalized{
+        grid-template-columns: 1fr;
+    }
+    .img {
+        display: none;
+    }
+    .wave{
+        display: none;
+    }
+    .login-container{
+        justify-content: center;
+    }
+}
+
 </style>

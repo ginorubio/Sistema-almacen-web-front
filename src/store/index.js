@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 
+
 export default createStore({
   state: {
     token: null,
@@ -27,14 +28,19 @@ export default createStore({
           body: JSON.stringify(usuario)
         })
         const response = await res.json()
-        console.log(response.jwtToken)
 
-        //commit nos permite llamar a la mutación
-        commit('setToken', response.jwtToken)
+        if(response.jwtToken){
+          console.log(response.jwtToken)
 
-        localStorage.setItem('token', response.jwtToken)
-        
-        window.location.href = "/";
+          //commit nos permite llamar a la mutación
+          commit('setToken', response.jwtToken)
+
+          localStorage.setItem('token', response.jwtToken)
+          //this.$router.push({name:home})
+          window.location.href = "/";
+        }else{
+          console.log("No encontrado")
+        }
 
       }catch(error){
         console.log(error)

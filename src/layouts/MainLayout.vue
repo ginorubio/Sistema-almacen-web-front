@@ -30,7 +30,7 @@
 </template>
 <script>
     import Navbar from "./inc/Navbar.vue"
-    import Sidebar from "./inc/Silebar.vue"
+    import Sidebar from "./inc/Sidebar.vue"
 
     export default{
         components:{
