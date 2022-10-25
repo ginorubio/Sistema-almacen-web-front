@@ -1,7 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../views/LoginView.vue'
-import RegisterView from '../views/RegisterView.vue'
 import MainLayout from '../layouts/MainLayout.vue'
+
+import Product from '../components/Product.vue'
+import Movement from '../components/Movement.vue'
+import Category from '../components/Category.vue'
+import UserManagement from '../components/UserManagement.vue'
+import HomeView from '../views/HomeView.vue'
+import AboutView from '../views/AboutView.vue'
+
 
 import store from '../store'
 
@@ -10,12 +17,15 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: LoginView
-  },
-  {
-    path: '/register',
-    name: 'register',
-    component: RegisterView
+    component: LoginView,
+    meta: { rutaProtegida: false},
+    beforeEnter: (to, from, next) => {
+      if(store.state.token){
+        next({name: 'home'})
+      }else{
+        next()
+      }
+    }
   },
   {
     path: '/',
@@ -24,18 +34,52 @@ const routes = [
       {
         path: '',
         name: 'home',
-        component: () => import( '../views/HomeView.vue'),
-        meta: {rutaProtegida: true}
+        component: HomeView,
+        meta: { rutaProtegida: true }
       },
       {
         path: 'about',
         name: 'about',
-        component: () => import('../views/AboutView.vue'),
-        meta: {rutaProtegida: true}
+        component: AboutView,
+        meta: { rutaProtegida: true }
+      },
+      {
+        path: 'producto',
+        name: 'producto',
+        component: Product,
+        meta: { rutaProtegida: true }
+      },
+      {
+        path: 'categoria',
+        name: 'categoria',
+        component: Category,
+        meta: { rutaProtegida: true }
+      },
+      {
+        path: 'movimientos',
+        name: 'movimientos',
+        component: Movement,
+        meta: { rutaProtegida: true }
+      },
+      {
+        path: 'gestion-usuario',
+        name: 'gestionUsuario',
+        component: UserManagement,
+        meta: { rutaProtegida: true }
       }
     ]
-
   },
+  { 
+    path: '/:pathMatch(.*)*', 
+    name: 'not-found',
+    beforeEnter: (to, from, next) => {
+      if(store.state.token){
+        next({name: 'home'})
+      }else{
+        next({name: 'login'})
+      }
+    }
+  }
   
 ]
 
@@ -52,7 +96,12 @@ router.beforeEach((to, from, next) => {
   }else{
     next()
   }
+})
 
-}) 
+router.resolve({
+  name: 'not-found',
+  params: { pathMatch: ['not', 'found'] },
+}).href 
+
 
 export default router

@@ -3,15 +3,10 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
-
   export default{
-    methods: {
-      //...mapActions(['leerToken','cerrarSesion'])
-      ...mapActions(['leerToken'])
-    },
-    created(){
-      this.leerToken()
+
+    mounted(){
+      this.$store.commit('leerToken')
     }
   }
 </script>

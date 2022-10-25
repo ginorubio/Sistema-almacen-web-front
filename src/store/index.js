@@ -1,62 +1,47 @@
 import { createStore } from 'vuex'
-
+import VueJwtDecode from "vue-jwt-decode";
 
 export default createStore({
   state: {
     token: null,
     app: {
-      name: 'App Almacen'
+      name: 'Almacena Mercantil',
+      user: ''
     }
   },
   getters: {
   },
   mutations: {
-    setToken(state, payload){
-      state.token = payload
+    login(state,token) {
+      //decodificando el token del backend, debe contener datos generales del Usuario,
+      //para posteriormente ser guardados en el state de la aplicacion
+      //y accedido desde cualquier parte de la aplicacion
+      let decoded = VueJwtDecode.decode(token);
+
+      state.app.user = decoded.nombre
+      state.token = token;
+
+      //guardamos en el localStoge el token y datos generales del usuario
+      localStorage.setItem('token', token)
+      localStorage.setItem('user', decoded.nombre)
+    },
+    leerToken(state) {
+      if (localStorage.getItem('token')) {
+        //recuperamos el token y los datos generales del usuario
+        state.token = localStorage.getItem('token')
+        state.app.user = localStorage.getItem('user')
+      } else {
+        state.token = null;
+      }
+    },
+    logout(state) {
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      state.token = null;
+      state.app.user = null;
     }
   },
   actions: {
-    async login({commit}, usuario){
-      console.log(usuario)
-      try{
-        //solicitud al backend
-        const res = await fetch('http://localhost:5000/api/tienda/auth/login/user',{
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          } ,
-          body: JSON.stringify(usuario)
-        })
-        const response = await res.json()
-
-        if(response.jwtToken){
-          console.log(response.jwtToken)
-
-          //commit nos permite llamar a la mutación
-          commit('setToken', response.jwtToken)
-
-          localStorage.setItem('token', response.jwtToken)
-          //this.$router.push({name:home})
-          window.location.href = "/";
-        }else{
-          console.log("No encontrado")
-        }
-
-      }catch(error){
-        console.log(error)
-      }
-    },
-    leerToken({commit}){
-      if(localStorage.getItem('token')){
-        commit('setToken', localStorage.getItem('token'))
-      }else{
-        commit('setToken',null)
-      }
-    },
-    cerrarSesion({commit}){
-      localStorage.removeItem('token')
-      commit('setToken',null)
-    }
   },
   modules: {
   }

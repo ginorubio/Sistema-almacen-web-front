@@ -10,20 +10,15 @@
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
-      <!-- Notifications Dropdown Menu -->
+      <!-- Perfil y logout Dropdown Menu -->
       <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
           <i class="far fa-user"></i>
         </a>
         <div class="dropdown-menu dropdown-menu-right">
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-user mr-2"></i>My Profile
+          <a href="#" class="dropdown-item" @click="logout">
+            <i class="fas fa-sign-out-alt mr-2"></i>Cerrar Sesión
           </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item" @click="cerrarSesion" >
-            <i class="fas fa-sign-out-alt mr-2"></i>Log Out
-          </a>
-
         </div>
       </li>
     </ul>
@@ -31,14 +26,14 @@
   <!-- /.navbar -->
 </template>
 <script>
-    import { mapActions } from 'vuex'
-    
-    export default{
-        methods: {
-          ...mapActions(['leerToken','cerrarSesion'])
-        },
-        created(){
-          this.leerToken()
-        }
-      }
+export default {
+  methods: {
+    logout() {
+      this.$store.commit('logout');
+    }
+  },
+  mounted() {
+    this.$store.commit('leerToken');
+  }
+}
 </script>

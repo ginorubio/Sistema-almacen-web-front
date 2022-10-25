@@ -1,13 +1,11 @@
 <template>
-<!-- Main Sidebar Container -->
-<aside class="main-sidebar sidebar-dark-primary elevation-4">
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="/" class="brand-link">
-      <img src="/adminlte/dist/img/AdminLTELogo.png"
-           :alt="$store.state.app.name"
-           class="brand-image img-circle elevation-3"
-           style="opacity: .8">
-      <span class="brand-text font-weight-light">{{ $store.state.app.name}}</span>
+      <img src="/adminlte/dist/img/AdminLTELogo.png" :alt="$store.state.app.name"
+        class="brand-image img-circle elevation-3 img-titulo" style="opacity: .8">
+      <span class="brand-text font-weight-light">{{ $store.state.app.name }}</span>
     </a>
 
     <!-- Sidebar -->
@@ -18,30 +16,42 @@
           <img src="/adminlte/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">Alexander Pierce</a>
+          <a href="#" class="d-block">{{ $store.state.app.user }}</a>
         </div>
       </div>
       <div class="form-inline">
         <div class="input-group" data-widget="sidebar-search">
-            <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
-            <div class="input-group-append">
-                <button class="btn btn-sidebar">
-                    <i class="fas fa-search fa-fw"></i>
-                </button>
-            </div>
+          <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+          <div class="input-group-append">
+            <button class="btn btn-sidebar">
+              <i class="fas fa-search fa-fw"></i>
+            </button>
+          </div>
         </div>
       </div>
 
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-            <!--nav items-->
-            <nav-item icon="fas fa-home" link="/">
-                Home
-            </nav-item>
-            <nav-item icon="fas fa-info-circle" link="/about">
-                About
-            </nav-item>
+          <!--nav items-->
+          <nav-item icon="fas fa-home" link="/">
+            Inicio
+          </nav-item>
+          <nav-item icon="fas fa-tag" link="/producto">
+            Productos
+          </nav-item>
+          <nav-item icon="fas fa-hashtag" link="/categoria">
+            Categorías
+          </nav-item>
+          <nav-item icon="fas fa-list" link="/movimientos">
+            Movimientos
+          </nav-item>
+          <nav-item icon="fas fa-users" link="/gestion-usuario">
+            Gestión de Usuarios
+          </nav-item>
+          <nav-item icon="fas fa-info-circle" link="/about">
+            Información del sistema
+          </nav-item>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
@@ -54,11 +64,18 @@
 <script>
 import NavItem from './NavItem.vue'
 
-export default{
-    components: {
-        NavItem
-    }
+export default {
+  components: {
+    NavItem
+  }
 }
 
 </script>
+<style scoped>
+.img-titulo{
+    height: 100px;
+    width: 50px;
+}
+</style>
+    
 
