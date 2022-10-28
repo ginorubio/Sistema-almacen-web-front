@@ -23,7 +23,7 @@ export class ServicioProducto {
     
     async  eliminar(id) {
         try {
-            const res = await fetch(this.URL + '/delete/' + id, {
+            const res = await fetch(this.URL + '/' + id, {
                 method: 'DELETE',
                 headers: this.cabecera
             })
@@ -65,9 +65,9 @@ export class ServicioProducto {
         }
     }
 
-    async buscar(cadena){
+    async buscar(_id){
         try {
-            const res = await fetch(this.URL+'buscar',{headers: this.cabecera})
+            const res = await fetch(this.URL+'/'+_id,{headers: this.cabecera})
             const response = await res.json()
             return response
         } catch (error) {

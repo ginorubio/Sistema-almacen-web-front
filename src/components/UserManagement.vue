@@ -134,6 +134,8 @@ import { ServicioUsuario } from '../services/ServicesUsers.js'
 import { useVuelidate } from '@vuelidate/core'
 import { required, email, minLength, sameAs, helpers } from '@vuelidate/validators'
 
+const caracterValido = helpers.regex(/^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/);
+
 export default {
     components: {
         ContentHeader, Content, Modal, DataTable
@@ -165,7 +167,10 @@ export default {
     validations() {
         return {
             usuario: {
-                username: { required: helpers.withMessage('El valor es requerido', required) },
+                username: { required: helpers.withMessage('El valor es requerido', required),
+                    minLength: helpers.withMessage('El mínimo número de caracteres es 3', minLength(3)),
+                    caracteres: helpers.withMessage('Caracter no valido', caracterValido)
+                },
                 email: {
                     required: helpers.withMessage('El valor es requerido', required),
                     email: helpers.withMessage('Correo incorrecto', email)

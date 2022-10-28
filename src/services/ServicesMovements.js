@@ -2,17 +2,17 @@ import store from '../store'
 
 export class ServicioMovimientos {
     URL = "http://localhost:4000/api/tienda/movimientos"
-    constructor(){
+    constructor() {
         this.cabecera = {
             'Content-Type': 'application/json',
             'x-access-token': `${store.state.token}`
-        }  
+        }
     }
-    
+
     async mostrar() {
         try {
             //ruta para obtener información del back
-            const res = await fetch(this.URL, {headers: this.cabecera})
+            const res = await fetch(this.URL, { headers: this.cabecera })
             const response = await res.json()
             return response;
 
@@ -20,8 +20,8 @@ export class ServicioMovimientos {
             return error
         }
     }
-    
-    async  eliminar(id) {
+
+    async eliminar(id) {
         try {
             const res = await fetch(this.URL + '/delete/' + id, {
                 method: 'DELETE',
@@ -35,14 +35,14 @@ export class ServicioMovimientos {
         }
     }
 
-    async  registrar(movimiento) {
+    async registrar(movimiento) {
         try {
-            const res = await fetch(this.URL+"/add", {
+            const res = await fetch(this.URL + "/create", {
                 method: 'POST',
                 headers: this.cabecera,
                 body: JSON.stringify(movimiento)
             })
-            
+
             const response = await res.json()
             console.log(response)
             return response
@@ -51,9 +51,9 @@ export class ServicioMovimientos {
         }
     }
 
-    async  modificar(movimiento,id_movimiento) {
+    async modificar(movimiento, id_movimiento) {
         try {
-            const res = await fetch(this.URL+'/edit/'+ id_movimiento, {
+            const res = await fetch(this.URL + '/edit/' + id_movimiento, {
                 method: 'PUT',
                 headers: this.cabecera,
                 body: JSON.stringify(movimiento)
@@ -65,24 +65,17 @@ export class ServicioMovimientos {
         }
     }
 
-    async buscar(cadena){
+    async buscar(cadena) {
         try {
-            let res = ""
-            if(cadena){
-                res = await fetch(this.URL+'buscar/'+cadena,{
-                    headers: this.cabecera,
-                })
-            }else{
-                res = await fetch(this.URL+'buscar',{
-                    headers: this.cabecera,
-                })
-            }
+            const res = await fetch(this.URL + 'buscar/' + cadena, {
+                headers: this.cabecera,
+            })
             const response = await res.json()
             return response
         } catch (error) {
             return error
         }
     }
-    
+
 
 }

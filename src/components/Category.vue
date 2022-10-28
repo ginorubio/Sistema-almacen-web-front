@@ -80,6 +80,8 @@ import { ServicioCategorias } from '../services/ServicesCategorys'
 import { useVuelidate } from '@vuelidate/core'
 import { required, helpers } from '@vuelidate/validators'
 
+const caracterValido = helpers.regex(/^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/);
+
 export default {
     components: {
         ContentHeader, Content, Modal, DataTable
@@ -105,7 +107,10 @@ export default {
         return {
             categoria: {
                 codigo: { required: helpers.withMessage('El campo es requerido', required) },
-                descripcion: { required: helpers.withMessage('El campo es requerido', required) }
+                descripcion: { required: helpers.withMessage('El campo es requerido', required),
+                    minLength: helpers.withMessage('El mínimo número de caracteres es 3', minLength(3)),
+                    caracteres: helpers.withMessage('Caracter no valido', caracterValido) 
+                }
             }
         }
     },

@@ -5,7 +5,7 @@ export default createStore({
   state: {
     token: null,
     app: {
-      name: 'Almacena Mercantil',  
+      name: 'Almacenera Mercantil',  
     },
     username: '',
     rol: ''
