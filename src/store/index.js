@@ -5,9 +5,11 @@ export default createStore({
   state: {
     token: null,
     app: {
-      name: 'Almacena Mercantil',
-      user: ''
-    }
+      name: 'Almacena Mercantil',  
+    },
+    username: '',
+    rol: ''
+
   },
   getters: {
   },
@@ -17,28 +19,32 @@ export default createStore({
       //para posteriormente ser guardados en el state de la aplicacion
       //y accedido desde cualquier parte de la aplicacion
       let decoded = VueJwtDecode.decode(token);
-
-      state.app.user = decoded.nombre
+      state.username = decoded.username;
+      state.rol = decoded.rol;
       state.token = token;
 
       //guardamos en el localStoge el token y datos generales del usuario
       localStorage.setItem('token', token)
-      localStorage.setItem('user', decoded.nombre)
+      localStorage.setItem('username', decoded.username)
+      localStorage.setItem('rol', decoded.rol)
     },
     leerToken(state) {
       if (localStorage.getItem('token')) {
         //recuperamos el token y los datos generales del usuario
         state.token = localStorage.getItem('token')
-        state.app.user = localStorage.getItem('user')
+        state.username = localStorage.getItem('username')
+        state.rol = localStorage.getItem('rol')
       } else {
         state.token = null;
       }
     },
     logout(state) {
       localStorage.removeItem('token')
-      localStorage.removeItem('user')
+      localStorage.removeItem('username')
+      localStorage.removeItem('rol')
       state.token = null;
-      state.app.user = null;
+      state.username = null;
+      state.rol = null;
     }
   },
   actions: {

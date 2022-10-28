@@ -1,27 +1,28 @@
 import store from '../store'
 
 export class ServicioUsuario {
-    URL = "http://localhost:4000/api/usuarios"
-    constructor(){
+    URL = "http://localhost:4000/api/users"
+    constructor() {
         this.cabecera = {
             'Content-Type': 'application/json',
             'x-access-token': `${store.state.token}`
-        }  
+        }
     }
-    
+
     async mostrar() {
         try {
             //ruta para obtener información del back
-            const res = await fetch(this.URL, {headers: this.cabecera})
+            const res = await fetch(this.URL + "/read", { headers: this.cabecera })
             const response = await res.json()
+
             return response;
 
         } catch (error) {
             return error
         }
     }
-    
-    async  eliminar(id) {
+
+    async eliminar(id) {
         try {
             const res = await fetch(this.URL + '/delete/' + id, {
                 method: 'DELETE',
@@ -35,25 +36,24 @@ export class ServicioUsuario {
         }
     }
 
-    async  registrar(usuario) {
+    async registrar(usuario) {
         try {
-            const res = await fetch(this.URL+"/add", {
+            const res = await fetch(this.URL + "/create", {
                 method: 'POST',
                 headers: this.cabecera,
                 body: JSON.stringify(usuario)
             })
-            
+
             const response = await res.json()
-            console.log(response)
             return response
         } catch (error) {
             return error
         }
     }
 
-    async  modificar(usuario,id_usuario) {
+    async modificar(usuario, id_usuario) {
         try {
-            const res = await fetch(this.URL+'/edit/'+ id_usuario, {
+            const res = await fetch(this.URL + '/update/' + id_usuario, {
                 method: 'PUT',
                 headers: this.cabecera,
                 body: JSON.stringify(usuario)
@@ -65,16 +65,16 @@ export class ServicioUsuario {
         }
     }
 
-    async buscar(cadena){
+    async buscar(_id) {
         try {
-            const res = await fetch(this.URL+'buscar',{headers: this.cabecera})
+            const res = await fetch(this.URL + '/read/' + _id, { headers: this.cabecera })
             const response = await res.json()
             return response
         } catch (error) {
             return error
         }
     }
-    
+
 
 }
 

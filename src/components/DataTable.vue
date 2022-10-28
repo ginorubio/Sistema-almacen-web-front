@@ -2,10 +2,9 @@
     <!--Data table prueba-->
     <div class="card">
         <div class="card-header d-flex justify-content-between">
-            <h3 class="card-title">DataTable with default features</h3>
+            <h3 class="card-title">DataTable</h3>
             <div>
-                <label class="mr-2" for="">Buscar:</label>
-                <input class="rounded-pill" type="search" value="Buscar">
+                <slot name="button_buscar"></slot>
             </div>
         </div>
         <div class="card-body">
@@ -72,7 +71,7 @@ export default {
             return lista.slice(from, to)
         },
         setlista() {
-
+            this.pages = []
             let numberOfpages = Math.ceil(this.lista.length / this.perPage)
             for (let i = 1; i <= numberOfpages; i++) {
                 this.pages.push(i);

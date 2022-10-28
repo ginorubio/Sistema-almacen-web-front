@@ -16,7 +16,7 @@
           <img src="/adminlte/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">{{ $store.state.app.user }}</a>
+          <a href="#" class="d-block">{{ $store.state.username }}</a>
         </div>
       </div>
       <div class="form-inline">
@@ -46,7 +46,7 @@
           <nav-item icon="fas fa-list" link="/movimientos">
             Movimientos
           </nav-item>
-          <nav-item icon="fas fa-users" link="/gestion-usuario">
+          <nav-item v-if="$store.state.rol == 'admin' " icon="fas fa-users" link="/gestion-usuario">
             Gestión de Usuarios
           </nav-item>
           <nav-item icon="fas fa-info-circle" link="/about">

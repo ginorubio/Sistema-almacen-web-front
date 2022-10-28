@@ -1,7 +1,7 @@
 import store from '../store'
 
 export class ServicioCategorias {
-    URL = "http://localhost:4000/api/tienda/categorias"
+    URL = "http://localhost:4000/api/categoria"
     constructor(){
         this.cabecera = {
             'Content-Type': 'application/json',
@@ -12,8 +12,9 @@ export class ServicioCategorias {
     async mostrar() {
         try {
             //ruta para obtener información del back
-            const res = await fetch(this.URL, {headers: this.cabecera})
+            const res = await fetch(this.URL+"/read", {headers: this.cabecera})
             const response = await res.json()
+
             return response;
 
         } catch (error) {
@@ -37,14 +38,13 @@ export class ServicioCategorias {
 
     async  registrar(categoria) {
         try {
-            const res = await fetch(this.URL+"/add", {
+            const res = await fetch(this.URL+"/create", {
                 method: 'POST',
                 headers: this.cabecera,
                 body: JSON.stringify(categoria)
             })
             
             const response = await res.json()
-            console.log(response)
             return response
         } catch (error) {
             return error
@@ -53,7 +53,7 @@ export class ServicioCategorias {
 
     async  modificar(categoria,id_categoria) {
         try {
-            const res = await fetch(this.URL+'/edit/'+ id_categoria, {
+            const res = await fetch(this.URL+'/update/'+ id_categoria, {
                 method: 'PUT',
                 headers: this.cabecera,
                 body: JSON.stringify(categoria)
@@ -67,7 +67,7 @@ export class ServicioCategorias {
 
     async buscar(cadena){
         try {
-            const res = await fetch(this.URL+'buscar',{headers: this.cabecera})
+            const res = await fetch(this.URL+'/read/'+cadena,{headers: this.cabecera})
             const response = await res.json()
             return response
         } catch (error) {

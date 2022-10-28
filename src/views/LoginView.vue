@@ -28,7 +28,7 @@
           </div>
         </div>
         <p v-if="usuario.error" class="text-danger">Correo o contraseña incorrecta.</p>
-        <button class="btn" type="submit">login</button>
+        <button class="btn" type="submit">Iniciar Sesión</button>
       </form>
     </div>
   </div>

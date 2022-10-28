@@ -1,7 +1,7 @@
 export class ServicioAuth {
-    //URL = "http://localhost:5000/api"
+
     URL = "http://localhost:4000/api"
-    //'x-access-token': `${store.state.token}`
+
     constructor(){
         this.cabecera = {
             'Content-Type': 'application/json'
