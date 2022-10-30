@@ -95,6 +95,12 @@
     </teleport>
     <content>
         <data-table :lista="productos" @getValues="setValues">
+            
+            <template #button_buscar>
+                <label class="mr-2" for="">BUSCAR:</label>
+                <input class="rounded-pill" type="search" v-model="cadena_buscar">
+                <button class="btn btn-primary" @click="buscar(cadena_buscar)"><i class="fas fa-search"></i></button>
+            </template>
             <template #thead>
                 <tr>
                     <th>ID</th>
@@ -159,6 +165,7 @@ export default {
             tituloModal: '',
             productos: [],
             productosPaginados: [],
+            cadena_buscar: ''
         }
     },
     created() {
@@ -326,6 +333,30 @@ export default {
             this.producto.nombre = '';
             this.producto.unidadMedida = '';
             this.producto.codigo = '';
+        },
+        buscar(id) {
+            if (id) {
+                let producto = []
+                const servicioproducto = new ServicioProducto()
+                servicioproducto.buscar(id).then(data => {
+                    const response = data
+
+                    if (response.status === 200) {
+                        producto[0] = response.data
+                        this.productos = producto
+                    } else {
+                        this.$swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'No se pudo encontrar el producto!',
+                        })
+                    }
+                }, error => {
+                    this.mostrarUsuarios()
+                })
+            } else {
+                this.mostrarUsuarios()
+            }
         }
     }
 }

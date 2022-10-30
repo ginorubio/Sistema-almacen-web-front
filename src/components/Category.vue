@@ -45,6 +45,12 @@
     </teleport>
     <content>
         <data-table :lista="categorias" @getValues="setValues">
+            
+            <template #button_buscar>
+                <label class="mr-2" for="">BUSCAR:</label>
+                <input class="rounded-pill" type="search" v-model="cadena_buscar">
+                <button class="btn btn-primary" @click="buscar(cadena_buscar)"><i class="fas fa-search"></i></button>
+            </template>
             <template #thead>
                 <tr>
                     <th>ID</th>
@@ -78,7 +84,7 @@ import Modal from '../components/Modal.vue'
 import DataTable from './DataTable.vue';
 import { ServicioCategorias } from '../services/ServicesCategorys'
 import { useVuelidate } from '@vuelidate/core'
-import { required, helpers } from '@vuelidate/validators'
+import { required, helpers,minLength } from '@vuelidate/validators'
 
 const caracterValido = helpers.regex(/^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/);
 
@@ -101,6 +107,7 @@ export default {
             modificar: true,
             categoriasPaginadas: [],
             tituloModal: '',
+            cadena_buscar: ''
         }
     },
     validations() {
@@ -270,6 +277,29 @@ export default {
         limpiarFormuralio() {
             this.categoria.descripcion = '';
             this.categoria.codigo = '';
+        },
+        buscar(id) {
+            if (id) {
+                let categoria = []
+                const serviciocategoria = new ServicioCategorias()
+                serviciocategoria.buscar(id).then(data => {
+                    const response = data
+                    if (response.status === 200) {
+                        categoria[0] = response
+                        this.categorias = categoria
+                    } else {
+                        this.$swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'No se pudo encontrar la categoría!',
+                        })
+                    }
+                }, error => {
+                    this.mostrarCategorias()
+                })
+            } else {
+                this.mostrarCategorias()
+            }
         }
     },
     created() {

@@ -12,7 +12,7 @@ export class ServicioMovimientos {
     async mostrar() {
         try {
             //ruta para obtener información del back
-            const res = await fetch(this.URL, { headers: this.cabecera })
+            const res = await fetch(this.URL+'/read', { headers: this.cabecera })
             const response = await res.json()
             return response;
 
@@ -53,7 +53,7 @@ export class ServicioMovimientos {
 
     async modificar(movimiento, id_movimiento) {
         try {
-            const res = await fetch(this.URL + '/edit/' + id_movimiento, {
+            const res = await fetch(this.URL + '/update/' + id_movimiento, {
                 method: 'PUT',
                 headers: this.cabecera,
                 body: JSON.stringify(movimiento)
@@ -67,7 +67,7 @@ export class ServicioMovimientos {
 
     async buscar(cadena) {
         try {
-            const res = await fetch(this.URL + 'buscar/' + cadena, {
+            const res = await fetch(this.URL + '/read/' + cadena, {
                 headers: this.cabecera,
             })
             const response = await res.json()

@@ -53,12 +53,10 @@
                         </div>
                     </div>
 
-                    <div class="col-12 mb-2">
+                    <div v-if="modificar != 3" class="col-12 mb-2">
                         <div class="form-group">
                             <label for="contrasena">REPETIR CONTRASEÑA</label>
-                            <input v-if="modificar == 3" disabled class="form-control" type="password"
-                                v-model="usuario.repassword" />
-                            <input v-else class="form-control" type="password" v-model="usuario.repassword" />
+                            <input class="form-control" type="password" v-model="usuario.repassword" />
                         </div>
                         <div class="text-danger" v-if="v$.usuario.repassword.$error">
                             {{ v$.usuario.repassword.$errors[0].$message }}
@@ -348,7 +346,6 @@ export default {
                 this.usuario.username = data.username;
                 this.usuario.email = data.email;
                 this.usuario.password = data.password;
-                this.usuario.repassword = data.repassword;
                 this.usuario.roles = data.roles;
             }
         },
@@ -370,7 +367,11 @@ export default {
                         usuario[0] = response.data
                         this.usuarios = usuario
                     } else {
-                        this.mostrarUsuarios()
+                        this.$swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'No se pudo encontrar la categoría!',
+                        })
                     }
                 }, error => {
                     this.mostrarUsuarios()
