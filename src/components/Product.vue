@@ -2,7 +2,7 @@
     <content-header title="Productos" />
     <div class="col-12 mb-2">
         <!-- Button to Open the Modal -->
-        <button id="show-modal" @click.prevent="showModal=true; modificar=1; abrirModal()" type="button"
+        <button id="show-modal" @click.prevent="showModal = true; modificar = 1; abrirModal()" type="button"
             class="btn btn-primary">
             <i class="fas fa-plus-circle mr-2"></i> Nuevo Producto
         </button>
@@ -11,7 +11,7 @@
         <!-- use the modal component, pass in the prop -->
         <modal :show="showModal" @close="showModal = false">
             <template #header>
-                <h3>{{tituloModal}}</h3>
+                <h3>{{ tituloModal }}</h3>
             </template>
             <template #body>
 
@@ -19,63 +19,91 @@
                     <div class="col-12 mb-2">
                         <div class="form-group">
                             <label for="codigo">Código</label>
-                            <input v-if="modificar==3" disabled class="form-control" id="codigo"
+                            <input v-if="modificar == 3" disabled class="form-control" id="codigo"
                                 v-model="producto.codigo" />
                             <input v-else class="form-control" id="codigo" v-model="producto.codigo" />
+                        </div>
+                        <div class="text-danger" v-if="v$.producto.codigo.$error">
+                            {{ v$.producto.codigo.$errors[0].$message }}
                         </div>
                     </div>
 
                     <div class="col-12 mb-2">
                         <div class="form-group">
                             <label for="nombre">Nombre</label>
-                            <input v-if="modificar==3" disabled class="form-control" id="nombre"
+                            <input v-if="modificar == 3" disabled class="form-control" id="nombre"
                                 v-model="producto.nombre" />
                             <input v-else class="form-control" id="nombre" v-model="producto.nombre" />
+                        </div>
+                        <div class="text-danger" v-if="v$.producto.nombre.$error">
+                            {{ v$.producto.nombre.$errors[0].$message }}
                         </div>
                     </div>
 
                     <div class="col-12 mb-2">
                         <div class="form-group">
                             <label for="descripcion">Descripcion</label>
-                            <textarea v-if="modificar==3" disabled class="form-control" id="descripcion"
+                            <textarea v-if="modificar == 3" disabled class="form-control" id="descripcion"
                                 v-model="producto.descripcion" style="heigt: 100px"></textarea>
                             <textarea v-else class="form-control" id="descripcion" v-model="producto.descripcion"
                                 style="heigt: 100px"></textarea>
-
+                        </div>
+                        <div class="text-danger" v-if="v$.producto.descripcion.$error">
+                            {{ v$.producto.descripcion.$errors[0].$message }}
                         </div>
                     </div>
                     <div class="col-12 mb-2">
                         <div class="form-group">
                             <label>Precio</label>
-                            <input v-if="modificar==3" disabled type="number" class="form-control"
+                            <input v-if="modificar == 3" disabled type="number" class="form-control"
                                 v-model="producto.precio">
                             <input v-else type="number" class="form-control" v-model="producto.precio">
+                        </div>
+                        <div class="text-danger" v-if="v$.producto.precio.$error">
+                            {{ v$.producto.precio.$errors[0].$message }}
                         </div>
                     </div>
                     <div class="col-12 mb-2">
                         <div class="form-group">
                             <label>Stock</label>
-                            <input v-if="modificar==3" disabled type="number" class="form-control"
+                            <input v-if="modificar == 3" disabled type="number" class="form-control"
                                 v-model="producto.stock">
                             <input v-else type="number" class="form-control" v-model="producto.stock">
+                        </div>
+                        <div class="text-danger" v-if="v$.producto.stock.$error">
+                            {{ v$.producto.stock.$errors[0].$message }}
                         </div>
                     </div>
                     <div class="col-12 mb-2">
                         <div class="form-group">
                             <label>Costo</label>
-                            <input v-if="modificar==3" disabled type="number" class="form-control"
+                            <input v-if="modificar == 3" disabled type="number" class="form-control"
                                 v-model="producto.costo">
                             <input v-else type="number" class="form-control" v-model="producto.costo">
+                        </div>
+                        <div class="text-danger" v-if="v$.producto.costo.$error">
+                            {{ v$.producto.costo.$errors[0].$message }}
                         </div>
                     </div>
                     <div class="col-12 mb-2">
                         <div class="form-group">
-                            <label>Categoría</label>
-                            <input v-if="modificar==3" disabled type="text" class="form-control"
+                            <label for="rol">Categoría</label>
+                            <select v-if="modificar == 3" disabled id="categoria" name="categoria" class="form-control"
                                 v-model="producto.categoria">
-                            <input v-else type="text" class="form-control" v-model="producto.categoria">
+                                <option disabled selected value="">--Seleccione un categoría--</option>
+                                <option v-for="categoria in categorias">{{ categoria.descripcion }}</option>
+                            </select>
+                            <select v-else id="categoria" name="categoria" class="form-control"
+                                v-model="producto.categoria">
+                                <option disabled selected value="">--Seleccione una categoría--</option>
+                                <option v-for="categoria in categorias">{{ categoria.descripcion }}</option>
+                            </select>
+                        </div>
+                        <div class="text-danger" v-if="v$.producto.categoria.$error">
+                            {{ v$.producto.categoria.$errors[0].$message }}
                         </div>
                     </div>
+                    <!--
                     <div class="col-12 mb-2">
                         <div class="form-group">
                             <label>Unidad de medida</label>
@@ -84,6 +112,7 @@
                             <input v-else type="text" class="form-control" v-model="producto.unidadMedida">
                         </div>
                     </div>
+                    -->
                 </div>
 
             </template>
@@ -95,7 +124,7 @@
     </teleport>
     <content>
         <data-table :lista="productos" @getValues="setValues">
-            
+
             <template #button_buscar>
                 <label class="mr-2" for="">BUSCAR:</label>
                 <input class="rounded-pill" type="search" v-model="cadena_buscar">
@@ -112,17 +141,17 @@
                 </tr>
             </template>
 
-            <template #tbody >
+            <template #tbody>
                 <tr v-for="producto in productosPaginados" :key="producto._id">
-                    <td>{{producto._id}}</td>
-                    <td>{{producto.nombre}}</td>
-                    <td>{{producto.descripcion}}</td>
-                    <td>{{producto.precio}}</td>
-                    <td>{{producto.stock}}</td>
+                    <td>{{ producto._id }}</td>
+                    <td>{{ producto.nombre }}</td>
+                    <td>{{ producto.descripcion }}</td>
+                    <td>{{ producto.precio }}</td>
+                    <td>{{ producto.stock }}</td>
                     <td>
-                        <button @click="showModal=true; modificar=3; abrirModal(producto)" class="btn btn-info mr-2"><i
+                        <button @click="showModal = true; modificar = 3; abrirModal(producto)" class="btn btn-info mr-2"><i
                                 class="fa fa-eye"></i></button>
-                        <button @click="showModal=true; modificar=2; abrirModal(producto)"
+                        <button @click="showModal = true; modificar = 2; abrirModal(producto)"
                             class="btn btn-success mr-2"><i class="far fa-edit"></i></button>
                         <button type="button" @click="borrarProductos(producto)" class="btn btn-danger "><i
                                 class="fas fa-trash"></i></button>
@@ -137,7 +166,11 @@ import ContentHeader from '../components/ContentHeader.vue'
 import Content from '../components/Content.vue'
 import Modal from '../components/Modal.vue'
 import { ServicioProducto } from '../services/ServicesProducts';
+import { ServicioCategorias } from '@/services/ServicesCategorys';
 import DataTable from '../components/DataTable.vue'
+import { useVuelidate } from '@vuelidate/core'
+import { required, minValue, minLength, helpers } from '@vuelidate/validators'
+
 
 export default {
     name: "productos",
@@ -147,6 +180,9 @@ export default {
         Modal,
         DataTable,
     },
+    setup: () => ({
+        v$: useVuelidate()
+    }),
     data() {
         return {
             producto: {
@@ -165,15 +201,52 @@ export default {
             tituloModal: '',
             productos: [],
             productosPaginados: [],
-            cadena_buscar: ''
+            cadena_buscar: '',
+            categorias: []
+        }
+    },
+    validations() {
+        return {
+            producto: {
+                descripcion: {
+                    required: helpers.withMessage('El valor es requerido', required),
+                    minLength: helpers.withMessage('El mínimo número de caracteres es 5', minLength(5))
+                    
+                },
+                precio: {
+                    required: helpers.withMessage('El valor es requerido', required),
+                    minValue: helpers.withMessage('El mínimo valor es 0', minValue(0)) 
+                },
+                categoria: {
+                    required: helpers.withMessage('El valor es requerido', required),
+                    minLength: helpers.withMessage('El mínimo número de caracteres es 5', minLength(5))
+                },
+                nombre: {
+                    required: helpers.withMessage('El valor es requerido', required),
+                    minLength: helpers.withMessage('El mínimo número de caracteres es 5', minLength(5))
+                },
+                codigo: {
+                    required: helpers.withMessage('El valor es requerido', required),
+                    minLength: helpers.withMessage('El mínimo número de caracteres es 5', minLength(5))
+                },
+                stock: {
+                    required: helpers.withMessage('El valor es requerido', required),
+                    minValue: helpers.withMessage('El mínimo valor es 0', minValue(0)) 
+                },
+                costo: {
+                    required: helpers.withMessage('El valor es requerido', required),
+                    minValue: helpers.withMessage('El mínimo valor es 0', minValue(0)) 
+                },
+            }
         }
     },
     created() {
-        this.mostrarProductos()
-        
-    }, 
+        this.mostrarProductos();
+        this.mostrarCategorias();
+
+    },
     methods: {
-        setValues(obj){
+        setValues(obj) {
             //retorno de la lista paginada
             this.productosPaginados = obj;
         },
@@ -184,6 +257,16 @@ export default {
             servicioproducto.mostrar().then(data => {
                 const response = data
                 this.productos = response;
+            }, error => {
+                console.log(error)
+            })
+        },
+        mostrarCategorias() {
+            const servicioCategorias = new ServicioCategorias()
+
+            servicioCategorias.mostrar().then(data => {
+                const response = data
+                this.categorias = response;
             }, error => {
                 console.log(error)
             })
@@ -213,7 +296,7 @@ export default {
                     const servicioproducto = new ServicioProducto()
                     servicioproducto.eliminar(producto._id).then(data => {
                         const response = data
-                        if (response.mensaje == "eliminado") {
+                        if (response.status === 200) {
                             alertEliminar.fire(
                                 'Eliminado!',
                                 `El producto ${producto.descripcion}.`,
@@ -245,75 +328,86 @@ export default {
             })
         },
         async guardar() {
-
-            if (this.modificar == 2) {
-                const servicioproducto = new ServicioProducto()
-                servicioproducto.modificar(this.producto, this.id_producto).then(data => {
-                    const response = data
-                    if (response.mensaje === "editado") {
-                        this.$swal.fire({
-                            icon: 'success',
-                            title: 'Producto Editado',
-                            text: "Click en el botón para salir!",
-                            showConfirmButton: true,
-                            confirmButtonText: 'listo',
-                            confirmButtonColor: 'btn btn-success',
-                        })
-                        this.mostrarProductos();
-                        //cerrar modal
-                        //por definir
-                    } else {
+            this.v$.$validate();
+            if (!this.v$.$error) {
+                if (this.modificar == 2) {
+                    const servicioproducto = new ServicioProducto()
+                    servicioproducto.modificar(this.producto, this.id_producto).then(data => {
+                        const response = data
+                        if (response.status === 200) {
+                            this.$swal.fire({
+                                icon: 'success',
+                                title: 'Producto Editado',
+                                text: "Click en el botón para salir!",
+                                showConfirmButton: true,
+                                confirmButtonText: 'listo',
+                                confirmButtonColor: 'btn btn-success',
+                            })
+                            this.mostrarProductos();
+                            //cerrar modal
+                            //por definir
+                        } else {
+                            this.$swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: `${response.message}`,
+                            })
+                        }
+                    }, error => {
                         this.$swal.fire({
                             icon: 'error',
                             title: 'Oops...',
                             text: 'No se pudo modificar!',
                         })
-                    }
-                }, error => {
-                    this.$swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'No se pudo modificar!',
                     })
-                })
-            } else {
-                const servicioproducto = new ServicioProducto()
-                servicioproducto.registrar(this.producto).then(data => {
-                    const response = data
-                    console.log(response)
-                    if (response.mensaje == "agregado") {
-                        this.$swal.fire({
-                            icon: 'success',
-                            title: 'Producto Registrado',
-                            text: "Click en el botón para salir!",
-                            showConfirmButton: true,
-                            confirmButtonText: 'listo',
-                            confirmButtonColor: 'btn btn-success',
-                        })
-                        this.mostrarProductos();
-                        this.limpiarFormuralio();
-                    } else {
+                } else {
+                    const servicioproducto = new ServicioProducto()
+                    servicioproducto.registrar(this.producto).then(data => {
+                        const response = data
+                        if (response.status === 201) {
+                            this.$swal.fire({
+                                icon: 'success',
+                                title: 'Producto Registrado',
+                                text: "Click en el botón para salir!",
+                                showConfirmButton: true,
+                                confirmButtonText: 'listo',
+                                confirmButtonColor: 'btn btn-success',
+                            })
+                            this.mostrarProductos();
+                            this.limpiarFormuralio();
+                        } else {
+                            this.$swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: `${response.message}`,
+                            })
+                        }
+                    }, error => {
                         this.$swal.fire({
                             icon: 'error',
                             title: 'Oops...',
                             text: 'No se pudo registrar!',
                         })
-                    }
-                }, error => {
-                    this.$swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'No se pudo registrar!',
                     })
-                })
+                }
+            } else {
+                this.producto.error = true;
             }
+
         },
         abrirModal(data = {}) {
             if (this.modificar == 2) {
                 this.tituloModal = "Modificar Producto"
                 this.id_producto = data._id;
                 this.producto.descripcion = data.descripcion;
+                this.producto.stock = data.stock;
+                this.producto.costo = data.costo;
                 this.producto.precio = data.precio;
+                this.producto.nombre = data.nombre;
+                this.producto.codigo = data.codigo;
+                const index = this.categorias.findIndex(x => x.descripcion == "Cuaderno")
+                this.producto.categoria =  this.categorias[index].descripcion
+
             } else if (this.modificar == 1) {
                 this.tituloModal = "Registrar Producto"
                 this.limpiarFormuralio();
@@ -321,18 +415,26 @@ export default {
                 this.tituloModal = "Detalle del Producto"
                 this.id_producto = data._id;
                 this.producto.descripcion = data.descripcion;
+                this.producto.stock = data.stock;
+                this.producto.costo = data.costo;
                 this.producto.precio = data.precio;
+                this.producto.nombre = data.nombre;
+                this.producto.codigo = data.codigo;
+                const index = this.categorias.findIndex(x => x.descripcion == "Cuaderno")
+                this.producto.categoria =  this.categorias[index].descripcion
             }
         },
         limpiarFormuralio() {
             this.producto.descripcion = '';
             this.producto.precio = 0;
             this.producto.categoria = '';
-            this.producto.stock = '';
-            this.producto.costo = '';
+            this.producto.stock = 0;
+            this.producto.costo = 0;
             this.producto.nombre = '';
             this.producto.unidadMedida = '';
             this.producto.codigo = '';
+            this.producto.categoria = '';
+
         },
         buscar(id) {
             if (id) {
@@ -352,10 +454,10 @@ export default {
                         })
                     }
                 }, error => {
-                    this.mostrarUsuarios()
+                    this.mostrarProductos()
                 })
             } else {
-                this.mostrarUsuarios()
+                this.mostrarProductos()
             }
         }
     }

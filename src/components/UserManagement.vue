@@ -192,8 +192,8 @@ export default {
         mostrarUsuarios() {
             //instancia del servicio
             const serviciousuario = new ServicioUsuario()
-            serviciousuario.mostrar().then(res => {
-                const response = res
+            serviciousuario.mostrar().then(data => {
+                const response = data
                 this.usuarios = response.data;
             }, error => {
                 console.log(error)
@@ -323,7 +323,6 @@ export default {
                     })
                 }
             } else {
-                console.log("no se pudo guardar")
                 this.usuario.error = true;
             }
 

@@ -490,10 +490,10 @@ export default {
                         })
                     }
                 }, error => {
-                    console.log("usuario no encontrado")
+                    console.log("producto no encontrado")
                 })
             } else {
-                console.log("usuario no encontrado")
+                console.log("producto no encontrado")
             }
 
         },

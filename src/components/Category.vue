@@ -216,8 +216,8 @@ export default {
                         } else {
                             this.$swal.fire({
                                 icon: 'error',
-                                title: 'Oops...',
-                                text: 'No se pudo modificar!',
+                                title: 'No se pudo modificar!',
+                                text: `${response.message}`,
                             })
                         }
                     }, error => {
