@@ -2,7 +2,7 @@
     <content-header title="Productos" />
     <div class="col-12 mb-2">
         <!-- Button to Open the Modal -->
-        <button id="show-modal" @click.prevent="showModal = true; modificar = 1; abrirModal()" type="button"
+        <button v-if="$store.state.rol == 'jefe_almacen'" id="show-modal" @click.prevent="showModal = true; modificar = 1; abrirModal()" type="button"
             class="btn btn-primary">
             <i class="fas fa-plus-circle mr-2"></i> Nuevo Producto
         </button>
@@ -91,12 +91,12 @@
                             <select v-if="modificar == 3" disabled id="categoria" name="categoria" class="form-control"
                                 v-model="producto.categoria">
                                 <option disabled selected value="">--Seleccione un categoría--</option>
-                                <option v-for="categoria in categorias">{{ categoria.descripcion }}</option>
+                                <option v-for="categoria in categorias">{{ categoria.nombre }}</option>
                             </select>
                             <select v-else id="categoria" name="categoria" class="form-control"
                                 v-model="producto.categoria">
                                 <option disabled selected value="">--Seleccione una categoría--</option>
-                                <option v-for="categoria in categorias">{{ categoria.descripcion }}</option>
+                                <option v-for="categoria in categorias">{{ categoria.nombre }}</option>
                             </select>
                         </div>
                         <div class="text-danger" v-if="v$.producto.categoria.$error">
@@ -133,7 +133,7 @@
             <template #thead>
                 <tr>
                     <th>ID</th>
-                    <th>nombre</th>
+                    <th>NOMBRE</th>
                     <th>DESCRIPCION</th>
                     <th>PRECIO</th>
                     <th>STOCK</th>
@@ -171,6 +171,8 @@ import DataTable from '../components/DataTable.vue'
 import { useVuelidate } from '@vuelidate/core'
 import { required, minValue, minLength, helpers } from '@vuelidate/validators'
 
+const numberValido = helpers.regex(/^[0-9]+$/);
+const caracterValido = helpers.regex(/^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/);
 
 export default {
     name: "productos",
@@ -223,11 +225,12 @@ export default {
                 },
                 nombre: {
                     required: helpers.withMessage('El valor es requerido', required),
-                    minLength: helpers.withMessage('El mínimo número de caracteres es 5', minLength(5))
+                    minLength: helpers.withMessage('El mínimo número de caracteres es 5', minLength(5)),
+                    caracteres: helpers.withMessage('Caracter no valido', caracterValido) 
                 },
                 codigo: {
                     required: helpers.withMessage('El valor es requerido', required),
-                    minLength: helpers.withMessage('El mínimo número de caracteres es 5', minLength(5))
+                    number: helpers.withMessage('Solo admite números ', numberValido),
                 },
                 stock: {
                     required: helpers.withMessage('El valor es requerido', required),
@@ -266,7 +269,7 @@ export default {
 
             servicioCategorias.mostrar().then(data => {
                 const response = data
-                this.categorias = response;
+                this.categorias = response.data;
             }, error => {
                 console.log(error)
             })
@@ -405,7 +408,7 @@ export default {
                 this.producto.precio = data.precio;
                 this.producto.nombre = data.nombre;
                 this.producto.codigo = data.codigo;
-                const index = this.categorias.findIndex(x => x.descripcion == "Cuaderno")
+                const index = this.categorias.findIndex(x => x.descripcion == data.categoria)
                 this.producto.categoria =  this.categorias[index].descripcion
 
             } else if (this.modificar == 1) {
@@ -420,7 +423,7 @@ export default {
                 this.producto.precio = data.precio;
                 this.producto.nombre = data.nombre;
                 this.producto.codigo = data.codigo;
-                const index = this.categorias.findIndex(x => x.descripcion == "Cuaderno")
+                const index = this.categorias.findIndex(x => x.descripcion == data.categoria)
                 this.producto.categoria =  this.categorias[index].descripcion
             }
         },

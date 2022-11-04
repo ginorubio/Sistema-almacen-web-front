@@ -2,7 +2,7 @@
     <content-header title="Categorias" />
     <div class="col-12 mb-2">
         <!-- Button to Open the Modal -->
-        <button id="show-modal" type="button" @click.prevent="showModal = true, modificar = false; abrirModal()"
+        <button v-if="$store.state.rol == 'jefe_almacen'" id="show-modal" type="button" @click.prevent="showModal = true, modificar = false; abrirModal()"
             class="btn btn-primary">
             <i class="fas fa-plus-circle mr-2"></i> Nueva Categoría
         </button>
@@ -27,12 +27,12 @@
 
                     <div class="col-12 mb-2">
                         <div class="form-group">
-                            <label for="descripcion">Descricion</label>
-                            <textarea class="form-control" id="descripcion" v-model="categoria.descripcion"
-                                style="heigt: 100px"></textarea>
+                            <label for="nombre">Nombre</label>
+                            <textarea class="form-control" id="nombre" v-model="categoria.nombre"
+                                style="height: 100px"></textarea>
                         </div>
-                        <div class="text-danger" v-if="v$.categoria.descripcion.$error">
-                            {{ v$.categoria.descripcion.$errors[0].$message }}
+                        <div class="text-danger" v-if="v$.categoria.nombre.$error">
+                            {{ v$.categoria.nombre.$errors[0].$message }}
                         </div>
                     </div>
                 </div>
@@ -55,8 +55,8 @@
                 <tr>
                     <th>ID</th>
                     <th>CÓDIGO</th>
-                    <th>DESCRIPCON</th>
-                    <th>ACCIONES</th>
+                    <th>NOMBRE</th>
+                    <th v-if="$store.state.rol == 'jefe_almacen'">ACCIONES</th>
                 </tr>
             </template>
 
@@ -64,11 +64,11 @@
                 <tr v-for="categoria in categoriasPaginadas" :key="categoria._id">
                     <td>{{ categoria._id }}</td>
                     <td>{{ categoria.codigo }}</td>
-                    <td>{{ categoria.descripcion }}</td>
+                    <td>{{ categoria.nombre }}</td>
                     <td>
-                        <button @click="showModal = true; modificar = true; abrirModal(categoria)"
+                        <button v-if="$store.state.rol == 'jefe_almacen'" @click="showModal = true; modificar = true; abrirModal(categoria)"
                             class="btn btn-success mr-2"><i class="far fa-edit"></i></button>
-                        <button v-if="$store.state.rol == 'admin' " type="button" @click="borrarCategoria(categoria)" class="btn btn-danger "><i
+                        <button v-if="$store.state.rol == 'jefe_almacen'"  type="button" @click="borrarCategoria(categoria)" class="btn btn-danger "><i
                                 class="fas fa-trash"></i></button>
                     </td>
                 </tr>
@@ -87,6 +87,8 @@ import { useVuelidate } from '@vuelidate/core'
 import { required, helpers,minLength } from '@vuelidate/validators'
 
 const caracterValido = helpers.regex(/^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/);
+const numberValido = helpers.regex(/^[0-9]+$/);
+
 
 export default {
     components: {
@@ -100,7 +102,7 @@ export default {
             categorias: [],
             categoria: {
                 codigo: '',
-                descripcion: ''
+                nombre: ''
             },
             showModal: false,
             id_categoria: 0,
@@ -113,8 +115,11 @@ export default {
     validations() {
         return {
             categoria: {
-                codigo: { required: helpers.withMessage('El campo es requerido', required) },
-                descripcion: { required: helpers.withMessage('El campo es requerido', required),
+                codigo: { 
+                    required: helpers.withMessage('El campo es requerido', required),
+                    number: helpers.withMessage('Solo admite números ', numberValido),
+                 },
+                 nombre: { required: helpers.withMessage('El campo es requerido', required),
                     minLength: helpers.withMessage('El mínimo número de caracteres es 3', minLength(3)),
                     caracteres: helpers.withMessage('Caracter no valido', caracterValido) 
                 }
@@ -125,6 +130,8 @@ export default {
         setValues(obj) {
             //retorno de la lista paginada
             this.categoriasPaginadas = obj;
+
+            console.log("Retorno de categorias paginadas:" +this.categoriasPaginadas)
         },
         mostrarCategorias() {
             //instancia del servicio
@@ -132,7 +139,9 @@ export default {
 
             serviciocategorias.mostrar().then(data => {
                 const response = data
-                this.categorias = response;
+
+                console.log(response)
+                this.categorias = response.data;
             }, error => {
                 console.log(error)
             })
@@ -149,7 +158,7 @@ export default {
             })
             alertEliminar.fire({
                 title: 'Desea Eliminar?',
-                text: `Se eliminará la categoría ${categoria.descripcion}`,
+                text: `Se eliminará la categoría ${categoria.nombre}`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Sí, Eliminar!',
@@ -165,21 +174,21 @@ export default {
                         if (response.status == 200) {
                             alertEliminar.fire(
                                 'Eliminado!',
-                                `La categoría ${categoria.descripcion}.`,
+                                `La categoría ${categoria.nombre}.`,
                                 'success'
                             )
                             this.mostrarCategorias();
                         } else {
                             alertEliminar.fire(
                                 'Cancelado',
-                                `La categoría ${categoria.descripcion} no se pudo eliminar.`,
+                                `La categoría ${categoria.nombre} no se pudo eliminar.`,
                                 'error'
                             )
                         }
                     }, error => {
                         alertEliminar.fire(
                             'Cancelado',
-                            `La categoría ${categoria.descripcion} no se pudo eliminar.`,
+                            `La categoría ${categoria.nombre} no se pudo eliminar.`,
                             'error'
                         )
                     })
@@ -187,7 +196,7 @@ export default {
                 } else if (result.dismiss === this.$swal.DismissReason.cancel) {
                     alertEliminar.fire(
                         'Cancelado',
-                        `La categoría ${categoria.descripcion} no fue eliminado.`,
+                        `La categoría ${categoria.nombre} no fue eliminado.`,
                         'error'
                     )
                 }
@@ -247,7 +256,7 @@ export default {
                             this.$swal.fire({
                                 icon: 'error',
                                 title: 'Oops...',
-                                text: 'No se pudo registrar!',
+                                text: `${response.message}`,
                             })
                         }
                     }, error => {
@@ -268,25 +277,27 @@ export default {
                 this.tituloModal = "Modificar Categoria"
                 this.id_categoria = data._id;
                 this.categoria.codigo = data.codigo;
-                this.categoria.descripcion = data.descripcion;
+                this.categoria.nombre = data.nombre;
             } else {
                 this.tituloModal = "Registrar Categoria"
                 this.limpiarFormuralio();
             }
         },
         limpiarFormuralio() {
-            this.categoria.descripcion = '';
+            this.categoria.nombre = '';
             this.categoria.codigo = '';
         },
-        buscar(id) {
-            if (id) {
+        buscar(nombre) {
+            if (nombre) {
                 let categoria = []
                 const serviciocategoria = new ServicioCategorias()
-                serviciocategoria.buscar(id).then(data => {
+                serviciocategoria.buscar(nombre).then(data => {
                     const response = data
+                    console.log(response)
                     if (response.status === 200) {
-                        categoria[0] = response
-                        this.categorias = categoria
+                        //categoria[0] = response.data   por observar
+                        //this.categorias = categoria
+                        this.categorias = response.data
                     } else {
                         this.$swal.fire({
                             icon: 'error',

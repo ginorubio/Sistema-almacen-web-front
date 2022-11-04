@@ -65,9 +65,9 @@ export class ServicioCategorias {
         }
     }
 
-    async buscar(_id){
+    async buscar(nombre){
         try {
-            const res = await fetch(this.URL+'/read/'+_id,{headers: this.cabecera})
+            const res = await fetch(this.URL+'/read/'+nombre,{headers: this.cabecera})
             const response = await res.json()
             return response
         } catch (error) {

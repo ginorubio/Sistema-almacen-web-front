@@ -69,12 +69,15 @@
                             <select v-if="modificar == 3" disabled id="rol" name="rol" class="form-control"
                                 v-model="usuario.roles">
                                 <option disabled selected value="">--Seleccione un rol--</option>
-                                <option v-for="rol in data_roles">{{ rol }}</option>
+                                <option v-for="rol in data_roles">{{ rol.nombre }}</option>
                             </select>
                             <select v-else id="rol" name="rol" class="form-control" v-model="usuario.roles">
                                 <option disabled selected value="">--Seleccione un rol--</option>
-                                <option v-for="rol in data_roles">{{ rol }}</option>
+                                <option v-for="rol in data_roles">{{ rol.nombre }}</option>
                             </select>
+                        </div>
+                        <div class="text-danger" v-if="v$.usuario.roles.$error">
+                            {{ v$.usuario.roles.$errors[0].$message }}
                         </div>
                     </div>
                 </div>
@@ -110,7 +113,7 @@
                     <td>{{ usuario.email }}</td>
                     <td>{{ usuario.roles }}</td>
                     <td>
-                        <button @click="showModal = true; modificar = 3; abrirModal(usuario)"
+                        <button v-if="false" @click="showModal = true; modificar = 3; abrirModal(usuario)"
                             class="btn btn-info mr-2"><i class="fa fa-eye"></i></button>
                         <button @click="showModal = true; modificar = 2; abrirModal(usuario)"
                             class="btn btn-success mr-2"><i class="far fa-edit"></i></button>
@@ -159,28 +162,36 @@ export default {
             modificar: 0,
             tituloModal: '',
             usuariosPaginados: [],
-            data_roles: ["almacenero", "admin", "jefe_almacen", "user"],
+            data_roles: [
+                {nombre: "almacenero",codigo: "63636e8e8d3546d90542ad6a"}, 
+                {nombre: "admin", codigo: "63636e8e8d3546d90542ad67"}, 
+                {nombre: "jefe_almacen", codigo: "63636e8e8d3546d90542ad69"},
+            ],
         }
     },
     validations() {
         return {
             usuario: {
-                username: { required: helpers.withMessage('El valor es requerido', required),
+                username: { required: helpers.withMessage('El campo es requerido', required),
                     minLength: helpers.withMessage('El mínimo número de caracteres es 3', minLength(3)),
                     caracteres: helpers.withMessage('Caracter no valido', caracterValido)
                 },
                 email: {
-                    required: helpers.withMessage('El valor es requerido', required),
+                    required: helpers.withMessage('El campo es requerido', required),
                     email: helpers.withMessage('Correo incorrecto', email)
                 },
                 password: {
-                    required: helpers.withMessage('El valor es requerido', required),
+                    required: helpers.withMessage('El campo es requerido', required),
                     minLength: helpers.withMessage('El mínimo número de caracteres es 5', minLength(5))
                 },
                 repassword: {
-                    required: helpers.withMessage('El valor es requerido', required),
+                    required: helpers.withMessage('El campo es requerido', required),
                     sameAsPassword: helpers.withMessage('Las contraseñas no coinciden', sameAs(this.usuario.password))
-                }
+                },
+                roles: {
+                    required: helpers.withMessage('El rol es requerido', required),
+                },
+
             }
         }
     },
@@ -188,13 +199,28 @@ export default {
         setValues(obj) {
             //retorno de la lista paginada
             this.usuariosPaginados = obj;
+            console.log(this.usuariosPaginados)
         },
         mostrarUsuarios() {
             //instancia del servicio
             const serviciousuario = new ServicioUsuario()
             serviciousuario.mostrar().then(data => {
                 const response = data
+                console.log(response)
                 this.usuarios = response.data;
+                /*
+                if(this.usuarios.roles == "63636e8e8d3546d90542ad6a"){
+                    
+                    this.usuario.roles = "almacenero"
+                    console.log(this.usuario.roles)
+                }else if(this.usuarios.roles == "63636e8e8d3546d90542ad67"){
+                    this.usuario.roles = "admin"
+                    console.log(this.usuario.roles)
+                }else{
+                    this.usuario.roles = "jefe_almacen"
+                    console.log(this.usuario.roles)
+                }*/
+                
             }, error => {
                 console.log(error)
             })
@@ -227,14 +253,14 @@ export default {
                         if (response.status === 200) {
                             alertEliminar.fire(
                                 'Eliminado!',
-                                `El usuario ${usuario.username}.`,
+                                `El usuario ${usuario.username} fue eliminado.`,
                                 'success'
                             )
                             this.mostrarUsuarios();
                         } else {
                             alertEliminar.fire(
                                 'Cancelado',
-                                `El usuario ${usuario.username} no se pudo eliminar.`,
+                                ` ${usuario.username} no se pudo eliminar.`,
                                 'error'
                             )
                         }
@@ -335,7 +361,9 @@ export default {
                 this.usuario.email = data.email;
                 this.usuario.password = data.password;
                 this.usuario.repassword = data.repassword;
-                this.usuario.roles = data.roles;
+                const index = this.data_roles.findIndex(x => x.codigo == data.roles);
+                console.log(index)
+                this.usuario.roles =  this.data_roles[index].nombre;
             } else if (this.modificar == 1) {
                 this.tituloModal = "Registrar Usuario"
                 this.limpiarFormuralio();
@@ -345,7 +373,8 @@ export default {
                 this.usuario.username = data.username;
                 this.usuario.email = data.email;
                 this.usuario.password = data.password;
-                this.usuario.roles = data.roles;
+                const index = this.data_roles.findIndex(x => x == data.roles.name);
+                this.usuario.roles =  this.data_roles[index];
             }
         },
         limpiarFormuralio() {
@@ -361,7 +390,7 @@ export default {
                 const serviciousuario = new ServicioUsuario()
                 serviciousuario.buscar(id).then(data => {
                     const response = data
-
+                    console.log(response)
                     if (response.status === 200) {
                         usuario[0] = response.data
                         this.usuarios = usuario

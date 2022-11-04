@@ -61,6 +61,7 @@ export default {
     methods: {
         listaPaginada() {
             //se emite el evento creado por el componente padre
+            console.log("Lista enviada: "+this.lista[0])
             this.$emit('getValues', this.paginate(this.lista))
         },
         paginate(lista) {
