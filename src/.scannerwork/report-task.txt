@@ -2,5 +2,5 @@ projectKey=ProyectoAlmacenKey
 serverUrl=http://localhost:9000
 serverVersion=9.7.0.61563
 dashboardUrl=http://localhost:9000/dashboard?id=ProyectoAlmacenKey
-ceTaskId=AYRc2gnGklCLra2X7WkL
-ceTaskUrl=http://localhost:9000/api/ce/task?id=AYRc2gnGklCLra2X7WkL
+ceTaskId=AYRdS6DZklCLra2X7WkO
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AYRdS6DZklCLra2X7WkO

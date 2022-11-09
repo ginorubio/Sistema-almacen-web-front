@@ -1,17 +1,21 @@
 import store from '../store'
 
 export class ServicioProducto {
+    //URI del back al cual pertenece este servicio
     URL = "http://localhost:4000/api/productos"
     constructor(){
+        //cabecera de las peticiones Http
         this.cabecera = {
             'Content-Type': 'application/json',
+            //token que se envia al Back
             'x-access-token': `${store.state.token}`
         }  
     }
     
     async mostrar() {
         try {
-            //ruta para obtener información del back
+            //ruta con el endpoint del back para listar los productos
+            //devuelve la lista de productos
             const res = await fetch(this.URL, {headers: this.cabecera})
             const response = await res.json()
             return response;
@@ -21,9 +25,11 @@ export class ServicioProducto {
         }
     }
     
-    async  eliminar(id) {
+    async  eliminar(id_producto) {
         try {
-            const res = await fetch(this.URL + '/' + id, {
+            //ruta con el endpoint del back para eliminar producto
+            //devuelve la lista de productos
+            const res = await fetch(this.URL + '/' + id_producto, {
                 method: 'DELETE',
                 headers: this.cabecera
             })
@@ -65,9 +71,9 @@ export class ServicioProducto {
         }
     }
 
-    async buscar(_id){
+    async buscar(id_producto){
         try {
-            const res = await fetch(this.URL+'/'+_id,{headers: this.cabecera})
+            const res = await fetch(this.URL+'/'+id_producto,{headers: this.cabecera})
             const response = await res.json()
             return response
         } catch (error) {

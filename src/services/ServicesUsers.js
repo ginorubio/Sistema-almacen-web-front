@@ -12,7 +12,7 @@ export class ServicioUsuario {
     async mostrar() {
         try {
             //ruta para obtener información del back
-            const res = await fetch(this.URL + "/read", { headers: this.cabecera })
+            const res = await fetch(this.URL + "/", { headers: this.cabecera })
             const response = await res.json()
 
             return response;
@@ -22,12 +22,9 @@ export class ServicioUsuario {
         }
     }
 
-    async eliminar(id) {
+    async eliminar(id_usuario) {
         try {
-            const res = await fetch(this.URL + '/delete/' + id, {
-                method: 'DELETE',
-                headers: this.cabecera
-            })
+            const res = await fetch(this.URL + '/' + id_usuario, { method: 'DELETE', headers: this.cabecera})
             const response = await res.json()
             return response
 
@@ -38,11 +35,7 @@ export class ServicioUsuario {
 
     async registrar(usuario) {
         try {
-            const res = await fetch(this.URL + "/create", {
-                method: 'POST',
-                headers: this.cabecera,
-                body: JSON.stringify(usuario)
-            })
+            const res = await fetch(this.URL , { method: 'POST', headers: this.cabecera, body: JSON.stringify(usuario) })
 
             const response = await res.json()
             return response
@@ -53,11 +46,7 @@ export class ServicioUsuario {
 
     async modificar(usuario, id_usuario) {
         try {
-            const res = await fetch(this.URL + '/update/' + id_usuario, {
-                method: 'PUT',
-                headers: this.cabecera,
-                body: JSON.stringify(usuario)
-            })
+            const res = await fetch(this.URL + '/' + id_usuario, {method: 'PUT', headers: this.cabecera, body: JSON.stringify(usuario)} )
             const response = await res.json()
             return response
         } catch (error) {
@@ -65,9 +54,9 @@ export class ServicioUsuario {
         }
     }
 
-    async buscar(_id) {
+    async buscar(id_usuario) {
         try {
-            const res = await fetch(this.URL + '/read/' + _id, { headers: this.cabecera })
+            const res = await fetch(this.URL + '/' + id_usuario, { headers: this.cabecera })
             const response = await res.json()
             return response
         } catch (error) {

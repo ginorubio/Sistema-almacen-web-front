@@ -22,12 +22,9 @@ export class ServicioCategorias {
         }
     }
     
-    async  eliminar(id) {
+    async  eliminar(id_categoria) {
         try {
-            const res = await fetch(this.URL + '/delete/' + id, {
-                method: 'DELETE',
-                headers: this.cabecera
-            })
+            const res = await fetch(this.URL + '/delete/' + id_categoria, { method: 'DELETE', headers: this.cabecera})
             const response = await res.json()
             return response
 
@@ -38,11 +35,7 @@ export class ServicioCategorias {
 
     async  registrar(categoria) {
         try {
-            const res = await fetch(this.URL+"/create", {
-                method: 'POST',
-                headers: this.cabecera,
-                body: JSON.stringify(categoria)
-            })
+            const res = await fetch(this.URL+"/create", { method: 'POST', headers: this.cabecera, body: JSON.stringify(categoria)} )
             
             const response = await res.json()
             return response
@@ -53,11 +46,7 @@ export class ServicioCategorias {
 
     async  modificar(categoria,id_categoria) {
         try {
-            const res = await fetch(this.URL+'/update/'+ id_categoria, {
-                method: 'PUT',
-                headers: this.cabecera,
-                body: JSON.stringify(categoria)
-            })
+            const res = await fetch(this.URL+'/update/'+ id_categoria, { method: 'PUT', headers: this.cabecera, body: JSON.stringify(categoria)})
             const response = await res.json()
             return response
         } catch (error) {
