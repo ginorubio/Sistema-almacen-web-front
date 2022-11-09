@@ -114,7 +114,6 @@
     </teleport>
     <content>
         <data-table :lista="productos" @getValues="setValues">
-
             <template #button_buscar>
                 <label class="mr-2" for="">BUSCAR:</label>
                 <input class="rounded-pill" type="search" v-model="cadena_buscar">
@@ -161,7 +160,9 @@ import DataTable from '../components/DataTable.vue'
 import { useVuelidate } from '@vuelidate/core'
 import { required, minValue, minLength, helpers,maxLength } from '@vuelidate/validators'
 
+//Expresion que solo admite digitos
 const numberValido = helpers.regex(/^\d+$/);
+//expresion que solo admite letras de a-z y A-Z, incluido los espacios
 const caracterValido = helpers.regex(/^[a-zA-Z]+(\s?[a-zA-Z]*)*[a-zA-Z]+$/);
 
 export default {
@@ -200,32 +201,39 @@ export default {
     validations() {
         return {
             producto: {
+                //validaciones para el campo de descripcion
                 descripcion: {
                     required: helpers.withMessage('El valor es requerido', required),
                     minLength: helpers.withMessage('El mínimo número de caracteres es 5', minLength(5)),
                     maxLength: helpers.withMessage('El máximo número de caracteres es 50', maxLength(50))
                 },
+                //validaciones para el campo de precio
                 precio: {
                     required: helpers.withMessage('El valor es requerido', required),
                     minValue: helpers.withMessage('El mínimo valor es 0', minValue(0)) 
                 },
+                //validaciones para el campo de categoria
                 categoria: {
                     required: helpers.withMessage('El valor es requerido', required),
                     minLength: helpers.withMessage('El mínimo número de caracteres es 5', minLength(5))
                 },
+                //validaciones para el campo de nombre
                 nombre: {
                     required: helpers.withMessage('El valor es requerido', required),
                     minLength: helpers.withMessage('El mínimo número de caracteres es 5', minLength(5)),
                     caracteres: helpers.withMessage('Caracter no valido', caracterValido) 
                 },
+                //validaciones para el campo de codigo
                 codigo: {
                     required: helpers.withMessage('El valor es requerido', required),
                     number: helpers.withMessage('Solo admite números ', numberValido),
                 },
+                //validaciones para el campo de stock
                 stock: {
                     required: helpers.withMessage('El valor es requerido', required),
                     minValue: helpers.withMessage('El mínimo valor es 0', minValue(0)) 
                 },
+                //validaciones para el campo de costo
                 costo: {
                     required: helpers.withMessage('El valor es requerido', required),
                     minValue: helpers.withMessage('El mínimo valor es 0', minValue(0)) 
@@ -244,9 +252,9 @@ export default {
             this.productosPaginados = obj;
         },
         mostrarProductos() {
-            //instancia del servicio
+            //instancia del servicio de productos
             const servicioproducto = new ServicioProducto()
-
+            //se llama al metodo mostrar productos
             servicioproducto.mostrar().then(data => {
                 const response = data
                 this.productos = response;
@@ -255,8 +263,9 @@ export default {
             })
         },
         mostrarCategorias() {
+            //instancia del servicio de categorias
             const servicioCategorias = new ServicioCategorias()
-
+            //se llama al metodo mostrar categorias
             servicioCategorias.mostrar().then(data => {
                 const response = data
                 this.categorias = response.data;
@@ -285,8 +294,9 @@ export default {
             }).then(async (result) => {
 
                 if (result.isConfirmed) {
-                    //peticion al servicio
+                    //instancia del servicio de producto
                     const servicioproducto = new ServicioProducto()
+                    //se llama al metodo eliminar productos
                     servicioproducto.eliminar(producto._id).then(data => {
                         const response = data
                         if (response.status === 200) {
@@ -321,10 +331,14 @@ export default {
             })
         },
         async guardar() {
+            //se llama al validador
             this.v$.$validate();
+            //verificamos las validaciones realizadas en los campos
             if (!this.v$.$error) {
                 if (this.modificar == 2) {
+                    //instancia del servicio de producto
                     const servicioproducto = new ServicioProducto()
+                    //se llama al metodo modificar productos
                     servicioproducto.modificar(this.producto, this.id_producto).then(data => {
                         const response = data
                         if (response.status === 200) {
@@ -354,7 +368,9 @@ export default {
                         })
                     })
                 } else {
+                    //instancia del servicio de producto
                     const servicioproducto = new ServicioProducto()
+                    //se llama al metodo registrar productos
                     servicioproducto.registrar(this.producto).then(data => {
                         const response = data
                         if (response.status === 201) {
@@ -432,7 +448,9 @@ export default {
         buscar(id) {
             if (id) {
                 let producto = []
+                //instancia del servicio de producto
                 const servicioproducto = new ServicioProducto()
+                //se llama al metodo buscar productos
                 servicioproducto.buscar(id).then(data => {
                     const response = data
 

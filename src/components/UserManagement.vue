@@ -135,6 +135,7 @@ import { ServicioUsuario } from '../services/ServicesUsers.js'
 import { useVuelidate } from '@vuelidate/core'
 import { required, email, minLength, sameAs, helpers } from '@vuelidate/validators'
 
+//expresion que solo admite letras de a-z y A-Z, incluido los espacios
 const caracterValido = helpers.regex(/^[a-zA-Z]+(\s?[a-zA-Z]*)*[a-zA-Z]+$/);
 
 export default {
@@ -172,22 +173,27 @@ export default {
     validations() {
         return {
             usuario: {
+                //validaciones para el campo de username
                 username: { required: helpers.withMessage('El campo es requerido', required),
                     minLength: helpers.withMessage('El mínimo número de caracteres es 3', minLength(3)),
                     caracteres: helpers.withMessage('Caracter no valido', caracterValido)
                 },
+                //validaciones para el campo de email
                 email: {
                     required: helpers.withMessage('El campo es requerido', required),
                     email: helpers.withMessage('Correo incorrecto', email)
                 },
+                //validaciones para el campo de password
                 password: {
                     required: helpers.withMessage('El campo es requerido', required),
                     minLength: helpers.withMessage('El mínimo número de caracteres es 5', minLength(5))
                 },
+                //validaciones para el campo de repassword
                 repassword: {
                     required: helpers.withMessage('El campo es requerido', required),
                     sameAsPassword: helpers.withMessage('Las contraseñas no coinciden', sameAs(this.usuario.password))
                 },
+                //validaciones para el campo de roles
                 roles: {
                     required: helpers.withMessage('El rol es requerido', required),
                 },
@@ -199,11 +205,11 @@ export default {
         setValues(obj) {
             //retorno de la lista paginada
             this.usuariosPaginados = obj;
-            console.log(this.usuariosPaginados)
         },
         mostrarUsuarios() {
-            //instancia del servicio
+            //instancia del servicio usuarios
             const serviciousuario = new ServicioUsuario()
+            //se llama al metodo mostrar usuarios
             serviciousuario.mostrar().then(data => {
                 const response = data
                 console.log(response)
@@ -234,8 +240,9 @@ export default {
             }).then(async (result) => {
 
                 if (result.isConfirmed) {
-                    //peticion al servicio
+                    //instancia del servicio de usuarios
                     const serviciousuario = new ServicioUsuario()
+                    //se llama al metodo eliminar usuarios
                     serviciousuario.eliminar(usuario._id).then(data => {
                         const response = data
                         if (response.status === 200) {
@@ -270,12 +277,16 @@ export default {
             })
         },
         guardar() {
-
+             //se llama al validador
             this.v$.$validate();
+            //verificamos las validaciones realizadas en los campos
             if (!this.v$.$error) {
                 if (this.modificar == 2) {
+                    //instancia del servicio de usuarios
                     const serviciousuario = new ServicioUsuario()
+                    //el password digitado se guarda en una nueva variable
                     this.usuario.passwordNE = this.usuario.password
+                    //se llama al metodo modificar usuarios
                     serviciousuario.modificar(this.usuario, this.id_usuario).then(data => {
                         const response = data
 
@@ -289,6 +300,7 @@ export default {
                                 confirmButtonColor: 'btn btn-success',
                             })
                             this.mostrarUsuarios();
+                            //se limpia el campo de la nueva contraseña
                             this.usuario.passwordNE = ""
                             //cerrar modal
                             //por definir
@@ -307,7 +319,9 @@ export default {
                         })
                     })
                 } else {
+                    //instancia del servicio de usuarios
                     const serviciousuario = new ServicioUsuario()
+                    //se llama al metodo registrar usuarios
                     serviciousuario.registrar(this.usuario).then(data => {
                         const response = data
                         if (response.status === 200) {
@@ -361,7 +375,10 @@ export default {
                 this.usuario.username = data.username;
                 this.usuario.email = data.email;
                 this.usuario.password = data.password;
+                //se buscara en la lista de data_roles el rol que pertenece al usuario con el rol de data.roles.name
+                //se encontrara el index o posicion
                 const index = this.data_roles.findIndex(x => x == data.roles.name);
+                //se asigna el nombre del rol encontrado en la variable this.usuario.roles
                 this.usuario.roles =  this.data_roles[index];
             }
         },
@@ -375,7 +392,9 @@ export default {
         buscar(id) {
             if (id) {
                 let usuario = []
+                //instancia del servicio de usuarios
                 const serviciousuario = new ServicioUsuario()
+                //se llama al metodo buscar usuarios
                 serviciousuario.buscar(id).then(data => {
                     const response = data
                     console.log(response)

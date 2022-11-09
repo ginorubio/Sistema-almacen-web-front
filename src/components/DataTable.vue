@@ -9,7 +9,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered table-striped" aria-label="tabla-description">
+                <table class="table table-bordered" aria-label="tabla-description">
                     <thead>
                         <slot name="thead"></slot>
                     </thead>

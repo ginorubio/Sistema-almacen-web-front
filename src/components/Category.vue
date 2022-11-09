@@ -86,7 +86,9 @@ import { ServicioCategorias } from '../services/ServicesCategorys'
 import { useVuelidate } from '@vuelidate/core'
 import { required, helpers,minLength, maxLength } from '@vuelidate/validators'
 
+//expresion que solo admite letras de a-z y A-Z, incluido los espacios
 const caracterValido = helpers.regex(/^[a-zA-Z]+(\s?[a-zA-Z]*)*[a-zA-Z]+$/);
+//Expresion que solo admite digitos
 const numberValido = helpers.regex(/^\d+$/);
 
 export default {
@@ -114,11 +116,13 @@ export default {
     validations() {
         return {
             categoria: {
+                //validaciones para el campo de codigo
                 codigo: { 
                     required: helpers.withMessage('El campo es requerido', required),
                     number: helpers.withMessage('Solo admite números ', numberValido),
                     maxLength: helpers.withMessage('El máximo número de dígitos es 3', maxLength(3))
                  },
+                 //validaciones para el campo de nombre
                  nombre: { required: helpers.withMessage('El campo es requerido', required),
                     minLength: helpers.withMessage('El mínimo número de caracteres es 3', minLength(3)),
                     caracteres: helpers.withMessage('Caracter no valido', caracterValido),
@@ -135,7 +139,7 @@ export default {
         mostrarCategorias() {
             //instancia del servicio
             const serviciocategorias = new ServicioCategorias()
-
+            //se llama al metodo mostrar categorias
             serviciocategorias.mostrar().then(data => {
                 const response = data
 
@@ -166,8 +170,9 @@ export default {
             }).then(async (result) => {
 
                 if (result.isConfirmed) {
-                    //peticion al servicio
+                    //instancia del servicio de categorias
                     const serviciocategorias = new ServicioCategorias()
+                    //se llama al metodo eliminar categorias
                     serviciocategorias.eliminar(categoria._id).then(data => {
                         const response = data
                         if (response.status == 200) {
@@ -202,11 +207,14 @@ export default {
             })
         },
         guardar() {
-
+             //se llama al validador
             this.v$.$validate();
+            //verificamos las validaciones realizadas en los campos
             if (!this.v$.$error) {
                 if (this.modificar) {
+                    //instancia del servicio de categorias
                     const serviciocategorias = new ServicioCategorias()
+                    //se llama al metodo modificar categorias
                     serviciocategorias.modificar(this.categoria, this.id_categoria).then(data => {
                         const response = data
                         if (response.status === 200) {
@@ -236,7 +244,9 @@ export default {
                         })
                     })
                 } else {
+                    //instancia del servicio de categorias
                     const serviciocategorias = new ServicioCategorias()
+                    //se llama al metodo registrar categorias
                     serviciocategorias.registrar(this.categoria).then(data => {
                         const response = data
                         console.log(response)
