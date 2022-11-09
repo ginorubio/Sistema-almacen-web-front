@@ -163,7 +163,8 @@ import { required, minValue, minLength, helpers,maxLength } from '@vuelidate/val
 //Expresion que solo admite digitos
 const numberValido = helpers.regex(/^\d+$/);
 //expresion que solo admite letras de a-z y A-Z, incluido los espacios
-const caracterValido = helpers.regex(/^[a-zA-Z]+(\s?[a-zA-Z]*)*[a-zA-Z]+$/);
+const caracterValido = helpers.regex(/^[a-zA-Z]+(\s[a-zA-Z]+)*$/);
+//cadena: /^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/
 
 export default {
     name: "productos",

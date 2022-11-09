@@ -87,7 +87,7 @@ import { useVuelidate } from '@vuelidate/core'
 import { required, helpers,minLength, maxLength } from '@vuelidate/validators'
 
 //expresion que solo admite letras de a-z y A-Z, incluido los espacios
-const caracterValido = helpers.regex(/^[a-zA-Z]+(\s?[a-zA-Z]*)*[a-zA-Z]+$/);
+const caracterValido = helpers.regex(/^[a-zA-Z]+(\s[a-zA-Z]+)*$/);
 //Expresion que solo admite digitos
 const numberValido = helpers.regex(/^\d+$/);
 
