@@ -11,9 +11,9 @@
               <p>Productos</p>
             </div>
             <div class="icon">
-              <i class="ion ion-bag"></i>
+              <i class="ion ion-bag" aria-hidden="true"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right" aria-hidden="true"></i></a>
           </div>
         </div>
 
@@ -24,9 +24,9 @@
               <p>Categorías</p>
             </div>
             <div class="icon">
-              <i class="ion ion-stats-bars"></i>
+              <i class="ion ion-stats-bars" aria-hidden="true"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right" aria-hidden="true"></i></a>
           </div>
         </div>
 
@@ -37,9 +37,9 @@
               <p>Movimientos</p>
             </div>
             <div class="icon">
-              <i class="ion ion-person-add"></i>
+              <i class="ion ion-person-add" aria-hidden="true"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right" aria-hidden="true"></i></a>
           </div>
         </div>
 
@@ -50,9 +50,9 @@
               <p>Gestión Usuarios</p>
             </div>
             <div class="icon">
-              <i class="ion ion-pie-graph"></i>
+              <i class="ion ion-pie-graph" aria-hidden="true"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right" aria-hidden="true"></i></a>
           </div>
         </div>
 
@@ -63,9 +63,9 @@
               <p>Unique Visitors</p>
             </div>
             <div class="icon">
-              <i class="ion ion-pie-graph"></i>
+              <i class="ion ion-pie-graph" aria-hidden="true"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right" aria-hidden="true"></i></a>
           </div>
         </div>
 
@@ -76,9 +76,9 @@
               <p>Unique Visitors</p>
             </div>
             <div class="icon">
-              <i class="ion ion-pie-graph"></i>
+              <i class="ion ion-pie-graph" aria-hidden="true"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right" aria-hidden="true"></i></a>
           </div>
         </div>
 
@@ -89,9 +89,9 @@
               <p>Unique Visitors</p>
             </div>
             <div class="icon">
-              <i class="ion ion-pie-graph"></i>
+              <i class="ion ion-pie-graph" aria-hidden="true"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right" aria-hidden="true"></i></a>
           </div>
         </div>
 

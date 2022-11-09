@@ -9,7 +9,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered table-striped">
+                <table class="table table-bordered table-striped" aria-label="tabla-description">
                     <thead>
                         <slot name="thead"></slot>
                     </thead>
@@ -83,7 +83,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-
-</style>

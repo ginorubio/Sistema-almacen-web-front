@@ -101,7 +101,7 @@ router.beforeEach((to, from, next) => {
 router.resolve({
   name: 'not-found',
   params: { pathMatch: ['not', 'found'] },
-}).href 
+}).href
 
 
 export default router

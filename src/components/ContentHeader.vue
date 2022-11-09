@@ -5,7 +5,7 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1 v-if="title">
-                        <i :class="icon" v-if="icon"></i>
+                        <i :class="icon" v-if="icon" aria-hidden="true"></i>
                         {{title}}
                     </h1>
                 </div>

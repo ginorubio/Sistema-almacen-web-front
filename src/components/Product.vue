@@ -4,7 +4,7 @@
         <!-- Button to Open the Modal -->
         <button v-if="$store.state.rol == 'jefe_almacen'" id="show-modal" @click.prevent="showModal = true; modificar = 1; abrirModal()" type="button"
             class="btn btn-primary">
-            <i class="fas fa-plus-circle mr-2"></i> Nuevo Producto
+            <i class="fas fa-plus-circle mr-2" aria-hidden="true"></i> Nuevo Producto
         </button>
     </div>
     <teleport to="body">
@@ -44,9 +44,9 @@
                         <div class="form-group">
                             <label for="descripcion">Descripcion</label>
                             <textarea v-if="modificar == 3" disabled class="form-control" id="descripcion"
-                                v-model="producto.descripcion" style="heigt: 100px"></textarea>
+                                v-model="producto.descripcion" style="height: 100px"></textarea>
                             <textarea v-else class="form-control" id="descripcion" v-model="producto.descripcion"
-                                style="heigt: 100px"></textarea>
+                                style="height: 100px"></textarea>
                         </div>
                         <div class="text-danger" v-if="v$.producto.descripcion.$error">
                             {{ v$.producto.descripcion.$errors[0].$message }}
@@ -103,16 +103,6 @@
                             {{ v$.producto.categoria.$errors[0].$message }}
                         </div>
                     </div>
-                    <!--
-                    <div class="col-12 mb-2">
-                        <div class="form-group">
-                            <label>Unidad de medida</label>
-                            <input v-if="modificar==3" disabled type="text" class="form-control"
-                                v-model="producto.unidadMedida">
-                            <input v-else type="text" class="form-control" v-model="producto.unidadMedida">
-                        </div>
-                    </div>
-                    -->
                 </div>
 
             </template>
@@ -128,16 +118,16 @@
             <template #button_buscar>
                 <label class="mr-2" for="">BUSCAR:</label>
                 <input class="rounded-pill" type="search" v-model="cadena_buscar">
-                <button class="btn btn-primary" @click="buscar(cadena_buscar)"><i class="fas fa-search"></i></button>
+                <button class="btn btn-primary" @click="buscar(cadena_buscar)"><i class="fas fa-search" aria-hidden="true"></i></button>
             </template>
             <template #thead>
                 <tr>
-                    <th>ID</th>
-                    <th>NOMBRE</th>
-                    <th>DESCRIPCION</th>
-                    <th>PRECIO</th>
-                    <th>STOCK</th>
-                    <th>ACCIONES</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">NOMBRE</th>
+                    <th scope="col">DESCRIPCION</th>
+                    <th scope="col">PRECIO</th>
+                    <th scope="col">STOCK</th>
+                    <th scope="col">ACCIONES</th>
                 </tr>
             </template>
 
@@ -150,11 +140,11 @@
                     <td>{{ producto.stock }}</td>
                     <td>
                         <button @click="showModal = true; modificar = 3; abrirModal(producto)" class="btn btn-info mr-2"><i
-                                class="fa fa-eye"></i></button>
+                                class="fa fa-eye" aria-hidden="true"></i></button>
                         <button @click="showModal = true; modificar = 2; abrirModal(producto)"
-                            class="btn btn-success mr-2"><i class="far fa-edit"></i></button>
+                            class="btn btn-success mr-2"><i class="far fa-edit" aria-hidden="true"></i></button>
                         <button type="button" @click="borrarProductos(producto)" class="btn btn-danger "><i
-                                class="fas fa-trash"></i></button>
+                                class="fas fa-trash" aria-hidden="true"></i></button>
                     </td>
                 </tr>
             </template>
@@ -169,10 +159,10 @@ import { ServicioProducto } from '../services/ServicesProducts';
 import { ServicioCategorias } from '@/services/ServicesCategorys';
 import DataTable from '../components/DataTable.vue'
 import { useVuelidate } from '@vuelidate/core'
-import { required, minValue, minLength, helpers } from '@vuelidate/validators'
+import { required, minValue, minLength, helpers,maxLength } from '@vuelidate/validators'
 
-const numberValido = helpers.regex(/^[0-9]+$/);
-const caracterValido = helpers.regex(/^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/);
+const numberValido = helpers.regex(/^\d+$/);
+const caracterValido = helpers.regex(/^[a-zA-Z]+(\s?[a-zA-Z]*)*[a-zA-Z]+$/);
 
 export default {
     name: "productos",
@@ -212,8 +202,8 @@ export default {
             producto: {
                 descripcion: {
                     required: helpers.withMessage('El valor es requerido', required),
-                    minLength: helpers.withMessage('El mínimo número de caracteres es 5', minLength(5))
-                    
+                    minLength: helpers.withMessage('El mínimo número de caracteres es 5', minLength(5)),
+                    maxLength: helpers.withMessage('El máximo número de caracteres es 50', maxLength(50))
                 },
                 precio: {
                     required: helpers.withMessage('El valor es requerido', required),

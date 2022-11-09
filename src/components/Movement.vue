@@ -4,7 +4,7 @@
         <!-- Button to Open the Modal -->
         <button id="show-modal" type="button" @click.prevent="showModal = true, modificar = false; abrirModal()"
             class="btn btn-primary">
-            <i class="fas fa-plus-circle mr-2"></i> Nuevo Movimiento
+            <i class="fas fa-plus-circle mr-2" aria-hidden="true"></i> Nuevo Movimiento
         </button>
     </div>
     <!-- Modal para agregar los movimientos -->
@@ -62,7 +62,7 @@
                 <div class="row">
                     <div class="col-12 mb-2">
                         <div class="form-group">
-                            <button @click.prevent="showModal1 = true" type="text" class="btn btn-primary"><i
+                            <button @click.prevent="showModal1 = true" type="text" class="btn btn-primary"><i aria-hidden="true"
                                     class="fas fa-plus-circle"></i>Agregar Producto</button>
                         </div>
                     </div>
@@ -71,7 +71,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="table-responsive">
-                            <table class="table table-bordered">
+                            <table class="table table-bordered" aria-label="tabla-detalle-movimiento">
                                 <thead class="bg-secondary text-white">
                                     <tr>
                                         <th>ID</th>
@@ -92,8 +92,8 @@
                                         <td>156</td>
                                         <td>1.5</td>
                                         <td>
-                                            <button class="btn btn-success mr-1"><i class="far fa-edit"></i></button>
-                                            <button type="button" class="btn btn-danger"><i
+                                            <button class="btn btn-success mr-1"><i class="far fa-edit" aria-hidden="true"></i></button>
+                                            <button type="button" class="btn btn-danger"><i aria-hidden="true"
                                                     class="fas fa-trash"></i></button>
                                         </td>
                                     </tr>
@@ -105,9 +105,8 @@
                                         <td>200</td>
                                         <td>2.0</td>
                                         <td>
-                                            <button class="btn btn-success mr-1"><i class="far fa-edit"></i></button>
-                                            <button type="button" class="btn btn-danger"><i
-                                                    class="fas fa-trash"></i></button>
+                                            <button class="btn btn-success mr-1"><i class="far fa-edit" aria-hidden="true"></i></button>
+                                            <button type="button" class="btn btn-danger"><i aria-hidden="true" class="fas fa-trash" ></i></button>
                                         </td>
                                     </tr>
 
@@ -144,7 +143,7 @@
                     <div class="col mb-2 d-flex align-items-end">
                         <div class="form-group">
                             <button type="button" class="btn btn-primary" data-dismiss="modal"><i
-                                    class="fa fa-search mr-2"></i>Buscar</button>
+                                    class="fa fa-search mr-2" aria-hidden="true"></i>Buscar</button>
                         </div>
                     </div>
 
@@ -199,14 +198,14 @@
         <div class="row">
             <div class="col-12">
                 <div class="table-responsive">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered" aria-label="tabla-movimiento">
                         <thead class="bg-secondary text-white">
                             <tr>
-                                <th>ID</th>
-                                <th>FECHA</th>
-                                <th>CANTIDAD</th>
-                                <th>TIPO</th>
-                                <th>ACCIONES</th>
+                                <th scope="col">ID</th>
+                                <th scope="col">FECHA</th>
+                                <th scope="col">CANTIDAD</th>
+                                <th scope="col">TIPO</th>
+                                <th scope="col">ACCIONES</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -216,9 +215,9 @@
                                 <td>62</td>
                                 <td>Salida</td>
                                 <td>
-                                    <button class="btn btn-info mr-2"><i class="fa fa-eye"></i></button>
-                                    <button class="btn btn-success mr-2"><i class="far fa-edit"></i></button>
-                                    <button type="button" class="btn btn-danger mr-2"><i
+                                    <button class="btn btn-info mr-2"><i class="fa fa-eye" aria-hidden="true"></i></button>
+                                    <button class="btn btn-success mr-2"><i class="far fa-edit" aria-hidden="true"></i></button>
+                                    <button type="button" class="btn btn-danger mr-2"><i aria-hidden="true"
                                             class="fas fa-trash"></i></button>
                                 </td>
                             </tr>
@@ -228,10 +227,10 @@
                                 <td>62</td>
                                 <td>Salida</td>
                                 <td>
-                                    <button class="btn btn-info mr-2"><i class="fa fa-eye"></i></button>
-                                    <button class="btn btn-success mr-2"><i class="far fa-edit"></i></button>
+                                    <button class="btn btn-info mr-2"><i class="fa fa-eye" aria-hidden="true"></i></button>
+                                    <button class="btn btn-success mr-2"><i class="far fa-edit" aria-hidden="true"></i></button>
                                     <button type="button" class="btn btn-danger mr-2"><i
-                                            class="fas fa-trash"></i></button>
+                                            class="fas fa-trash" aria-hidden="true"></i></button>
                                 </td>
                             </tr>
                             <tr>
@@ -240,9 +239,9 @@
                                 <td>62</td>
                                 <td>Salida</td>
                                 <td>
-                                    <button class="btn btn-info mr-2"><i class="fa fa-eye"></i></button>
-                                    <button class="btn btn-success mr-2"><i class="far fa-edit"></i></button>
-                                    <button type="button" class="btn btn-danger mr-2"><i
+                                    <button class="btn btn-info mr-2"><i class="fa fa-eye" aria-hidden="true"></i></button>
+                                    <button class="btn btn-success mr-2"><i class="far fa-edit" aria-hidden="true"></i></button>
+                                    <button type="button" class="btn btn-danger mr-2"><i aria-hidden="true"
                                             class="fas fa-trash"></i></button>
                                 </td>
                             </tr>
@@ -377,8 +376,6 @@ export default {
             })
         },
         guardar() {
-            //this.v$.$validate();
-            //if (!this.v$.$error) {
                 if (this.modificar) {
                     const serviciomovimientos = new ServicioMovimientos()
                     serviciomovimientos.modificar(this.movimiento, this.id_movimiento).then(data => {
@@ -440,11 +437,6 @@ export default {
                         })
                     })
                 }
-                /*
-            } else {
-                console.log("no se pudo guardar")
-                this.usuario.error = true;
-            }*/
         },
         agregarProducto() {
             //metodo para validar el stock del producto
@@ -551,6 +543,3 @@ export default {
     }
 }
 </script>
-<style scoped>
-
-</style>

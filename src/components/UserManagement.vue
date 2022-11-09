@@ -4,7 +4,7 @@
         <!-- Button to Open the Modal -->
         <button id="show-modal" type="button" @click.prevent="showModal = true, modificar = 1; abrirModal()"
             class="btn btn-primary">
-            <i class="fas fa-plus-circle mr-2"></i> Nuevo Usuario
+            <i class="fas fa-plus-circle mr-2" aria-hidden="true"></i> Nuevo Usuario
         </button>
     </div>
     <teleport to="body">
@@ -94,15 +94,15 @@
             <template #button_buscar>
                 <label class="mr-2" for="">BUSCAR:</label>
                 <input class="rounded-pill" type="search" v-model="cadena_buscar">
-                <button class="btn btn-primary" @click="buscar(cadena_buscar)"><i class="fas fa-search"></i></button>
+                <button class="btn btn-primary" @click="buscar(cadena_buscar)"><i class="fas fa-search" aria-hidden="true"></i></button>
             </template>
             <template #thead>
                 <tr>
-                    <th>ID</th>
-                    <th>NOMBRE</th>
-                    <th>EMAIL</th>
-                    <th>ROL</th>
-                    <th>ACCIONES</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">NOMBRE</th>
+                    <th scope="col">EMAIL</th>
+                    <th scope="col">ROL</th>
+                    <th scope="col">ACCIONES</th>
                 </tr>
             </template>
 
@@ -114,11 +114,11 @@
                     <td>{{ usuario.roles }}</td>
                     <td>
                         <button v-if="false" @click="showModal = true; modificar = 3; abrirModal(usuario)"
-                            class="btn btn-info mr-2"><i class="fa fa-eye"></i></button>
+                            class="btn btn-info mr-2"><i class="fa fa-eye" aria-hidden="true"></i></button>
                         <button @click="showModal = true; modificar = 2; abrirModal(usuario)"
-                            class="btn btn-success mr-2"><i class="far fa-edit"></i></button>
-                        <button type="button" @click="borrarUsuario(usuario)" class="btn btn-danger "><i
-                                class="fas fa-trash"></i></button>
+                            class="btn btn-success mr-2"><i class="far fa-edit" aria-hidden="true"></i></button>
+                        <button type="button" @click="borrarUsuario(usuario)" class="btn btn-danger" ><i
+                                class="fas fa-trash" aria-hidden="true"></i></button>
                     </td>
                 </tr>
             </template>
@@ -135,7 +135,7 @@ import { ServicioUsuario } from '../services/ServicesUsers.js'
 import { useVuelidate } from '@vuelidate/core'
 import { required, email, minLength, sameAs, helpers } from '@vuelidate/validators'
 
-const caracterValido = helpers.regex(/^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/);
+const caracterValido = helpers.regex(/^[a-zA-Z]+(\s?[a-zA-Z]*)*[a-zA-Z]+$/);
 
 export default {
     components: {
@@ -208,18 +208,6 @@ export default {
                 const response = data
                 console.log(response)
                 this.usuarios = response.data;
-                /*
-                if(this.usuarios.roles == "63636e8e8d3546d90542ad6a"){
-                    
-                    this.usuario.roles = "almacenero"
-                    console.log(this.usuario.roles)
-                }else if(this.usuarios.roles == "63636e8e8d3546d90542ad67"){
-                    this.usuario.roles = "admin"
-                    console.log(this.usuario.roles)
-                }else{
-                    this.usuario.roles = "jefe_almacen"
-                    console.log(this.usuario.roles)
-                }*/
                 
             }, error => {
                 console.log(error)

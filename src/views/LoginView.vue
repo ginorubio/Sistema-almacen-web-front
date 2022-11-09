@@ -11,7 +11,7 @@
         <h1>{{ $store.state.app.name }}</h1>
         <div class="input-div one">
           <div class="i">
-            <i class="fas fa-user"></i>
+            <i class="fas fa-user" aria-hidden="true"></i>
           </div>
           <div>
             <h5>Usuario</h5>
@@ -20,7 +20,7 @@
         </div>
         <div class="input-div two">
           <div class="i">
-            <i class="fas fa-lock"></i>
+            <i class="fas fa-lock" aria-hidden="true"></i>
           </div>
           <div>
             <h5>Contraseña</h5>

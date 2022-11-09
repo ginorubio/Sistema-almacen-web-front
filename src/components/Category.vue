@@ -4,7 +4,7 @@
         <!-- Button to Open the Modal -->
         <button v-if="$store.state.rol == 'jefe_almacen'" id="show-modal" type="button" @click.prevent="showModal = true, modificar = false; abrirModal()"
             class="btn btn-primary">
-            <i class="fas fa-plus-circle mr-2"></i> Nueva Categoría
+            <i class="fas fa-plus-circle mr-2" aria-hidden="true"></i> Nueva Categoría
         </button>
     </div>
     <teleport to="body">
@@ -49,14 +49,14 @@
             <template #button_buscar>
                 <label class="mr-2" for="">BUSCAR:</label>
                 <input class="rounded-pill" type="search" v-model="cadena_buscar">
-                <button class="btn btn-primary" @click="buscar(cadena_buscar)"><i class="fas fa-search"></i></button>
+                <button class="btn btn-primary" @click="buscar(cadena_buscar)"><i class="fas fa-search" aria-hidden="true"></i></button>
             </template>
             <template #thead>
                 <tr>
-                    <th>ID</th>
-                    <th>CÓDIGO</th>
-                    <th>NOMBRE</th>
-                    <th v-if="$store.state.rol == 'jefe_almacen'">ACCIONES</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">CÓDIGO</th>
+                    <th scope="col">NOMBRE</th>
+                    <th scope="col" v-if="$store.state.rol == 'jefe_almacen'">ACCIONES</th>
                 </tr>
             </template>
 
@@ -67,9 +67,9 @@
                     <td>{{ categoria.nombre }}</td>
                     <td>
                         <button v-if="$store.state.rol == 'jefe_almacen'" @click="showModal = true; modificar = true; abrirModal(categoria)"
-                            class="btn btn-success mr-2"><i class="far fa-edit"></i></button>
+                            class="btn btn-success mr-2"><i class="far fa-edit" aria-hidden="true"></i></button>
                         <button v-if="$store.state.rol == 'jefe_almacen'"  type="button" @click="borrarCategoria(categoria)" class="btn btn-danger "><i
-                                class="fas fa-trash"></i></button>
+                                class="fas fa-trash" aria-hidden="true"></i></button>
                     </td>
                 </tr>
             </template>
@@ -84,11 +84,10 @@ import Modal from '../components/Modal.vue'
 import DataTable from './DataTable.vue';
 import { ServicioCategorias } from '../services/ServicesCategorys'
 import { useVuelidate } from '@vuelidate/core'
-import { required, helpers,minLength } from '@vuelidate/validators'
+import { required, helpers,minLength, maxLength } from '@vuelidate/validators'
 
-const caracterValido = helpers.regex(/^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/);
-const numberValido = helpers.regex(/^[0-9]+$/);
-
+const caracterValido = helpers.regex(/^[a-zA-Z]+(\s?[a-zA-Z]*)*[a-zA-Z]+$/);
+const numberValido = helpers.regex(/^\d+$/);
 
 export default {
     components: {
@@ -118,10 +117,12 @@ export default {
                 codigo: { 
                     required: helpers.withMessage('El campo es requerido', required),
                     number: helpers.withMessage('Solo admite números ', numberValido),
+                    maxLength: helpers.withMessage('El máximo número de dígitos es 3', maxLength(3))
                  },
                  nombre: { required: helpers.withMessage('El campo es requerido', required),
                     minLength: helpers.withMessage('El mínimo número de caracteres es 3', minLength(3)),
-                    caracteres: helpers.withMessage('Caracter no valido', caracterValido) 
+                    caracteres: helpers.withMessage('Caracter no valido', caracterValido),
+                    maxLength: helpers.withMessage('El máximo número de caracteres es 50', maxLength(25))
                 }
             }
         }
@@ -130,8 +131,6 @@ export default {
         setValues(obj) {
             //retorno de la lista paginada
             this.categoriasPaginadas = obj;
-
-            console.log("Retorno de categorias paginadas:" +this.categoriasPaginadas)
         },
         mostrarCategorias() {
             //instancia del servicio
@@ -289,14 +288,11 @@ export default {
         },
         buscar(nombre) {
             if (nombre) {
-                let categoria = []
                 const serviciocategoria = new ServicioCategorias()
                 serviciocategoria.buscar(nombre).then(data => {
                     const response = data
                     console.log(response)
                     if (response.status === 200) {
-                        //categoria[0] = response.data   por observar
-                        //this.categorias = categoria
                         this.categorias = response.data
                     } else {
                         this.$swal.fire({

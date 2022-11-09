@@ -4,7 +4,7 @@
     <!-- Left navbar links -->
     <ul class="navbar-nav">
       <li class="nav-item">
-        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars" aria-hidden="true"></i></a>
       </li>
     </ul>
 
@@ -13,11 +13,11 @@
       <!-- Perfil y logout Dropdown Menu -->
       <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
-          <i class="far fa-user"></i>
+          <i class="far fa-user" aria-hidden="true"></i>
         </a>
         <div class="dropdown-menu dropdown-menu-right">
           <a href="#" class="dropdown-item" @click="logout">
-            <i class="fas fa-sign-out-alt mr-2"></i>Cerrar Sesión
+            <i class="fas fa-sign-out-alt mr-2" aria-hidden="true"></i>Cerrar Sesión
           </a>
         </div>
       </li>

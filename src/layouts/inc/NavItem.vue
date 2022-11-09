@@ -1,7 +1,7 @@
 <template>
     <li class="nav-item">
         <router-link class="nav-link" :to="link" :class="{active : isActive()}">
-            <i class="nav-icon" :class="icon" v-if="icon"></i>
+            <i class="nav-icon" aria-hidden="true" :class="icon" v-if="icon"></i>
             <p><slot/></p>
         </router-link>
     </li>
