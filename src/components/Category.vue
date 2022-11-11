@@ -232,7 +232,7 @@ export default {
                     //instancia del servicio de categorias
                     const serviciocategorias = new ServicioCategorias()
                     //se llama al metodo eliminar categorias
-                    serviciocategorias.eliminar(categoria._id).then(data => {
+                    serviciocategorias.descenderCategoria(categoria._id).then(data => {
                         const response = data
                         if (response.status == 200) {
                             alertEliminar.fire(
@@ -289,7 +289,7 @@ export default {
                     //instancia del servicio de categorias
                     const serviciocategorias = new ServicioCategorias()
                     //se llama al metodo eliminar categorias
-                    serviciocategorias.eliminar(categoria._id).then(data => {
+                    serviciocategorias.ascenderCategoria  (categoria._id).then(data => {
                         const response = data
                         if (response.status == 200) {
                             alertEliminar.fire(

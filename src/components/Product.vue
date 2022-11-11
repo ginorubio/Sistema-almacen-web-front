@@ -167,7 +167,7 @@
                             type="button" @click="ascenderProducto(producto)" class="btn btn-primary mr-2"><i
                                 class="fas fa-arrow-up" aria-hidden="true"></i></button>
                         <button v-if="producto.estado != 'inhabilitado' && $store.state.rol == 'jefe_almacen'"
-                            type="button" @click="descendeProducto(producto)" class="btn btn-danger "><i
+                            type="button" @click="descenderProducto(producto)" class="btn btn-danger "><i
                                 class="fas fa-arrow-down" aria-hidden="true"></i></button>
 
                     </td>
@@ -352,7 +352,7 @@ export default {
                     //instancia del servicio de producto
                     const servicioproducto = new ServicioProducto()
                     //se llama al metodo eliminar productos
-                    servicioproducto.eliminar(producto._id).then(data => {
+                    servicioproducto.ascenderProducto(producto._id).then(data => {
                         const response = data
                         if (response.status === 200) {
                             alertEliminar.fire(
@@ -409,26 +409,26 @@ export default {
                     //instancia del servicio de producto
                     const servicioproducto = new ServicioProducto()
                     //se llama al metodo eliminar productos
-                    servicioproducto.eliminar(producto._id).then(data => {
+                    servicioproducto.descenderProducto(producto._id).then(data => {
                         const response = data
                         if (response.status === 200) {
                             alertEliminar.fire(
                                 'Descendido!',
-                                `El producto ${producto.descripcion}.`,
+                                `El producto ${producto.nombre}.`,
                                 'success'
                             )
                             this.mostrarProductos();
                         } else {
                             alertEliminar.fire(
                                 'Cancelado',
-                                `El producto ${producto.descripcion} no se pudo descender.`,
+                                `El producto ${producto.nombre} no se pudo descender.`,
                                 'error'
                             )
                         }
                     }, error => {
                         alertEliminar.fire(
                             'Cancelado',
-                            `El producto ${producto.descripcion} no se pudo descender.`,
+                            `El producto ${producto.nombre} no se pudo descender.`,
                             'error'
                         )
                     })
@@ -436,7 +436,7 @@ export default {
                 } else if (result.dismiss === this.$swal.DismissReason.cancel) {
                     alertEliminar.fire(
                         'Cancelado',
-                        `El producto ${producto.descripcion} no fue descender.`,
+                        `El producto ${producto.nombre} no fue descender.`,
                         'error'
                     )
                 }
