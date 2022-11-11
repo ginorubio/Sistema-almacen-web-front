@@ -24,6 +24,19 @@ export class ServicioProducto {
             return error
         }
     }
+
+    async mostrarInhabilitados() {
+        try {
+            //ruta con el endpoint del back para listar los productos
+            //devuelve la lista de productos inhabilitados
+            const res = await fetch(this.URL+ "/inhabilitados", {headers: this.cabecera})
+            const response = await res.json()
+            return response;
+
+        } catch (error) {
+            return error
+        }
+    }
     
     async  eliminar(id_producto) {
         try {
@@ -40,6 +53,27 @@ export class ServicioProducto {
             return error
         }
     }
+    async descenderProducto(id_producto) {
+        try {
+            const res = await fetch(this.URL + '/inhabilitar/' + id_producto, { method: 'PUT', headers: this.cabecera})
+            const response = await res.json()
+            return response
+
+        } catch (error) {
+            return error
+        }
+    }
+    async ascenderProducto(id_producto) {
+        try {
+            const res = await fetch(this.URL + '/habilitar/' + id_producto, { method: 'PUT', headers: this.cabecera})
+            const response = await res.json()
+            return response
+
+        } catch (error) {
+            return error
+        }
+    }
+
 
     async  registrar(producto) {
         try {

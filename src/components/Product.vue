@@ -2,10 +2,25 @@
     <content-header title="Productos" />
     <div class="col-12 mb-2">
         <!-- Button to Open the Modal -->
-        <button v-if="$store.state.rol == 'jefe_almacen'" id="show-modal" @click.prevent="showModal = true; modificar = 1; abrirModal()" type="button"
-            class="btn btn-primary">
+        <button v-if="$store.state.rol == 'jefe_almacen'" id="show-modal"
+            @click.prevent="showModal = true; modificar = 1; abrirModal()" type="button" class="btn btn-primary">
             <i class="fas fa-plus-circle mr-2" aria-hidden="true"></i> Nuevo Producto
         </button>
+        <div class="d-flex justify-content-end">
+            <div>
+                <div class="habilidados" :class="{ estadoactivo: activeProductoHabilitados }">
+                    <button type="button" @click="activeProductoHabilitados = true; mostrarProductos()">
+                        <i class="fas fa-circle mr-2" aria-hidden="true"></i> <strong>Habilitados</strong>
+                    </button>
+                </div>
+                <div class="inhabilitados" :class="{ estadoinhabilitado: activeProductoInhabilitados }">
+                    <button type="button" @click="activeProductoInhabilitados == true, mostrarProductosInhabilitados()">
+                        <i class="fas fa-circle mr-2" aria-hidden="true"></i> <strong>Inhabilitados</strong>
+                    </button>
+                </div>
+            </div>
+
+        </div>
     </div>
     <teleport to="body">
         <!-- use the modal component, pass in the prop -->
@@ -19,9 +34,12 @@
                     <div class="col-12 mb-2">
                         <div class="form-group">
                             <label for="codigo">Código</label>
-                            <input v-if="modificar == 3" disabled class="form-control" id="codigo"
+
+
+                            <input v-if="modificar == 3 || modificar == 2" disabled class="form-control" id="codigo"
                                 v-model="producto.codigo" />
                             <input v-else class="form-control" id="codigo" v-model="producto.codigo" />
+
                         </div>
                         <div class="text-danger" v-if="v$.producto.codigo.$error">
                             {{ v$.producto.codigo.$errors[0].$message }}
@@ -31,7 +49,7 @@
                     <div class="col-12 mb-2">
                         <div class="form-group">
                             <label for="nombre">Nombre</label>
-                            <input v-if="modificar == 3" disabled class="form-control" id="nombre"
+                            <input v-if="modificar == 3 || modificar == 2" disabled class="form-control" id="nombre"
                                 v-model="producto.nombre" />
                             <input v-else class="form-control" id="nombre" v-model="producto.nombre" />
                         </div>
@@ -87,20 +105,20 @@
                     </div>
                     <div class="col-12 mb-2">
                         <div class="form-group">
-                            <label for="rol">Categoría</label>
-                            <select v-if="modificar == 3" disabled id="categoria" name="categoria" class="form-control"
-                                v-model="producto.categoria">
+                            <label v-if="modificar == 2" for="rol">Categoría</label>
+                            <select v-if="modificar == 3 || modificar == 2" disabled id="categoria" name="categoria"
+                                class="form-control" v-model="producto.nomcategoria">
                                 <option disabled selected value="">--Seleccione un categoría--</option>
                                 <option v-for="categoria in categorias">{{ categoria.nombre }}</option>
                             </select>
                             <select v-else id="categoria" name="categoria" class="form-control"
-                                v-model="producto.categoria">
+                                v-model="producto.nomcategoria">
                                 <option disabled selected value="">--Seleccione una categoría--</option>
                                 <option v-for="categoria in categorias">{{ categoria.nombre }}</option>
                             </select>
                         </div>
-                        <div class="text-danger" v-if="v$.producto.categoria.$error">
-                            {{ v$.producto.categoria.$errors[0].$message }}
+                        <div class="text-danger" v-if="v$.producto.nomcategoria.$error">
+                            {{ v$.producto.nomcategoria.$errors[0].$message }}
                         </div>
                     </div>
                 </div>
@@ -117,11 +135,13 @@
             <template #button_buscar>
                 <label class="mr-2" for="">BUSCAR:</label>
                 <input class="rounded-pill" type="search" v-model="cadena_buscar">
-                <button class="btn btn-primary" @click="buscar(cadena_buscar)"><i class="fas fa-search" aria-hidden="true"></i></button>
+                <button class="btn btn-primary" @click="buscar(cadena_buscar)"><i class="fas fa-search"
+                        aria-hidden="true"></i></button>
             </template>
             <template #thead>
                 <tr>
                     <th scope="col">ID</th>
+                    <th scope="col">CÓDIGO</th>
                     <th scope="col">NOMBRE</th>
                     <th scope="col">DESCRIPCION</th>
                     <th scope="col">PRECIO</th>
@@ -133,17 +153,23 @@
             <template #tbody>
                 <tr v-for="producto in productosPaginados" :key="producto._id">
                     <td>{{ producto._id }}</td>
+                    <td>{{ producto.codigo }}</td>
                     <td>{{ producto.nombre }}</td>
                     <td>{{ producto.descripcion }}</td>
                     <td>{{ producto.precio }}</td>
                     <td>{{ producto.stock }}</td>
                     <td>
-                        <button @click="showModal = true; modificar = 3; abrirModal(producto)" class="btn btn-info mr-2"><i
-                                class="fa fa-eye" aria-hidden="true"></i></button>
-                        <button @click="showModal = true; modificar = 2; abrirModal(producto)"
+                        <button @click="showModal = true; modificar = 3; abrirModal(producto)"
+                            class="btn btn-info mr-2"><i class="fa fa-eye" aria-hidden="true"></i></button>
+                        <button  v-if="$store.state.rol == 'jefe_almacen'" @click="showModal = true; modificar = 2; abrirModal(producto)"
                             class="btn btn-success mr-2"><i class="far fa-edit" aria-hidden="true"></i></button>
-                        <button type="button" @click="borrarProductos(producto)" class="btn btn-danger "><i
-                                class="fas fa-trash" aria-hidden="true"></i></button>
+                        <button v-if="producto.estado != 'habilitado' && $store.state.rol == 'jefe_almacen'"
+                            type="button" @click="ascenderProducto(producto)" class="btn btn-primary mr-2"><i
+                                class="fas fa-arrow-up" aria-hidden="true"></i></button>
+                        <button v-if="producto.estado != 'inhabilitado' && $store.state.rol == 'jefe_almacen'"
+                            type="button" @click="descendeProducto(producto)" class="btn btn-danger "><i
+                                class="fas fa-arrow-down" aria-hidden="true"></i></button>
+
                     </td>
                 </tr>
             </template>
@@ -158,13 +184,17 @@ import { ServicioProducto } from '../services/ServicesProducts';
 import { ServicioCategorias } from '@/services/ServicesCategorys';
 import DataTable from '../components/DataTable.vue'
 import { useVuelidate } from '@vuelidate/core'
-import { required, minValue, minLength, helpers,maxLength } from '@vuelidate/validators'
+import { required, minValue, minLength, helpers, maxLength } from '@vuelidate/validators'
 
 //Expresion que solo admite digitos
 const numberValido = helpers.regex(/^\d+$/);
 //expresion que solo admite letras de a-z y A-Z, incluido los espacios
 const caracterValido = helpers.regex(/^[a-zA-Z]+(\s[a-zA-Z]+)*$/);
 //cadena: /^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/
+//expresion de codigo de producto
+const codigoValido = helpers.regex(/^[A-Za-z0-9]+$/);
+
+
 
 export default {
     name: "productos",
@@ -182,13 +212,15 @@ export default {
             producto: {
                 descripcion: "",
                 precio: "",
-                categoria: "",
-                unidadMedida: "",
+                nomcategoria: "",
                 nombre: "",
                 codigo: "",
                 stock: "",
-                costo: ""
+                costo: "",
+                estado: ""
             },
+            activeProductoHabilitados: true,
+            activeProductoInhabilitados: false,
             showModal: false,
             id_producto: 0,
             modificar: 0,
@@ -211,33 +243,34 @@ export default {
                 //validaciones para el campo de precio
                 precio: {
                     required: helpers.withMessage('El valor es requerido', required),
-                    minValue: helpers.withMessage('El mínimo valor es 0', minValue(0)) 
+                    minValue: helpers.withMessage('El mínimo valor es 0', minValue(0))
                 },
                 //validaciones para el campo de categoria
-                categoria: {
+                nomcategoria: {
                     required: helpers.withMessage('El valor es requerido', required),
-                    minLength: helpers.withMessage('El mínimo número de caracteres es 5', minLength(5))
                 },
                 //validaciones para el campo de nombre
                 nombre: {
                     required: helpers.withMessage('El valor es requerido', required),
                     minLength: helpers.withMessage('El mínimo número de caracteres es 5', minLength(5)),
-                    caracteres: helpers.withMessage('Caracter no valido', caracterValido) 
+                    caracteres: helpers.withMessage('Caracter no valido', caracterValido)
                 },
                 //validaciones para el campo de codigo
                 codigo: {
                     required: helpers.withMessage('El valor es requerido', required),
-                    number: helpers.withMessage('Solo admite números ', numberValido),
+                    codigoValido: helpers.withMessage('Campo alfa-númerico', codigoValido),
+                    minLength: helpers.withMessage('Campo de 11 caracteres', minLength(11)),
+                    maxLength: helpers.withMessage('Campo de 11 caracteres', maxLength(11))
                 },
                 //validaciones para el campo de stock
                 stock: {
                     required: helpers.withMessage('El valor es requerido', required),
-                    minValue: helpers.withMessage('El mínimo valor es 0', minValue(0)) 
+                    minValue: helpers.withMessage('El mínimo valor es 0', minValue(0))
                 },
                 //validaciones para el campo de costo
                 costo: {
                     required: helpers.withMessage('El valor es requerido', required),
-                    minValue: helpers.withMessage('El mínimo valor es 0', minValue(0)) 
+                    minValue: helpers.withMessage('El mínimo valor es 0', minValue(0))
                 },
             }
         }
@@ -253,12 +286,15 @@ export default {
             this.productosPaginados = obj;
         },
         mostrarProductos() {
+            this.activeProductoHabilitadosduc = true;
+            this.activeProductoInhabilitados = false;
             //instancia del servicio de productos
             const servicioproducto = new ServicioProducto()
             //se llama al metodo mostrar productos
             servicioproducto.mostrar().then(data => {
                 const response = data
-                this.productos = response;
+                console.log(response)
+                this.productos = response.data;
             }, error => {
                 console.log(error)
             })
@@ -274,7 +310,25 @@ export default {
                 console.log(error)
             })
         },
-        borrarProductos(producto) {
+        mostrarProductosInhabilitados() {
+            this.activeProductoHabilitados = false;
+            this.activeProductoInhabilitados = true;
+            //instancia del servicio usuarios
+            const servicioproducto = new ServicioProducto()
+            //se llama al metodo mostrar usuarios inhabilitados
+            servicioproducto.mostrarInhabilitados().then(data => {
+                const response = data
+                console.log(response)
+                if (response.status === 200) {
+                    this.productos = response.data;
+                } else {
+                    console.log(error)
+                }
+            }, error => {
+                console.log(error)
+            })
+        },
+        ascenderProducto(producto) {
 
             //Alert para eliminación
             const alertEliminar = this.$swal.mixin({
@@ -285,11 +339,11 @@ export default {
                 buttonsStyling: false
             })
             alertEliminar.fire({
-                title: 'Desea Eliminar?',
-                text: `Se eliminará el producto ${producto.descripcion}`,
+                title: 'Desea ascender un producto?',
+                text: `Se ascenderá el producto ${producto.descripcion}`,
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Sí, Eliminar esto!',
+                confirmButtonText: 'Sí, ascender esto!',
                 cancelButtonText: 'No, Cancelar!',
                 reverseButtons: true
             }).then(async (result) => {
@@ -302,7 +356,7 @@ export default {
                         const response = data
                         if (response.status === 200) {
                             alertEliminar.fire(
-                                'Eliminado!',
+                                'Ascendido!',
                                 `El producto ${producto.descripcion}.`,
                                 'success'
                             )
@@ -310,14 +364,14 @@ export default {
                         } else {
                             alertEliminar.fire(
                                 'Cancelado',
-                                `El producto ${producto.descripcion} no se pudo eliminar.`,
+                                `El producto ${producto.descripcion} no se pudo ascender.`,
                                 'error'
                             )
                         }
                     }, error => {
                         alertEliminar.fire(
                             'Cancelado',
-                            `El producto ${producto.descripcion} no se pudo eliminar.`,
+                            `El producto ${producto.descripcion} no se pudo ascender.`,
                             'error'
                         )
                     })
@@ -325,7 +379,64 @@ export default {
                 } else if (result.dismiss === this.$swal.DismissReason.cancel) {
                     alertEliminar.fire(
                         'Cancelado',
-                        `El producto ${producto.descripcion} no fue eliminado.`,
+                        `El producto ${producto.descripcion} no fue ascender.`,
+                        'error'
+                    )
+                }
+            })
+        },
+        descenderProducto(producto) {
+
+            //Alert para eliminación
+            const alertEliminar = this.$swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                },
+                buttonsStyling: false
+            })
+            alertEliminar.fire({
+                title: 'Desea descender el producto?',
+                text: `Se descenderá el producto ${producto.descripcion}`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, descender esto!',
+                cancelButtonText: 'No, Cancelar!',
+                reverseButtons: true
+            }).then(async (result) => {
+
+                if (result.isConfirmed) {
+                    //instancia del servicio de producto
+                    const servicioproducto = new ServicioProducto()
+                    //se llama al metodo eliminar productos
+                    servicioproducto.eliminar(producto._id).then(data => {
+                        const response = data
+                        if (response.status === 200) {
+                            alertEliminar.fire(
+                                'Descendido!',
+                                `El producto ${producto.descripcion}.`,
+                                'success'
+                            )
+                            this.mostrarProductos();
+                        } else {
+                            alertEliminar.fire(
+                                'Cancelado',
+                                `El producto ${producto.descripcion} no se pudo descender.`,
+                                'error'
+                            )
+                        }
+                    }, error => {
+                        alertEliminar.fire(
+                            'Cancelado',
+                            `El producto ${producto.descripcion} no se pudo descender.`,
+                            'error'
+                        )
+                    })
+
+                } else if (result.dismiss === this.$swal.DismissReason.cancel) {
+                    alertEliminar.fire(
+                        'Cancelado',
+                        `El producto ${producto.descripcion} no fue descender.`,
                         'error'
                     )
                 }
@@ -334,14 +445,18 @@ export default {
         async guardar() {
             //se llama al validador
             this.v$.$validate();
+
             //verificamos las validaciones realizadas en los campos
             if (!this.v$.$error) {
                 if (this.modificar == 2) {
+
                     //instancia del servicio de producto
                     const servicioproducto = new ServicioProducto()
                     //se llama al metodo modificar productos
                     servicioproducto.modificar(this.producto, this.id_producto).then(data => {
                         const response = data
+
+                        console.log(response)
                         if (response.status === 200) {
                             this.$swal.fire({
                                 icon: 'success',
@@ -416,7 +531,7 @@ export default {
                 this.producto.nombre = data.nombre;
                 this.producto.codigo = data.codigo;
                 const index = this.categorias.findIndex(x => x.descripcion == data.categoria)
-                this.producto.categoria =  this.categorias[index].descripcion
+                this.producto.nomcategoria = this.categorias[index].nombre
 
             } else if (this.modificar == 1) {
                 this.tituloModal = "Registrar Producto"
@@ -431,19 +546,17 @@ export default {
                 this.producto.nombre = data.nombre;
                 this.producto.codigo = data.codigo;
                 const index = this.categorias.findIndex(x => x.descripcion == data.categoria)
-                this.producto.categoria =  this.categorias[index].descripcion
+                this.producto.nomcategoria = this.categorias[index].nombre
             }
         },
         limpiarFormuralio() {
             this.producto.descripcion = '';
             this.producto.precio = 0;
-            this.producto.categoria = '';
+            this.producto.nomcategoria = '';
             this.producto.stock = 0;
             this.producto.costo = 0;
             this.producto.nombre = '';
-            this.producto.unidadMedida = '';
             this.producto.codigo = '';
-            this.producto.categoria = '';
 
         },
         buscar(id) {

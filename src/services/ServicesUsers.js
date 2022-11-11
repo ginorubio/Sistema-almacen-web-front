@@ -21,10 +21,32 @@ export class ServicioUsuario {
             return error
         }
     }
-
-    async eliminar(id_usuario) {
+    async mostrarInhabilitados() {
         try {
-            const res = await fetch(this.URL + '/delete/' + id_usuario, { method: 'DELETE', headers: this.cabecera})
+            //ruta para obtener información del back
+            const res = await fetch(this.URL + "/inhabilitados", { headers: this.cabecera })
+            const response = await res.json()
+
+            return response;
+
+        } catch (error) {
+            return error
+        }
+    }
+
+    async descenderUsuario(id_usuario) {
+        try {
+            const res = await fetch(this.URL + '/inhabilitar/' + id_usuario, { method: 'PUT', headers: this.cabecera})
+            const response = await res.json()
+            return response
+
+        } catch (error) {
+            return error
+        }
+    }
+    async ascenderUsuario(id_usuario) {
+        try {
+            const res = await fetch(this.URL + '/habilitar/' + id_usuario, { method: 'PUT', headers: this.cabecera})
             const response = await res.json()
             return response
 

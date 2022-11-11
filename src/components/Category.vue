@@ -2,10 +2,26 @@
     <content-header title="Categorias" />
     <div class="col-12 mb-2">
         <!-- Button to Open the Modal -->
-        <button v-if="$store.state.rol == 'jefe_almacen'" id="show-modal" type="button" @click.prevent="showModal = true, modificar = false; abrirModal()"
-            class="btn btn-primary">
+        <button v-if="$store.state.rol == 'jefe_almacen'" id="show-modal" type="button"
+            @click.prevent="showModal = true, modificar = false; abrirModal()" class="btn btn-primary">
             <i class="fas fa-plus-circle mr-2" aria-hidden="true"></i> Nueva Categoría
         </button>
+        <div class="d-flex justify-content-end">
+            <div>
+                <div class="habilidados" :class="{ estadoactivo: activeCategoriaHabilitados }">
+                    <button type="button" @click="activeCategoriaHabilitados = true; mostrarCategorias()">
+                        <i class="fas fa-circle mr-2" aria-hidden="true"></i> <strong>Habilitados</strong>
+                    </button>
+                </div>
+                <div class="inhabilitados" :class="{ estadoinhabilitado: activeCategoriaInhabilitados }">
+                    <button type="button"
+                        @click="activeCategoriaInhabilitados == true, mostrarCategoriasInhabilitados()">
+                        <i class="fas fa-circle mr-2" aria-hidden="true"></i> <strong>Inhabilitados</strong>
+                    </button>
+                </div>
+            </div>
+
+        </div>
     </div>
     <teleport to="body">
         <!-- use the modal component, pass in the prop -->
@@ -18,9 +34,15 @@
                     <div class="col-12 mb-2">
                         <div class="form-group">
                             <label>Código</label>
-                            <input type="text" class="form-control" v-model="categoria.codigo">
+                            <div class="d-flex">
+                                <div v-if="!modificar" class="d-flex codigo-inicio">
+                                    <p>C</p>
+                                </div>
+                                <input v-if="!modificar" type="text" class="form-control" v-model="categoria.codigo">
+                                <input v-else disabled type="text" class="form-control" v-model="categoria.codigo">
+                            </div>
                         </div>
-                        <div class="text-danger" v-if="v$.categoria.codigo.$error">
+                        <div class="text-danger" v-if="v$.categoria.codigo.$error && !modificar">
                             {{ v$.categoria.codigo.$errors[0].$message }}
                         </div>
                     </div>
@@ -28,28 +50,31 @@
                     <div class="col-12 mb-2">
                         <div class="form-group">
                             <label for="nombre">Nombre</label>
-                            <textarea class="form-control" id="nombre" v-model="categoria.nombre"
+                            <textarea v-if="!modificar" class="form-control" id="nombre" v-model="categoria.nombre"
+                                style="height: 100px"></textarea>
+                            <textarea v-else disabled class="form-control" id="nombre" v-model="categoria.nombre"
                                 style="height: 100px"></textarea>
                         </div>
                         <div class="text-danger" v-if="v$.categoria.nombre.$error">
                             {{ v$.categoria.nombre.$errors[0].$message }}
                         </div>
                     </div>
+
                 </div>
             </template>
             <template #footer>
-                <button @click.prevent="guardar()" type="button" class="btn btn-success"
-                    >Guardar</button>
+                <button @click.prevent="guardar()" type="button" class="btn btn-success">Guardar</button>
             </template>
         </modal>
     </teleport>
     <content>
         <data-table :lista="categorias" @getValues="setValues">
-            
+
             <template #button_buscar>
                 <label class="mr-2" for="">BUSCAR:</label>
                 <input class="rounded-pill" type="search" v-model="cadena_buscar">
-                <button class="btn btn-primary" @click="buscar(cadena_buscar)"><i class="fas fa-search" aria-hidden="true"></i></button>
+                <button class="btn btn-primary" @click="buscar(cadena_buscar)"><i class="fas fa-search"
+                        aria-hidden="true"></i></button>
             </template>
             <template #thead>
                 <tr>
@@ -66,10 +91,15 @@
                     <td>{{ categoria.codigo }}</td>
                     <td>{{ categoria.nombre }}</td>
                     <td>
-                        <button v-if="$store.state.rol == 'jefe_almacen'" @click="showModal = true; modificar = true; abrirModal(categoria)"
+                        <button v-if="$store.state.rol == 'jefe_almacen'"
+                            @click="showModal = true; modificar = true; abrirModal(categoria)"
                             class="btn btn-success mr-2"><i class="far fa-edit" aria-hidden="true"></i></button>
-                        <button v-if="$store.state.rol == 'jefe_almacen'"  type="button" @click="borrarCategoria(categoria)" class="btn btn-danger "><i
-                                class="fas fa-trash" aria-hidden="true"></i></button>
+                        <button v-if="categoria.estado != 'habilitado' && $store.state.rol == 'jefe_almacen'" type="button"
+                            @click="ascenderCategoria(categoria)" class="btn btn-primary mr-2"><i
+                                class="fas fa-arrow-up" aria-hidden="true"></i></button>
+                        <button v-if="categoria.estado != 'inhabilitado' && $store.state.rol == 'jefe_almacen'" type="button"
+                            @click="descenderCategoria(categoria)" class="btn btn-danger "><i class="fas fa-arrow-down"
+                                aria-hidden="true"></i></button>
                     </td>
                 </tr>
             </template>
@@ -84,7 +114,7 @@ import Modal from '../components/Modal.vue'
 import DataTable from './DataTable.vue';
 import { ServicioCategorias } from '../services/ServicesCategorys'
 import { useVuelidate } from '@vuelidate/core'
-import { required, helpers,minLength, maxLength } from '@vuelidate/validators'
+import { required, helpers, minLength, maxLength } from '@vuelidate/validators'
 
 //expresion que solo admite letras de a-z y A-Z, incluido los espacios
 const caracterValido = helpers.regex(/^[a-zA-Z]+(\s[a-zA-Z]+)*$/);
@@ -103,8 +133,12 @@ export default {
             categorias: [],
             categoria: {
                 codigo: '',
-                nombre: ''
+                nombre: '',
+                estado: ''
             },
+            data_estado: ["habilitado", "inhabilitado"],
+            activeCategoriaHabilitados: true,
+            activeCategoriaInhabilitados: false,
             showModal: false,
             id_categoria: 0,
             modificar: true,
@@ -117,16 +151,18 @@ export default {
         return {
             categoria: {
                 //validaciones para el campo de codigo
-                codigo: { 
+                codigo: {
                     required: helpers.withMessage('El campo es requerido', required),
                     number: helpers.withMessage('Solo admite números ', numberValido),
-                    maxLength: helpers.withMessage('El máximo número de dígitos es 3', maxLength(3))
-                 },
-                 //validaciones para el campo de nombre
-                 nombre: { required: helpers.withMessage('El campo es requerido', required),
+                    minLength: helpers.withMessage('El número de dígitos es 5', minLength(5)),
+                    maxLength: helpers.withMessage('El número de dígitos es 5', maxLength(5))
+                },
+                //validaciones para el campo de nombre
+                nombre: {
+                    required: helpers.withMessage('El campo es requerido', required),
                     minLength: helpers.withMessage('El mínimo número de caracteres es 3', minLength(3)),
                     caracteres: helpers.withMessage('Caracter no valido', caracterValido),
-                    maxLength: helpers.withMessage('El máximo número de caracteres es 50', maxLength(25))
+                    maxLength: helpers.withMessage('El máximo número de caracteres es 30', maxLength(30))
                 }
             }
         }
@@ -137,19 +173,42 @@ export default {
             this.categoriasPaginadas = obj;
         },
         mostrarCategorias() {
+            this.activeCategoriaHabilitados = true;
+            this.activeCategoriaInhabilitados = false;
             //instancia del servicio
             const serviciocategorias = new ServicioCategorias()
             //se llama al metodo mostrar categorias
             serviciocategorias.mostrar().then(data => {
                 const response = data
 
-                console.log(response)
-                this.categorias = response.data;
+                if (response.status === 200) {
+                    this.categorias = response.data;
+                } else {
+                    console.log(error)
+                }
+
             }, error => {
                 console.log(error)
             })
         },
-        borrarCategoria(categoria) {
+        mostrarCategoriasInhabilitados() {
+            this.activeCategoriaHabilitados = false;
+            this.activeCategoriaInhabilitados = true;
+            //instancia del servicio usuarios
+            const serviciocategorias = new ServicioCategorias()
+            //se llama al metodo mostrar usuarios inhabilitados
+            serviciocategorias.mostrarInhabilitados().then(data => {
+                const response = data
+                if (response.status === 200) {
+                    this.categorias = response.data;
+                } else {
+                    console.log(error)
+                }
+            }, error => {
+                console.log(error)
+            })
+        },
+        descenderCategoria(categoria) {
 
             //Alert para eliminación
             const alertEliminar = this.$swal.mixin({
@@ -160,11 +219,11 @@ export default {
                 buttonsStyling: false
             })
             alertEliminar.fire({
-                title: 'Desea Eliminar?',
-                text: `Se eliminará la categoría ${categoria.nombre}`,
+                title: 'Desea descender la categoría?',
+                text: `Se Descenderá la categoría ${categoria.nombre}`,
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Sí, Eliminar!',
+                confirmButtonText: 'Sí, Descender!',
                 cancelButtonText: 'No, Cancelar!',
                 reverseButtons: true
             }).then(async (result) => {
@@ -177,7 +236,7 @@ export default {
                         const response = data
                         if (response.status == 200) {
                             alertEliminar.fire(
-                                'Eliminado!',
+                                'Descendido!',
                                 `La categoría ${categoria.nombre}.`,
                                 'success'
                             )
@@ -185,14 +244,14 @@ export default {
                         } else {
                             alertEliminar.fire(
                                 'Cancelado',
-                                `La categoría ${categoria.nombre} no se pudo eliminar.`,
+                                `La categoría ${categoria.nombre} no se pudo descender.`,
                                 'error'
                             )
                         }
                     }, error => {
                         alertEliminar.fire(
                             'Cancelado',
-                            `La categoría ${categoria.nombre} no se pudo eliminar.`,
+                            `La categoría ${categoria.nombre} no se pudo descender.`,
                             'error'
                         )
                     })
@@ -200,14 +259,71 @@ export default {
                 } else if (result.dismiss === this.$swal.DismissReason.cancel) {
                     alertEliminar.fire(
                         'Cancelado',
-                        `La categoría ${categoria.nombre} no fue eliminado.`,
+                        `La categoría ${categoria.nombre} no fue descender.`,
+                        'error'
+                    )
+                }
+            })
+        },
+        ascenderCategoria(categoria) {
+
+            //Alert para eliminación
+            const alertEliminar = this.$swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                },
+                buttonsStyling: false
+            })
+            alertEliminar.fire({
+                title: 'Desea ascender la categoría?',
+                text: `Se ascenderá la categoría ${categoria.nombre}`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, ascender!',
+                cancelButtonText: 'No, Cancelar!',
+                reverseButtons: true
+            }).then(async (result) => {
+
+                if (result.isConfirmed) {
+                    //instancia del servicio de categorias
+                    const serviciocategorias = new ServicioCategorias()
+                    //se llama al metodo eliminar categorias
+                    serviciocategorias.eliminar(categoria._id).then(data => {
+                        const response = data
+                        if (response.status == 200) {
+                            alertEliminar.fire(
+                                'Ascendido!',
+                                `La categoría ${categoria.nombre}.`,
+                                'success'
+                            )
+                            this.mostrarCategorias();
+                        } else {
+                            alertEliminar.fire(
+                                'Cancelado',
+                                `La categoría ${categoria.nombre} no se pudo ascender.`,
+                                'error'
+                            )
+                        }
+                    }, error => {
+                        alertEliminar.fire(
+                            'Cancelado',
+                            `La categoría ${categoria.nombre} no se pudo ascender.`,
+                            'error'
+                        )
+                    })
+
+                } else if (result.dismiss === this.$swal.DismissReason.cancel) {
+                    alertEliminar.fire(
+                        'Cancelado',
+                        `La categoría ${categoria.nombre} no fue ascender.`,
                         'error'
                     )
                 }
             })
         },
         guardar() {
-             //se llama al validador
+            //se llama al validador
             this.v$.$validate();
             //verificamos las validaciones realizadas en los campos
             if (!this.v$.$error) {
@@ -244,12 +360,12 @@ export default {
                         })
                     })
                 } else {
+                    this.categoria.codigo = "C" + this.categoria.codigo;
                     //instancia del servicio de categorias
                     const serviciocategorias = new ServicioCategorias()
                     //se llama al metodo registrar categorias
                     serviciocategorias.registrar(this.categoria).then(data => {
                         const response = data
-                        console.log(response)
                         if (response.status === 201) {
                             this.$swal.fire({
                                 icon: 'success',
@@ -287,6 +403,7 @@ export default {
                 this.id_categoria = data._id;
                 this.categoria.codigo = data.codigo;
                 this.categoria.nombre = data.nombre;
+                this.categoria.estado = data.estado;
             } else {
                 this.tituloModal = "Registrar Categoria"
                 this.limpiarFormuralio();
@@ -295,6 +412,7 @@ export default {
         limpiarFormuralio() {
             this.categoria.nombre = '';
             this.categoria.codigo = '';
+            this.categoria.estado = '';
         },
         buscar(nombre) {
             if (nombre) {
@@ -324,3 +442,16 @@ export default {
     }
 }
 </script>
+<style>
+.codigo-inicio {
+    height: 38px;
+    background: rgb(58, 64, 119);
+    color: #fff;
+}
+
+.codigo-inicio p {
+    margin-top: 8px;
+    margin-right: 4px;
+    margin-left: 4px;
+}
+</style>

@@ -6,6 +6,22 @@
             class="btn btn-primary">
             <i class="fas fa-plus-circle mr-2" aria-hidden="true"></i> Nuevo Usuario
         </button>
+        <div class="d-flex justify-content-end">
+            <div>
+                <div class="habilidados" :class="{ estadoactivo: activeUsuariosHabilitados }">
+                    <button type="button" @click="activeUsuariosHabilitados = true; mostrarUsuarios()">
+                        <i class="fas fa-circle mr-2" aria-hidden="true"></i> <strong>Habilitados</strong>
+                    </button>
+                </div>
+                <div class="inhabilitados" :class="{ estadoinhabilitado: activeUsuarioInhabilitados }">
+                    <button type="button" @click="activeUsuarioInhabilitados == true, mostrarUsuarioInhabilitados()">
+                        <i class="fas fa-circle mr-2" aria-hidden="true"></i> <strong>Inhabilitados</strong>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
     </div>
     <teleport to="body">
         <!-- use the modal component, pass in the prop -->
@@ -14,6 +30,8 @@
                 <h3>{{ tituloModal }}</h3>
             </template>
             <template #body>
+
+
 
                 <div class="row">
                     <div class="col-12 mb-2">
@@ -25,6 +43,18 @@
                         </div>
                         <div class="text-danger" v-if="v$.usuario.username.$error">
                             {{ v$.usuario.username.$errors[0].$message }}
+                        </div>
+                    </div>
+
+                    <div class="col-12 mb-2">
+                        <div class="form-group">
+                            <label for="dni">DNI</label>
+                            <input v-if="modificar == 2" disabled class="form-control" type="text"
+                                v-model="usuario.dni" />
+                            <input v-else class="form-control" type="text" v-model="usuario.dni" />
+                        </div>
+                        <div class="text-danger" v-if="v$.usuario.dni.$error">
+                            {{ v$.usuario.dni.$errors[0].$message }}
                         </div>
                     </div>
 
@@ -80,12 +110,27 @@
                             {{ v$.usuario.roles.$errors[0].$message }}
                         </div>
                     </div>
+
+                    <div class="col-12 mb-2">
+                        <div class="form-group">
+                            <label v-if="modificar == 3" for="estado">ESTADO</label>
+                            <select v-if="modificar == 3" disabled id="estado" name="estado" class="form-control"
+                                v-model="usuario.estado">
+                                <option disabled selected value="">--Seleccione un estado--</option>
+                                <option v-for="estado in data_estado">{{ estado }}</option>
+                            </select>
+                        </div>
+                    </div>
+
                 </div>
+
             </template>
             <template #footer>
                 <button v-if="modificar != 3" @click.prevent="guardar()" type="button" class="btn btn-success"
                     data-dismiss="modal">Guardar</button>
+
             </template>
+
         </modal>
     </teleport>
     <content>
@@ -94,12 +139,15 @@
             <template #button_buscar>
                 <label class="mr-2" for="">BUSCAR:</label>
                 <input class="rounded-pill" type="search" v-model="cadena_buscar">
-                <button class="btn btn-primary" @click="buscar(cadena_buscar)"><i class="fas fa-search" aria-hidden="true"></i></button>
+                <button class="btn btn-primary" @click="buscar(cadena_buscar)"><i class="fas fa-search"
+                        aria-hidden="true"></i></button>
+
             </template>
             <template #thead>
                 <tr>
                     <th scope="col">ID</th>
                     <th scope="col">NOMBRE</th>
+                    <th scope="col">DNI</th>
                     <th scope="col">EMAIL</th>
                     <th scope="col">ROL</th>
                     <th scope="col">ACCIONES</th>
@@ -110,15 +158,22 @@
                 <tr v-for="usuario in usuariosPaginados" :key="usuario._id">
                     <td>{{ usuario._id }}</td>
                     <td>{{ usuario.username }}</td>
+                    <td>{{ usuario.dni }}</td>
                     <td>{{ usuario.email }}</td>
-                    <td>{{ usuario.roles }}</td>
+                    <td v-if="usuario.roles == '63636e8e8d3546d90542ad6a'">{{ data_roles[0].nombre }}</td>
+                    <td v-else="usuario.roles == '63636e8e8d3546d90542ad67'">{{ data_roles[1].nombre }}</td>
+                    <td v-else="usuario.roles == '63636e8e8d3546d90542ad69'">{{ data_roles[2].nombre }}</td>
                     <td>
                         <button v-if="false" @click="showModal = true; modificar = 3; abrirModal(usuario)"
                             class="btn btn-info mr-2"><i class="fa fa-eye" aria-hidden="true"></i></button>
                         <button @click="showModal = true; modificar = 2; abrirModal(usuario)"
                             class="btn btn-success mr-2"><i class="far fa-edit" aria-hidden="true"></i></button>
-                        <button type="button" @click="borrarUsuario(usuario)" class="btn btn-danger" ><i
-                                class="fas fa-trash" aria-hidden="true"></i></button>
+                        <button v-if="false" type="button" @click="borrarUsuario(usuario)" class="btn btn-danger"><i
+                                class="fa fa-eye-slash" aria-hidden="true"></i></button>
+                        <button v-if="usuario.estado != 'habilitado'" type="button" @click="ascenderUsuario(usuario)" class="btn btn-primary mr-2"><i
+                                class="fas fa-arrow-up" aria-hidden="true"></i></button>
+                        <button v-if="usuario.estado != 'inhabilitado'" type="button" @click="descenderUsuario(usuario)" class="btn btn-danger "><i
+                                class="fas fa-arrow-down" aria-hidden="true"></i></button>
                     </td>
                 </tr>
             </template>
@@ -133,10 +188,11 @@ import Modal from '../components/Modal.vue';
 import DataTable from '../components/DataTable.vue'
 import { ServicioUsuario } from '../services/ServicesUsers.js'
 import { useVuelidate } from '@vuelidate/core'
-import { required, email, minLength, sameAs, helpers } from '@vuelidate/validators'
+import { required, email, minLength, sameAs, helpers, maxLength } from '@vuelidate/validators'
 
 //expresion que solo admite letras de a-z y A-Z, incluido los espacios
 const caracterValido = helpers.regex(/^[a-zA-Z]+(\s[a-zA-Z]+)*$/);
+const numberValido = helpers.regex(/^\d+$/);
 
 export default {
     components: {
@@ -151,12 +207,19 @@ export default {
             usuario: {
                 username: '',
                 email: '',
+                dni: '',
                 password: '',
                 repassword: '',
                 passwordNE: '',
-                roles: ''
+                roles: '',
+                estado: ''
 
             },
+            data_estado: [
+                "habilitado", "inhabilitado"
+            ],
+            activeUsuariosHabilitados: true,
+            activeUsuarioInhabilitados: false,
             cadena_buscar: '',
             showModal: false,
             id_usuario: 0,
@@ -164,9 +227,9 @@ export default {
             tituloModal: '',
             usuariosPaginados: [],
             data_roles: [
-                {nombre: "almacenero",codigo: "63636e8e8d3546d90542ad6a"}, 
-                {nombre: "admin", codigo: "63636e8e8d3546d90542ad67"}, 
-                {nombre: "jefe_almacen", codigo: "63636e8e8d3546d90542ad69"},
+                { nombre: "almacenero", codigo: "63636e8e8d3546d90542ad6a" },
+                { nombre: "admin", codigo: "63636e8e8d3546d90542ad67" },
+                { nombre: "jefe_almacen", codigo: "63636e8e8d3546d90542ad69" },
             ],
         }
     },
@@ -174,9 +237,17 @@ export default {
         return {
             usuario: {
                 //validaciones para el campo de username
-                username: { required: helpers.withMessage('El campo es requerido', required),
+                username: {
+                    required: helpers.withMessage('El campo es requerido', required),
                     minLength: helpers.withMessage('El mínimo número de caracteres es 3', minLength(3)),
                     caracteres: helpers.withMessage('Caracter no valido', caracterValido)
+                },
+                dni: {
+                    required: helpers.withMessage('El campo es requerido', required),
+                    numberValido: helpers.withMessage('Solo admite números', numberValido),
+                    minLength: helpers.withMessage('El número de caracteres es 8', minLength(8)),
+                    maxLength: helpers.withMessage('El número de caracteres es 8', maxLength(8)),
+
                 },
                 //validaciones para el campo de email
                 email: {
@@ -207,19 +278,40 @@ export default {
             this.usuariosPaginados = obj;
         },
         mostrarUsuarios() {
+            this.activeUsuariosHabilitados = true;
+            this.activeUsuarioInhabilitados = false;
             //instancia del servicio usuarios
             const serviciousuario = new ServicioUsuario()
             //se llama al metodo mostrar usuarios
             serviciousuario.mostrar().then(data => {
                 const response = data
-                console.log(response)
-                this.usuarios = response.data;
-                
+                if (response.status === 200) {
+                    this.usuarios = response.data;
+                } else {
+                    console.log(error)
+                }
             }, error => {
                 console.log(error)
             })
         },
-        borrarUsuario(usuario) {
+        mostrarUsuarioInhabilitados() {
+            this.activeUsuariosHabilitados = false;
+            this.activeUsuarioInhabilitados = true;
+            //instancia del servicio usuarios
+            const serviciousuario = new ServicioUsuario()
+            //se llama al metodo mostrar usuarios inhabilitados
+            serviciousuario.mostrarInhabilitados().then(data => {
+                const response = data
+                if (response.status === 200) {
+                    this.usuarios = response.data;
+                } else {
+                    console.log(error)
+                }
+            }, error => {
+                console.log(error)
+            })
+        },
+        descenderUsuario(usuario) {
 
             //Alert para eliminación
             const alertEliminar = this.$swal.mixin({
@@ -230,11 +322,11 @@ export default {
                 buttonsStyling: false
             })
             alertEliminar.fire({
-                title: 'Desea Eliminar?',
-                text: `Se eliminará el usuario ${usuario.username}`,
+                title: 'Desea descender al usuario?',
+                text: `Se descenderá el usuario ${usuario.username}`,
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Sí, Eliminar!',
+                confirmButtonText: 'Sí, descender!',
                 cancelButtonText: 'No, Cancelar!',
                 reverseButtons: true
             }).then(async (result) => {
@@ -243,26 +335,26 @@ export default {
                     //instancia del servicio de usuarios
                     const serviciousuario = new ServicioUsuario()
                     //se llama al metodo eliminar usuarios
-                    serviciousuario.eliminar(usuario._id).then(data => {
+                    serviciousuario.descenderUsuario(usuario._id).then(data => {
                         const response = data
                         if (response.status === 200) {
                             alertEliminar.fire(
-                                'Eliminado!',
-                                `El usuario ${usuario.username} fue eliminado.`,
+                                'Descendido!',
+                                `El usuario ${usuario.username} fue descendido.`,
                                 'success'
                             )
                             this.mostrarUsuarios();
                         } else {
                             alertEliminar.fire(
                                 'Cancelado',
-                                ` ${usuario.username} no se pudo eliminar.`,
+                                ` ${usuario.username} no se pudo descender.`,
                                 'error'
                             )
                         }
                     }, error => {
                         alertEliminar.fire(
                             'Cancelado',
-                            `El usuario ${usuario.username} no se pudo eliminar.`,
+                            `El usuario ${usuario.username} no se pudo descender.`,
                             'error'
                         )
                     })
@@ -270,14 +362,71 @@ export default {
                 } else if (result.dismiss === this.$swal.DismissReason.cancel) {
                     alertEliminar.fire(
                         'Cancelado',
-                        `El usuario ${usuario.username} no fue eliminado.`,
+                        `El usuario ${usuario.username} no fue descender.`,
+                        'error'
+                    )
+                }
+            })
+        },
+        ascenderUsuario(usuario) {
+
+            //Alert para eliminación
+            const alertEliminar = this.$swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                },
+                buttonsStyling: false
+            })
+            alertEliminar.fire({
+                title: 'Desea ascender al usuario?',
+                text: `Se ascenderá al usuario ${usuario.username}`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, ascender!',
+                cancelButtonText: 'No, Cancelar!',
+                reverseButtons: true
+            }).then(async (result) => {
+
+                if (result.isConfirmed) {
+                    //instancia del servicio de usuarios
+                    const serviciousuario = new ServicioUsuario()
+                    //se llama al metodo eliminar usuarios
+                    serviciousuario.ascenderUsuario(usuario._id).then(data => {
+                        const response = data
+                        if (response.status === 200) {
+                            alertEliminar.fire(
+                                'Ascendido!',
+                                `El usuario ${usuario.username} fue ascendido.`,
+                                'success'
+                            )
+                            this.mostrarUsuarios();
+                        } else {
+                            alertEliminar.fire(
+                                'Cancelado',
+                                ` ${usuario.username} no se pudo ascender.`,
+                                'error'
+                            )
+                        }
+                    }, error => {
+                        alertEliminar.fire(
+                            'Cancelado',
+                            `El usuario ${usuario.username} no se pudo ascender.`,
+                            'error'
+                        )
+                    })
+
+                } else if (result.dismiss === this.$swal.DismissReason.cancel) {
+                    alertEliminar.fire(
+                        'Cancelado',
+                        `El usuario ${usuario.username} no fue ascender.`,
                         'error'
                     )
                 }
             })
         },
         guardar() {
-             //se llama al validador
+            //se llama al validador
             this.v$.$validate();
             //verificamos las validaciones realizadas en los campos
             if (!this.v$.$error) {
@@ -360,12 +509,14 @@ export default {
                 this.tituloModal = "Modificar Usuario"
                 this.id_usuario = data._id;
                 this.usuario.username = data.username;
+                this.usuario.dni = data.dni;
                 this.usuario.email = data.email;
                 this.usuario.password = data.password;
                 this.usuario.repassword = data.repassword;
+                this.usuario.estado = data.estado;
                 const index = this.data_roles.findIndex(x => x.codigo == data.roles);
                 console.log(index)
-                this.usuario.roles =  this.data_roles[index].nombre;
+                this.usuario.roles = this.data_roles[index].nombre;
             } else if (this.modificar == 1) {
                 this.tituloModal = "Registrar Usuario"
                 this.limpiarFormuralio();
@@ -373,29 +524,32 @@ export default {
                 this.tituloModal = "Detalle del Usuario"
                 this.id_usuario = data._id;
                 this.usuario.username = data.username;
+                this.usuario.username = data.dni;
                 this.usuario.email = data.email;
                 this.usuario.password = data.password;
+                this.usuario.estado = data.estado;
                 //se buscara en la lista de data_roles el rol que pertenece al usuario con el rol de data.roles.name
                 //se encontrara el index o posicion
                 const index = this.data_roles.findIndex(x => x == data.roles.name);
                 //se asigna el nombre del rol encontrado en la variable this.usuario.roles
-                this.usuario.roles =  this.data_roles[index];
+                this.usuario.roles = this.data_roles[index];
             }
         },
         limpiarFormuralio() {
             this.usuario.username = '';
+            this.usuario.dni = '';
             this.usuario.email = '';
             this.usuario.password = '';
             this.usuario.repassword = '';
             this.usuario.roles = '';
         },
-        buscar(id) {
-            if (id) {
+        buscar(dni) {
+            if (dni) {
                 let usuario = []
                 //instancia del servicio de usuarios
                 const serviciousuario = new ServicioUsuario()
                 //se llama al metodo buscar usuarios
-                serviciousuario.buscar(id).then(data => {
+                serviciousuario.buscar(dni).then(data => {
                     const response = data
                     console.log(response)
                     if (response.status === 200) {
@@ -405,7 +559,7 @@ export default {
                         this.$swal.fire({
                             icon: 'error',
                             title: 'Oops...',
-                            text: 'No se pudo encontrar la categoría!',
+                            text: 'No se pudo encontrar al usuario!',
                         })
                     }
                 }, error => {
@@ -421,3 +575,52 @@ export default {
     }
 }
 </script>
+<style>
+.habilidados button {
+    border: none;
+}
+
+.inhabilitados button {
+    border: none;
+}
+
+.inhabilitados button i {
+    color: rgb(211, 22, 22);
+}
+
+.habilidados button i {
+    color: green;
+}
+
+.habilidados button:focus,
+.inhabilitados button:focus {
+    border: none;
+    outline: none !important;
+}
+
+.habilidados button strong,
+.inhabilidados button strong {
+    padding-right: 4px;
+    padding-left: 4px;
+}
+
+.estadoactivo button strong {
+    background: green;
+    color: #fff;
+
+}
+
+.estadoactivo i {
+    color: green;
+}
+
+.estadoinhabilitado button strong {
+    background: rgb(211, 22, 22);
+    color: #fff;
+
+}
+
+.estadoinhabilitado i {
+    color: rgb(211, 22, 22);
+}
+</style>

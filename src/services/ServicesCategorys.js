@@ -21,10 +21,33 @@ export class ServicioCategorias {
             return error
         }
     }
-    
-    async  eliminar(id_categoria) {
+
+    async mostrarInhabilitados() {
         try {
-            const res = await fetch(this.URL + '/delete/' + id_categoria, { method: 'DELETE', headers: this.cabecera})
+            //ruta para obtener información del back
+            const res = await fetch(this.URL+"/inhabilitados", {headers: this.cabecera})
+            const response = await res.json()
+
+            return response;
+
+        } catch (error) {
+            return error
+        }
+    }
+    
+    async descenderCategoria(id_categoria) {
+        try {
+            const res = await fetch(this.URL + '/inhabilitar/' + id_categoria, { method: 'PUT', headers: this.cabecera})
+            const response = await res.json()
+            return response
+
+        } catch (error) {
+            return error
+        }
+    }
+    async ascenderCategoria(id_categoria) {
+        try {
+            const res = await fetch(this.URL + '/habilitar/' + id_categoria, { method: 'PUT', headers: this.cabecera})
             const response = await res.json()
             return response
 
@@ -53,10 +76,11 @@ export class ServicioCategorias {
             return error
         }
     }
+    
 
     async buscar(nombre){
         try {
-            const res = await fetch(this.URL+'/read/'+nombre,{headers: this.cabecera})
+            const res = await fetch(this.URL+'/read/byname/'+nombre,{headers: this.cabecera})
             const response = await res.json()
             return response
         } catch (error) {
