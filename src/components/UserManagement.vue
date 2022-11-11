@@ -551,7 +551,6 @@ export default {
                 //se llama al metodo buscar usuarios
                 serviciousuario.buscar(dni).then(data => {
                     const response = data
-                    console.log(response)
                     if (response.status === 200) {
                         usuario[0] = response.data
                         this.usuarios = usuario

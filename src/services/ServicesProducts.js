@@ -84,7 +84,6 @@ export class ServicioProducto {
             })
             
             const response = await res.json()
-            console.log(response)
             return response
         } catch (error) {
             return error

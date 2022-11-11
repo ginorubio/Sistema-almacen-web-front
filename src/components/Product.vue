@@ -293,7 +293,6 @@ export default {
             //se llama al metodo mostrar productos
             servicioproducto.mostrar().then(data => {
                 const response = data
-                console.log(response)
                 this.productos = response.data;
             }, error => {
                 console.log(error)
@@ -318,7 +317,6 @@ export default {
             //se llama al metodo mostrar usuarios inhabilitados
             servicioproducto.mostrarInhabilitados().then(data => {
                 const response = data
-                console.log(response)
                 if (response.status === 200) {
                     this.productos = response.data;
                 } else {
@@ -455,8 +453,6 @@ export default {
                     //se llama al metodo modificar productos
                     servicioproducto.modificar(this.producto, this.id_producto).then(data => {
                         const response = data
-
-                        console.log(response)
                         if (response.status === 200) {
                             this.$swal.fire({
                                 icon: 'success',
