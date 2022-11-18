@@ -47,7 +47,7 @@
             Movimientos
           </nav-item>
           <nav-item v-if="$store.state.rol == 'admin' " icon="fas fa-users" link="/gestion-usuario">
-            Gestión de Usuarios
+            AdmUsuarios
           </nav-item>
           <nav-item icon="fas fa-info-circle" link="/about">
             Información del sistema

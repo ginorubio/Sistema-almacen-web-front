@@ -15,7 +15,7 @@
                 </div>
                 <div class="inhabilitados" :class="{ estadoinhabilitado: activeProductoInhabilitados }">
                     <button type="button" @click="activeProductoInhabilitados == true, mostrarProductosInhabilitados()">
-                        <i class="fas fa-circle mr-2" aria-hidden="true"></i> <strong>Inhabilitados</strong>
+                        <i class="fas fa-circle mr-2" aria-hidden="true"></i> <strong>Deshabilitados</strong>
                     </button>
                 </div>
             </div>
@@ -161,7 +161,7 @@
                     <td>
                         <button @click="showModal = true; modificar = 3; abrirModal(producto)"
                             class="btn btn-info mr-2"><i class="fa fa-eye" aria-hidden="true"></i></button>
-                        <button  v-if="$store.state.rol == 'jefe_almacen'" @click="showModal = true; modificar = 2; abrirModal(producto)"
+                        <button  v-if="$store.state.rol == 'jefe_almacen' && producto.estado != 'inhabilitado'" @click="showModal = true; modificar = 2; abrirModal(producto)"
                             class="btn btn-success mr-2"><i class="far fa-edit" aria-hidden="true"></i></button>
                         <button v-if="producto.estado != 'habilitado' && $store.state.rol == 'jefe_almacen'"
                             type="button" @click="ascenderProducto(producto)" class="btn btn-primary mr-2"><i
@@ -337,12 +337,12 @@ export default {
                 buttonsStyling: false
             })
             alertEliminar.fire({
-                title: 'Desea ascender un producto?',
-                text: `Se ascenderá el producto ${producto.descripcion}`,
+                title: '¿Está seguro de dar de alta?',
+                text: `Se dará de alta al producto ${producto.descripcion}`,
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Sí, ascender esto!',
-                cancelButtonText: 'No, Cancelar!',
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
                 reverseButtons: true
             }).then(async (result) => {
 
@@ -354,22 +354,22 @@ export default {
                         const response = data
                         if (response.status === 200) {
                             alertEliminar.fire(
-                                'Ascendido!',
-                                `El producto ${producto.descripcion}.`,
+                                'Se dio de alta!',
+                                `El producto ${producto.descripcion} fue dado de alta.`,
                                 'success'
                             )
                             this.mostrarProductos();
                         } else {
                             alertEliminar.fire(
                                 'Cancelado',
-                                `El producto ${producto.descripcion} no se pudo ascender.`,
+                                `El producto ${producto.descripcion} no se pudo dar de alta.`,
                                 'error'
                             )
                         }
                     }, error => {
                         alertEliminar.fire(
                             'Cancelado',
-                            `El producto ${producto.descripcion} no se pudo ascender.`,
+                            `El producto ${producto.descripcion} no se pudo dar de alta.`,
                             'error'
                         )
                     })
@@ -377,7 +377,7 @@ export default {
                 } else if (result.dismiss === this.$swal.DismissReason.cancel) {
                     alertEliminar.fire(
                         'Cancelado',
-                        `El producto ${producto.descripcion} no fue ascender.`,
+                        `El producto ${producto.descripcion} no se pudo dar de alta.`,
                         'error'
                     )
                 }
@@ -394,12 +394,12 @@ export default {
                 buttonsStyling: false
             })
             alertEliminar.fire({
-                title: 'Desea descender el producto?',
-                text: `Se descenderá el producto ${producto.descripcion}`,
+                title: '¿Está seguro de dar de baja?',
+                text: `Se dará de baja al producto ${producto.descripcion}`,
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Sí, descender esto!',
-                cancelButtonText: 'No, Cancelar!',
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
                 reverseButtons: true
             }).then(async (result) => {
 
@@ -411,22 +411,22 @@ export default {
                         const response = data
                         if (response.status === 200) {
                             alertEliminar.fire(
-                                'Descendido!',
-                                `El producto ${producto.nombre}.`,
+                                'Se dio de baja!',
+                                `El producto ${producto.nombre} fue dado de baja.`,
                                 'success'
                             )
                             this.mostrarProductos();
                         } else {
                             alertEliminar.fire(
                                 'Cancelado',
-                                `El producto ${producto.nombre} no se pudo descender.`,
+                                `El producto ${producto.nombre} no se pudo dar de baja.`,
                                 'error'
                             )
                         }
                     }, error => {
                         alertEliminar.fire(
                             'Cancelado',
-                            `El producto ${producto.nombre} no se pudo descender.`,
+                            `El producto ${producto.nombre} no se pudo dar de baja.`,
                             'error'
                         )
                     })
@@ -434,7 +434,7 @@ export default {
                 } else if (result.dismiss === this.$swal.DismissReason.cancel) {
                     alertEliminar.fire(
                         'Cancelado',
-                        `El producto ${producto.nombre} no fue descender.`,
+                        `El producto ${producto.nombre} no se pudo dar de baja.`,
                         'error'
                     )
                 }

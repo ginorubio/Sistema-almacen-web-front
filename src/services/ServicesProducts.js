@@ -106,7 +106,7 @@ export class ServicioProducto {
 
     async buscar(id_producto){
         try {
-            const res = await fetch(this.URL+'/'+id_producto,{headers: this.cabecera})
+            const res = await fetch(this.URL+'/read/'+id_producto,{headers: this.cabecera})
             const response = await res.json()
             return response
         } catch (error) {

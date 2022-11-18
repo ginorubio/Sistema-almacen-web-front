@@ -16,7 +16,7 @@
                 <div class="inhabilitados" :class="{ estadoinhabilitado: activeCategoriaInhabilitados }">
                     <button type="button"
                         @click="activeCategoriaInhabilitados == true, mostrarCategoriasInhabilitados()">
-                        <i class="fas fa-circle mr-2" aria-hidden="true"></i> <strong>Inhabilitados</strong>
+                        <i class="fas fa-circle mr-2" aria-hidden="true"></i> <strong>Deshabilitados</strong>
                     </button>
                 </div>
             </div>
@@ -91,7 +91,7 @@
                     <td>{{ categoria.codigo }}</td>
                     <td>{{ categoria.nombre }}</td>
                     <td>
-                        <button v-if="$store.state.rol == 'jefe_almacen'"
+                        <button v-if="false"
                             @click="showModal = true; modificar = true; abrirModal(categoria)"
                             class="btn btn-success mr-2"><i class="far fa-edit" aria-hidden="true"></i></button>
                         <button v-if="categoria.estado != 'habilitado' && $store.state.rol == 'jefe_almacen'" type="button"
@@ -219,12 +219,12 @@ export default {
                 buttonsStyling: false
             })
             alertEliminar.fire({
-                title: 'Desea descender la categoría?',
-                text: `Se Descenderá la categoría ${categoria.nombre}`,
+                title: '¿Está seguro de dar de baja?',
+                text: `Se dará de baja a la categoría ${categoria.nombre}`,
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Sí, Descender!',
-                cancelButtonText: 'No, Cancelar!',
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
                 reverseButtons: true
             }).then(async (result) => {
 
@@ -236,22 +236,22 @@ export default {
                         const response = data
                         if (response.status == 200) {
                             alertEliminar.fire(
-                                'Descendido!',
-                                `La categoría ${categoria.nombre}.`,
+                                'Se dio de baja!',
+                                `La categoría ${categoria.nombre} fue dada de baja.`,
                                 'success'
                             )
                             this.mostrarCategorias();
                         } else {
                             alertEliminar.fire(
                                 'Cancelado',
-                                `La categoría ${categoria.nombre} no se pudo descender.`,
+                                `La categoría ${categoria.nombre} no se pudo dar de baja.`,
                                 'error'
                             )
                         }
                     }, error => {
                         alertEliminar.fire(
                             'Cancelado',
-                            `La categoría ${categoria.nombre} no se pudo descender.`,
+                            `La categoría ${categoria.nombre} no se pudo dar de baja.`,
                             'error'
                         )
                     })
@@ -259,7 +259,7 @@ export default {
                 } else if (result.dismiss === this.$swal.DismissReason.cancel) {
                     alertEliminar.fire(
                         'Cancelado',
-                        `La categoría ${categoria.nombre} no fue descender.`,
+                        `La categoría ${categoria.nombre} no fue dar de baja.`,
                         'error'
                     )
                 }
@@ -276,12 +276,12 @@ export default {
                 buttonsStyling: false
             })
             alertEliminar.fire({
-                title: 'Desea ascender la categoría?',
-                text: `Se ascenderá la categoría ${categoria.nombre}`,
+                title: '¿Está seguro de dar de alta?',
+                text: `Se dar de alta a la categoría ${categoria.nombre}`,
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Sí, ascender!',
-                cancelButtonText: 'No, Cancelar!',
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
                 reverseButtons: true
             }).then(async (result) => {
 
@@ -293,22 +293,22 @@ export default {
                         const response = data
                         if (response.status == 200) {
                             alertEliminar.fire(
-                                'Ascendido!',
-                                `La categoría ${categoria.nombre}.`,
+                                'Se dio de alta!',
+                                `La categoría ${categoria.nombre} fue dada de alta.`,
                                 'success'
                             )
                             this.mostrarCategorias();
                         } else {
                             alertEliminar.fire(
                                 'Cancelado',
-                                `La categoría ${categoria.nombre} no se pudo ascender.`,
+                                `La categoría ${categoria.nombre} no se pudo dar de alta.`,
                                 'error'
                             )
                         }
                     }, error => {
                         alertEliminar.fire(
                             'Cancelado',
-                            `La categoría ${categoria.nombre} no se pudo ascender.`,
+                            `La categoría ${categoria.nombre} no se pudo dar de alta.`,
                             'error'
                         )
                     })
@@ -316,7 +316,7 @@ export default {
                 } else if (result.dismiss === this.$swal.DismissReason.cancel) {
                     alertEliminar.fire(
                         'Cancelado',
-                        `La categoría ${categoria.nombre} no fue ascender.`,
+                        `La categoría ${categoria.nombre} no se pudo dar de alta.`,
                         'error'
                     )
                 }

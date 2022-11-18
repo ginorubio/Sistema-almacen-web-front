@@ -1,5 +1,5 @@
 <template>
-    <content-header title="Gestión de Usuarios" />
+    <content-header title="AdmUsuarios" />
     <div class="col-12 mb-2">
         <!-- Button to Open the Modal -->
         <button id="show-modal" type="button" @click.prevent="showModal = true, modificar = 1; abrirModal()"
@@ -15,7 +15,7 @@
                 </div>
                 <div class="inhabilitados" :class="{ estadoinhabilitado: activeUsuarioInhabilitados }">
                     <button type="button" @click="activeUsuarioInhabilitados == true, mostrarUsuarioInhabilitados()">
-                        <i class="fas fa-circle mr-2" aria-hidden="true"></i> <strong>Inhabilitados</strong>
+                        <i class="fas fa-circle mr-2" aria-hidden="true"></i> <strong>Deshabilitados</strong>
                     </button>
                 </div>
             </div>
@@ -30,9 +30,6 @@
                 <h3>{{ tituloModal }}</h3>
             </template>
             <template #body>
-
-
-
                 <div class="row">
                     <div class="col-12 mb-2">
                         <div class="form-group">
@@ -166,7 +163,7 @@
                     <td>
                         <button v-if="false" @click="showModal = true; modificar = 3; abrirModal(usuario)"
                             class="btn btn-info mr-2"><i class="fa fa-eye" aria-hidden="true"></i></button>
-                        <button @click="showModal = true; modificar = 2; abrirModal(usuario)"
+                        <button v-if="usuario.estado != 'inhabilitado'" @click="showModal = true; modificar = 2; abrirModal(usuario)"
                             class="btn btn-success mr-2"><i class="far fa-edit" aria-hidden="true"></i></button>
                         <button v-if="false" type="button" @click="borrarUsuario(usuario)" class="btn btn-danger"><i
                                 class="fa fa-eye-slash" aria-hidden="true"></i></button>
@@ -322,12 +319,12 @@ export default {
                 buttonsStyling: false
             })
             alertEliminar.fire({
-                title: 'Desea descender al usuario?',
-                text: `Se descenderá el usuario ${usuario.username}`,
+                title: '¿Está seguro de dar de baja?',
+                text: `Se dará de baja al usuario ${usuario.username}`,
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Sí, descender!',
-                cancelButtonText: 'No, Cancelar!',
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
                 reverseButtons: true
             }).then(async (result) => {
 
@@ -339,22 +336,22 @@ export default {
                         const response = data
                         if (response.status === 200) {
                             alertEliminar.fire(
-                                'Descendido!',
-                                `El usuario ${usuario.username} fue descendido.`,
+                                'Se dio de baja!',
+                                `El usuario ${usuario.username} fue dado de baja.`,
                                 'success'
                             )
                             this.mostrarUsuarios();
                         } else {
                             alertEliminar.fire(
                                 'Cancelado',
-                                ` ${usuario.username} no se pudo descender.`,
+                                ` ${usuario.username} no se pudo dar de baja.`,
                                 'error'
                             )
                         }
                     }, error => {
                         alertEliminar.fire(
                             'Cancelado',
-                            `El usuario ${usuario.username} no se pudo descender.`,
+                            `El usuario ${usuario.username} no se pudo dar de baja.`,
                             'error'
                         )
                     })
@@ -362,7 +359,7 @@ export default {
                 } else if (result.dismiss === this.$swal.DismissReason.cancel) {
                     alertEliminar.fire(
                         'Cancelado',
-                        `El usuario ${usuario.username} no fue descender.`,
+                        `El usuario ${usuario.username} no se pudo dar de baja.`,
                         'error'
                     )
                 }
@@ -379,12 +376,12 @@ export default {
                 buttonsStyling: false
             })
             alertEliminar.fire({
-                title: 'Desea ascender al usuario?',
-                text: `Se ascenderá al usuario ${usuario.username}`,
+                title: '¿Está seguro de dar de alta?',
+                text: `Se dará de alta al usuario ${usuario.username}`,
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Sí, ascender!',
-                cancelButtonText: 'No, Cancelar!',
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
                 reverseButtons: true
             }).then(async (result) => {
 
@@ -396,22 +393,22 @@ export default {
                         const response = data
                         if (response.status === 200) {
                             alertEliminar.fire(
-                                'Ascendido!',
-                                `El usuario ${usuario.username} fue ascendido.`,
+                                'Se dio de alta!',
+                                `El usuario ${usuario.username} fue dado de alta.`,
                                 'success'
                             )
                             this.mostrarUsuarios();
                         } else {
                             alertEliminar.fire(
                                 'Cancelado',
-                                ` ${usuario.username} no se pudo ascender.`,
+                                ` ${usuario.username} no se pudo dar de alta.`,
                                 'error'
                             )
                         }
                     }, error => {
                         alertEliminar.fire(
                             'Cancelado',
-                            `El usuario ${usuario.username} no se pudo ascender.`,
+                            `El usuario ${usuario.username} no se pudo dar de alta.`,
                             'error'
                         )
                     })
@@ -419,7 +416,7 @@ export default {
                 } else if (result.dismiss === this.$swal.DismissReason.cancel) {
                     alertEliminar.fire(
                         'Cancelado',
-                        `El usuario ${usuario.username} no fue ascender.`,
+                        `El usuario ${usuario.username} no se pudo dar de alta.`,
                         'error'
                     )
                 }

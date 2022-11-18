@@ -7,14 +7,14 @@
     </div>
     <div class="login-container">
       <form @submit.prevent="login()">
-        <img class="avatar" src="../assets/icono-user.png" alt="">
-        <h1>{{ $store.state.app.name }}</h1>
+        <img class="avatar" src="../assets/logo.png" alt="">
+        
         <div class="input-div one">
           <div class="i">
             <i class="fas fa-user" aria-hidden="true"></i>
           </div>
           <div>
-            <h5>Usuario</h5>
+            <h5>Correo</h5>
             <input class="input" type="email" required v-model="usuario.email">
           </div>
         </div>
@@ -117,7 +117,8 @@ form {
 }
 
 .avatar {
-  width: 100px;
+  width: 250px;
+  
 }
 
 form h1 {
