@@ -320,7 +320,7 @@ export default {
             this.productosPaginados = obj;
         },
         mostrarProductos() {
-            this.activeProductoHabilitadosduc = true;
+            this.activeProductoHabilitados = true;
             this.activeProductoInhabilitados = false;
             //instancia del servicio de productos
             const servicioproducto = new ServicioProducto()
