@@ -80,6 +80,7 @@ export class ServicioUsuario {
         try {
             const res = await fetch(this.URL + '/read/' + id_usuario, { headers: this.cabecera })
             const response = await res.json()
+            console.log("status usuario: "+response.status)
             return response
         } catch (error) {
             return error

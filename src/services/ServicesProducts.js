@@ -120,8 +120,10 @@ export class ServicioProducto {
         try {
             const res = await fetch(this.URL+'/read/'+id_producto,{headers: this.cabecera})
             const response = await res.json()
+            console.log("devuelve: "+response.status)
             return response
         } catch (error) {
+            console.log(error)
             return error
         }
     }

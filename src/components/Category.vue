@@ -72,7 +72,7 @@
 
             <template #button_buscar>
                 <label class="mr-2" for="">BUSCAR:</label>
-                <input class="rounded-pill" type="search" v-model="cadena_buscar">
+                <input class="rounded-pill" type="search" placeholder="Buscar por nombre" v-model="cadena_buscar">
                 <button class="btn btn-primary" @click="buscar(cadena_buscar)"><i class="fas fa-search"
                         aria-hidden="true"></i></button>
             </template>

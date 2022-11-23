@@ -73,9 +73,15 @@
                     <div class="col-12 mb-2">
                         <div class="form-group">
                             <label>Precio</label>
-                            <input v-if="modificar == 3" disabled type="number" class="form-control"
-                                v-model="producto.precio">
-                            <input v-else type="number" class="form-control" v-model="producto.precio">
+                            <div class="d-flex">
+                                <div class="d-flex codigo-inicio">
+                                    <p>S/</p>
+                                </div>
+                                <input v-if="modificar == 3" disabled type="number" class="form-control"
+                                    v-model="producto.precio">
+                                <input v-else type="number" class="form-control" v-model="producto.precio">
+                            </div>
+
                         </div>
                         <div class="text-danger" v-if="v$.producto.precio.$error">
                             {{ v$.producto.precio.$errors[0].$message }}
@@ -94,10 +100,28 @@
                     </div>
                     <div class="col-12 mb-2">
                         <div class="form-group">
-                            <label>Costo</label>
+                            <label>Stock Mínimo</label>
                             <input v-if="modificar == 3" disabled type="number" class="form-control"
-                                v-model="producto.costo">
-                            <input v-else type="number" class="form-control" v-model="producto.costo">
+                                v-model="producto.stockMinimo">
+                            <input v-else type="number" class="form-control" v-model="producto.stockMinimo">
+                        </div>
+                        <div class="text-danger" v-if="v$.producto.stockMinimo.$error">
+                            {{ v$.producto.stockMinimo.$errors[0].$message }}
+                        </div>
+                    </div>
+
+
+                    <div class="col-12 mb-2">
+                        <div class="form-group">
+                            <label>Costo</label>
+                            <div class="d-flex">
+                                <div class="d-flex codigo-inicio">
+                                    <p>S/</p>
+                                </div>
+                                <input v-if="modificar == 3" disabled type="number" class="form-control"
+                                    v-model="producto.costo">
+                                <input v-else type="number" class="form-control" v-model="producto.costo">
+                            </div>
                         </div>
                         <div class="text-danger" v-if="v$.producto.costo.$error">
                             {{ v$.producto.costo.$errors[0].$message }}
@@ -134,7 +158,7 @@
         <data-table :lista="productos" @getValues="setValues">
             <template #button_buscar>
                 <label class="mr-2" for="">BUSCAR:</label>
-                <input class="rounded-pill" type="search" v-model="cadena_buscar">
+                <input class="rounded-pill" placeholder="Buscar por código" type="search" v-model="cadena_buscar">
                 <button class="btn btn-primary mr-2" @click="buscar(cadena_buscar)"><i class="fas fa-search"
                         aria-hidden="true"></i></button>
                 <button class="btn btn-primary" @click="mostrarStockMinimo()"><i class="fas fa-search mr-1"
@@ -148,6 +172,7 @@
                     <th scope="col">DESCRIPCION</th>
                     <th scope="col">PRECIO</th>
                     <th scope="col">STOCK</th>
+                    <th scope="col">STOCK MINIMO</th>
                     <th scope="col">ACCIONES</th>
                 </tr>
             </template>
@@ -160,6 +185,7 @@
                     <td>{{ producto.descripcion }}</td>
                     <td>{{ producto.precio }}</td>
                     <td>{{ producto.stock }}</td>
+                    <td>{{ producto.stockMinimo }}</td>
                     <td>
                         <button @click="showModal = true; modificar = 3; abrirModal(producto)"
                             class="btn btn-info mr-2"><i class="fa fa-eye" aria-hidden="true"></i></button>
@@ -219,6 +245,7 @@ export default {
                 nombre: "",
                 codigo: "",
                 stock: "",
+                stockMinimo: "",
                 costo: "",
                 estado: ""
             },
@@ -270,6 +297,10 @@ export default {
                     required: helpers.withMessage('El valor es requerido', required),
                     minValue: helpers.withMessage('El mínimo valor es 0', minValue(0))
                 },
+                stockMinimo: {
+                    required: helpers.withMessage('El valor es requerido', required),
+                    minValue: helpers.withMessage('El mínimo valor es 0', minValue(0))
+                },
                 //validaciones para el campo de costo
                 costo: {
                     required: helpers.withMessage('El valor es requerido', required),
@@ -311,7 +342,7 @@ export default {
                 console.log(response)
                 if (response.status === 200) {
                     this.productos = response.data;
-                    
+
                 } else {
                     console.log(error)
                 }
@@ -544,6 +575,7 @@ export default {
                 this.id_producto = data._id;
                 this.producto.descripcion = data.descripcion;
                 this.producto.stock = data.stock;
+                this.producto.stockMinimo = data.stockMinimo;
                 this.producto.costo = data.costo;
                 this.producto.precio = data.precio;
                 this.producto.nombre = data.nombre;
@@ -559,6 +591,7 @@ export default {
                 this.id_producto = data._id;
                 this.producto.descripcion = data.descripcion;
                 this.producto.stock = data.stock;
+                this.producto.stockMinimo = data.stockMinimo;
                 this.producto.costo = data.costo;
                 this.producto.precio = data.precio;
                 this.producto.nombre = data.nombre;
@@ -572,6 +605,7 @@ export default {
             this.producto.precio = 0;
             this.producto.nomcategoria = '';
             this.producto.stock = 0;
+            this.producto.stockMinimo = 0;
             this.producto.costo = 0;
             this.producto.nombre = '';
             this.producto.codigo = '';
@@ -593,7 +627,7 @@ export default {
                         this.$swal.fire({
                             icon: 'error',
                             title: 'Oops...',
-                            text: 'No se pudo encontrar el producto!',
+                            text: `${response.message}!`,
                         })
                     }
                 }, error => {
