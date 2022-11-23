@@ -135,8 +135,10 @@
             <template #button_buscar>
                 <label class="mr-2" for="">BUSCAR:</label>
                 <input class="rounded-pill" type="search" v-model="cadena_buscar">
-                <button class="btn btn-primary" @click="buscar(cadena_buscar)"><i class="fas fa-search"
+                <button class="btn btn-primary mr-2" @click="buscar(cadena_buscar)"><i class="fas fa-search"
                         aria-hidden="true"></i></button>
+                <button class="btn btn-primary" @click="mostrarStockMinimo()"><i class="fas fa-search mr-1"
+                        aria-hidden="true"></i>Stock Mínimo</button>
             </template>
             <template #thead>
                 <tr>
@@ -161,7 +163,8 @@
                     <td>
                         <button @click="showModal = true; modificar = 3; abrirModal(producto)"
                             class="btn btn-info mr-2"><i class="fa fa-eye" aria-hidden="true"></i></button>
-                        <button  v-if="$store.state.rol == 'jefe_almacen' && producto.estado != 'inhabilitado'" @click="showModal = true; modificar = 2; abrirModal(producto)"
+                        <button v-if="$store.state.rol == 'jefe_almacen' && producto.estado != 'inhabilitado'"
+                            @click="showModal = true; modificar = 2; abrirModal(producto)"
                             class="btn btn-success mr-2"><i class="far fa-edit" aria-hidden="true"></i></button>
                         <button v-if="producto.estado != 'habilitado' && $store.state.rol == 'jefe_almacen'"
                             type="button" @click="ascenderProducto(producto)" class="btn btn-primary mr-2"><i
@@ -294,6 +297,25 @@ export default {
             servicioproducto.mostrar().then(data => {
                 const response = data
                 this.productos = response.data;
+            }, error => {
+                console.log(error)
+            })
+        },
+        mostrarStockMinimo() {
+
+
+            const servicioproducto = new ServicioProducto()
+
+            servicioproducto.mostrarStockMinimo().then(data => {
+                const response = data
+                console.log(response)
+                if (response.status === 200) {
+                    this.productos = response.data;
+                    
+                } else {
+                    console.log(error)
+                }
+
             }, error => {
                 console.log(error)
             })

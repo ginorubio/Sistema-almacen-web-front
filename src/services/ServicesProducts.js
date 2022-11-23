@@ -25,6 +25,18 @@ export class ServicioProducto {
         }
     }
 
+    async mostrarStockMinimo(){
+        try{
+
+            const res = await fetch(this.URL+"/stockminimo", {headers: this.cabecera})
+            const response = await res.json()
+            return response;
+
+        }catch(error){
+            return error
+        }
+    }
+
     async mostrarInhabilitados() {
         try {
             //ruta con el endpoint del back para listar los productos
