@@ -161,7 +161,7 @@
                 <input class="rounded-pill" placeholder="Buscar por código" type="search" v-model="cadena_buscar">
                 <button class="btn btn-primary mr-2" @click="buscar(cadena_buscar)"><i class="fas fa-search"
                         aria-hidden="true"></i></button>
-                <button class="btn btn-primary" @click="mostrarStockMinimo()"><i class="fas fa-search mr-1"
+                <button v-if="activeProductoHabilitados" class="btn btn-primary" @click="mostrarStockMinimo()"><i class="fas fa-search mr-1"
                         aria-hidden="true"></i>Stock Mínimo</button>
             </template>
             <template #thead>
