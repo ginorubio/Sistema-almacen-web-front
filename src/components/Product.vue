@@ -319,6 +319,11 @@ export default {
             //retorno de la lista paginada
             this.productosPaginados = obj;
         },
+        /* 
+            Autor: Deyvi Ramos Panaifo
+            fecha: 15/11/2022
+            función relacionada al CUS de Listar Productos Habilitados
+        */
         mostrarProductos() {
             this.activeProductoHabilitados = true;
             this.activeProductoInhabilitados = false;
@@ -332,6 +337,11 @@ export default {
                 console.log(error)
             })
         },
+        /* 
+            Autor: Deyvi Ramos Panaifo
+            fecha: /11/2022
+            función relacionada al CUS de Listar Productos con stock mínimo
+        */
         mostrarStockMinimo() {
 
 
@@ -362,6 +372,11 @@ export default {
                 console.log(error)
             })
         },
+        /* 
+            Autor: Aldo Ramirez
+            fecha: 15/11/2022
+            función relacionada al CUS de Listar Productos InHabilitados
+        */
         mostrarProductosInhabilitados() {
             this.activeProductoHabilitados = false;
             this.activeProductoInhabilitados = true;
@@ -379,9 +394,14 @@ export default {
                 console.log(error)
             })
         },
+        /* 
+            Autor: Gino Rubio Pacheco
+            fecha: 14/11/2022
+            función relacionada al CUS de Dar de alta Producto
+        */
         ascenderProducto(producto) {
 
-            //Alert para eliminación
+            //Alert para dar de alta
             const alertEliminar = this.$swal.mixin({
                 customClass: {
                     confirmButton: 'btn btn-success',
@@ -436,9 +456,14 @@ export default {
                 }
             })
         },
+        /* 
+            Autor: Deyvi Ramos Panaifo
+            fecha: 07/11/2022
+            función relacionada al CUS de Dar de baja Producto
+        */
         descenderProducto(producto) {
 
-            //Alert para eliminación
+            //Alert para dar de baja
             const alertEliminar = this.$swal.mixin({
                 customClass: {
                     confirmButton: 'btn btn-success',
@@ -499,6 +524,11 @@ export default {
 
             //verificamos las validaciones realizadas en los campos
             if (!this.v$.$error) {
+                /* 
+                    Autor: Gino Rubio Pacheco
+                    fecha: 07/11/2022
+                    función relacionada al CUS de Editar Productos
+                */
                 if (this.modificar == 2) {
 
                     //instancia del servicio de producto
@@ -533,6 +563,11 @@ export default {
                         })
                     })
                 } else {
+                    /* 
+                        Autor: Gino Rubio Pacheco
+                        fecha: 07/11/2022
+                        función relacionada al CUS de Registrar Productos
+                    */
                     //instancia del servicio de producto
                     const servicioproducto = new ServicioProducto()
                     //se llama al metodo registrar productos
@@ -611,13 +646,18 @@ export default {
             this.producto.codigo = '';
 
         },
-        buscar(id) {
-            if (id) {
+        /* 
+            Autor: Gino Rubio Pacheco
+            fecha: /11/2022
+            función relacionada al CUS de Buscar Productos por código
+        */
+        buscar(codigo) {
+            if (codigo) {
                 let producto = []
                 //instancia del servicio de producto
                 const servicioproducto = new ServicioProducto()
                 //se llama al metodo buscar productos
-                servicioproducto.buscar(id).then(data => {
+                servicioproducto.buscar(codigo).then(data => {
                     const response = data
 
                     if (response.status === 200) {

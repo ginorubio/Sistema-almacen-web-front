@@ -360,6 +360,11 @@ export default {
                         })
                     })
                 } else {
+                    /* 
+                        Autor: Aldo Ramirez
+                        fecha: 22/10/2022
+                        función relacionada al CUS de Registar Categoria
+                    */
                     this.categoria.codigo = "C" + this.categoria.codigo;
                     //instancia del servicio de categorias
                     const serviciocategorias = new ServicioCategorias()
@@ -414,6 +419,11 @@ export default {
             this.categoria.codigo = '';
             this.categoria.estado = '';
         },
+        /* 
+            Autor: Aldo Ramirez
+            fecha: 30/10/2022
+            función relacionada al CUS de Buscar Categoria por nombre
+        */
         buscar(nombre) {
             if (nombre) {
                 const serviciocategoria = new ServicioCategorias()

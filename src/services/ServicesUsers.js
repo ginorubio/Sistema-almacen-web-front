@@ -33,7 +33,12 @@ export class ServicioUsuario {
             return error
         }
     }
-
+    /* 
+        Autor: Deyvi Ramos Panaifo
+        fecha: 24/10/2022
+        llamada a la api al CUS de Dar de baja Producto desde el Front-End al
+        Back-End 
+    */
     async descenderUsuario(id_usuario) {
         try {
             const res = await fetch(this.URL + '/inhabilitar/' + id_usuario, { method: 'PUT', headers: this.cabecera})
@@ -54,7 +59,12 @@ export class ServicioUsuario {
             return error
         }
     }
-
+    /* 
+        Autor: Deyvi Ramos Panaifo
+        fecha: 17/10/2022
+        llamada a la api al CUS de registrar Producto desde el Front-End al
+        Back-End 
+    */
     async registrar(usuario) {
         try {
             const res = await fetch(this.URL+"/create" , { method: 'POST', headers: this.cabecera, body: JSON.stringify(usuario) })
@@ -65,7 +75,12 @@ export class ServicioUsuario {
             return error
         }
     }
-
+    /* 
+        Autor: Aldo Ramirez
+        fecha: 17/10/2022
+        llamada a la api del CUS de Editar Producto desde el Front-End al
+        Back-End 
+    */
     async modificar(usuario, id_usuario) {
         try {
             const res = await fetch(this.URL + '/update/' + id_usuario, {method: 'PUT', headers: this.cabecera, body: JSON.stringify(usuario)} )
@@ -75,7 +90,12 @@ export class ServicioUsuario {
             return error
         }
     }
-
+    /* 
+        Autor: Gino Rubio Pacheco
+        fecha: 24/10/2022
+        llamada a la api del CUS de Editar Producto desde el Front-End al
+        Back-End 
+    */
     async buscar(id_usuario) {
         try {
             const res = await fetch(this.URL + '/read/' + id_usuario, { headers: this.cabecera })

@@ -308,6 +308,11 @@ export default {
                 console.log(error)
             })
         },
+        /* 
+            Autor: Deyvi Ramos Panaifo
+            fecha: 22/10/2022
+            función relacionada al CUS de Dar de baja Usuario
+        */
         descenderUsuario(usuario) {
 
             //Alert para eliminación
@@ -427,6 +432,11 @@ export default {
             this.v$.$validate();
             //verificamos las validaciones realizadas en los campos
             if (!this.v$.$error) {
+                /* 
+                    Autor: Aldo Ramirez
+                    fecha: 15/10/2022
+                    función relacionada al CUS de Editar Usuario
+                */
                 if (this.modificar == 2) {
                     //instancia del servicio de usuarios
                     const serviciousuario = new ServicioUsuario()
@@ -465,6 +475,11 @@ export default {
                         })
                     })
                 } else {
+                    /* 
+                        Autor: Deyvi Ramos Panaifo
+                        fecha: 15/10/2022
+                        función relacionada al CUS de Registrar Usuario
+                    */
                     //instancia del servicio de usuarios
                     const serviciousuario = new ServicioUsuario()
                     //se llama al metodo registrar usuarios
@@ -540,6 +555,11 @@ export default {
             this.usuario.repassword = '';
             this.usuario.roles = '';
         },
+        /* 
+            Autor: Gino Rubio Pacheco
+            fecha: 23/10/2022
+            función relacionada al CUS de Buscar Usuario por dni
+        */
         buscar(dni) {
             if (dni) {
                 let usuario = []

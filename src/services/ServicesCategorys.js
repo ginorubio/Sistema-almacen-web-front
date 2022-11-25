@@ -55,7 +55,12 @@ export class ServicioCategorias {
             return error
         }
     }
-
+    /* 
+        Autor: Aldo Ramirez
+        fecha: 24/10/2022
+        llamada a la api del CUS de Registar Categoria desde el Front-End al
+        Back-End 
+    */
     async  registrar(categoria) {
         try {
             const res = await fetch(this.URL+"/create", { method: 'POST', headers: this.cabecera, body: JSON.stringify(categoria)} )
@@ -77,11 +82,17 @@ export class ServicioCategorias {
         }
     }
     
-
+    /* 
+        Autor: Aldo Ramirez
+        fecha: 31/10/2022
+        llamada a la api del CUS de Buscar Categoria por nombre desde el Front-End al
+        Back-End 
+    */
     async buscar(nombre){
         try {
             const res = await fetch(this.URL+'/read/byname/'+nombre,{headers: this.cabecera})
             const response = await res.json()
+            console.log(response)
             return response
         } catch (error) {
             return error

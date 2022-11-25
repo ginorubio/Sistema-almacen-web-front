@@ -52,6 +52,11 @@ export default {
     }
   },
   methods: {
+    /* 
+      Autor: Gino Rubio Pacheco
+      fecha: 15/10/2022
+      función relacionada al CUS de Iniciar Sesion
+    */
     async login() {
       const servicioauth = new ServicioAuth()
 
