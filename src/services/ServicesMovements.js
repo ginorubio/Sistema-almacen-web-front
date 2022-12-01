@@ -1,7 +1,7 @@
 import store from '../store'
 
 export class ServicioMovimientos {
-    URL = "http://localhost:4000/api/tienda/movimientos"
+    URL = "http://localhost:4000/api/movimiento"
     constructor() {
         this.cabecera = {
             'Content-Type': 'application/json',
@@ -31,7 +31,12 @@ export class ServicioMovimientos {
             return error
         }
     }
-
+    /* 
+        Autor: Gino Rubio Pacheco
+        fecha: /11/2022
+        llamada a la api al CUS de Resgistrar movimiento desde el Front-End al
+        Back-End 
+    */
     async registrar(movimiento) {
         try {
             const res = await fetch(this.URL + "/create", { method: 'POST', headers: this.cabecera, body: JSON.stringify(movimiento)})

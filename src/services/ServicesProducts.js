@@ -154,7 +154,7 @@ export class ServicioProducto {
     }
     /* 
         Autor: Gino Rubio Pacheco
-        fecha: /11/2022
+        fecha: 22/11/2022
         llamada a la api al CUS de Buscar Productos por código desde el Front-End al
         Back-End 
     */

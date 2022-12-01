@@ -8,7 +8,8 @@ export default createStore({
       name: 'Almacenera Mercantil',  
     },
     username: '',
-    rol: ''
+    rol: '',
+    id: ''
 
   },
   getters: {
@@ -19,14 +20,17 @@ export default createStore({
       //para posteriormente ser guardados en el state de la aplicacion
       //y accedido desde cualquier parte de la aplicacion
       let decoded = VueJwtDecode.decode(token);
+      console.log("Decodificacion: "+token)
       state.username = decoded.username;
       state.rol = decoded.rol;
+      state.id= decoded.id;
       state.token = token;
 
       //guardamos en el localStoge el token y datos generales del usuario
       localStorage.setItem('token', token)
       localStorage.setItem('username', decoded.username)
       localStorage.setItem('rol', decoded.rol)
+      localStorage.setItem('id',decoded.id)
     },
     leerToken(state) {
       if (localStorage.getItem('token')) {
@@ -34,6 +38,7 @@ export default createStore({
         state.token = localStorage.getItem('token')
         state.username = localStorage.getItem('username')
         state.rol = localStorage.getItem('rol')
+        state.id = localStorage.getItem('id')
       } else {
         state.token = null;
       }
@@ -42,9 +47,11 @@ export default createStore({
       localStorage.removeItem('token')
       localStorage.removeItem('username')
       localStorage.removeItem('rol')
+      localStorage.removeItem('id')
       state.token = null;
       state.username = null;
       state.rol = null;
+      state.id = null;
     }
   },
   actions: {

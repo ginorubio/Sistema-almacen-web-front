@@ -10,7 +10,7 @@
     <!-- Modal para agregar los movimientos -->
     <teleport to="body">
         <!-- use the modal component, pass in the prop -->
-        <modal :show="showModal" @close="showModal = false" tamanio="modal-xl">
+        <modal :show="showModal" @close="showModal = false; v$.$reset()" tamanio="modal-xl">
             <template #header>
                 <h3>{{ tituloModal }}</h3>
             </template>
@@ -19,8 +19,9 @@
                 <div class="row">
                     <div class="col-sm mb-2">
                         <div class="form-group">
-                            <label>N° Documento</label>
-                            <input type="text" class="form-control" v-model="movimiento.codigo">
+                            <label>Código</label>
+                            <input type="text" class="form-control" placeholder="Código de movimiento"
+                                v-model="movimiento.codigo">
                         </div>
                     </div>
 
@@ -35,8 +36,9 @@
                 <div class="row">
                     <div class="col-sm mb-2">
                         <div class="form-group">
-                            <label for="almacen">Almacen</label>
-                            <input type="text" class="form-control" v-model="movimiento.almacen" />
+                            <label for="factura">Código de Factura</label>
+                            <input type="text" class="form-control" placeholder="Código de factura"
+                                v-model="movimiento.factura" />
                         </div>
                     </div>
 
@@ -54,75 +56,62 @@
                 <div class="row">
                     <div class="col-12 col-sm-12 col-md-6 mb-2">
                         <div class="form-group">
-                            <label for="proveedor">Proveedor</label>
-                            <input type="text" class="form-control" v-model="movimiento.proveedor" />
+                            <label for="proveedor">Responsable</label>
+                            <input disabled type="text" class="form-control" v-model="movimiento.name_responsable" />
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-12 mb-2">
                         <div class="form-group">
-                            <button @click.prevent="showModal1 = true" type="text" class="btn btn-primary"><i aria-hidden="true"
-                                    class="fas fa-plus-circle"></i>Agregar Producto</button>
+                            <button @click.prevent="showModal1 = true" type="text" class="btn btn-primary"><i
+                                    aria-hidden="true" class="fas fa-plus-circle"></i>Agregar Producto</button>
                         </div>
                     </div>
                 </div>
-
-                <div class="row">
-                    <div class="col-12">
-                        <div class="table-responsive">
-                            <table class="table table-bordered" aria-label="tabla-detalle-movimiento">
-                                <thead class="bg-secondary text-white">
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>DESCRIPCION</th>
-                                        <th>UNIDAD</th>
-                                        <th>CANTIDAD</th>
-                                        <th>STOCKACTUAL</th>
-                                        <th>COSTO</th>
-                                        <th>ACCIONES</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>21565001</td>
-                                        <td>borrador faber castell</td>
-                                        <td>unidad</td>
-                                        <td>30</td>
-                                        <td>156</td>
-                                        <td>1.5</td>
-                                        <td>
-                                            <button class="btn btn-success mr-1"><i class="far fa-edit" aria-hidden="true"></i></button>
-                                            <button type="button" class="btn btn-danger"><i aria-hidden="true"
-                                                    class="fas fa-trash"></i></button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>215565001</td>
-                                        <td>Lapicero faber castell</td>
-                                        <td>unidad</td>
-                                        <td>50</td>
-                                        <td>200</td>
-                                        <td>2.0</td>
-                                        <td>
-                                            <button class="btn btn-success mr-1"><i class="far fa-edit" aria-hidden="true"></i></button>
-                                            <button type="button" class="btn btn-danger"><i aria-hidden="true" class="fas fa-trash" ></i></button>
-                                        </td>
-                                    </tr>
-
-                                </tbody>
-                            </table>
-
-                        </div>
-                    </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>CÓDIGO</th>
+                                <th>NOMBRE</th>
+                                <th>DESCRIPCION</th>
+                                <th>STOCK</th>
+                                <th>PRECIO</th>
+                                <th>CANTIDAD</th>
+                                <th>ACCIONES</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(detalle, index) in listaDetalleProductos" :key="detalle.producto.codigo">
+                                <td>{{ detalle.producto.codigo }}</td>
+                                <td>{{ detalle.producto.nombre }}</td>
+                                <td>{{ detalle.producto.descripcion }}</td>
+                                <td>{{ detalle.producto.stock }}</td>
+                                <td>{{ detalle.producto.precio }}</td>
+                                <td>
+                                    {{ detalle.cantidad }}
+                                </td>
+                                <td>
+                                    <button type="button" @click="borrarProducto(index)" class="btn btn-danger "><i
+                                            class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </template>
             <template #footer>
-                <button  type="button" class="btn btn-success"
-                    data-dismiss="modal">Guardar</button>
+                <button @click="guardar()" type="button" class="btn btn-success" data-dismiss="modal">Guardar</button>
             </template>
         </modal>
     </teleport>
+
+    <!--
+        Autor: Gino Rubio Pacheco
+        fecha: /11/2022
+        Modal asociado al CUS agregar producto al movimiento
+    -->
     <!-- Modal para agregar producto a los movimientos -->
     <teleport to="body">
         <!-- use the modal component, pass in the prop -->
@@ -136,14 +125,14 @@
                     <div class="col mb-2">
                         <div class="form-group">
                             <label>Código</label>
-                            <input type="text" class="form-control " />
-
+                            <input v-model="producto.codigo" type="text" placeholder="Código de producto"
+                                class="form-control " />
                         </div>
                     </div>
                     <div class="col mb-2 d-flex align-items-end">
                         <div class="form-group">
-                            <button type="button" class="btn btn-primary" data-dismiss="modal"><i
-                                    class="fa fa-search mr-2" aria-hidden="true"></i>Buscar</button>
+                            <button @click="buscarProducto(producto.codigo)" type="button" class="btn btn-primary"
+                                data-dismiss="modal"><i class="fa fa-search mr-2" aria-hidden="true"></i>Buscar</button>
                         </div>
                     </div>
 
@@ -152,15 +141,17 @@
                 <div class="row">
                     <div class="col-12 col-md-6 mb-2">
                         <div class="form-group">
-                            <label for="detalle-descripcion">Descripcion</label>
-                            <input type="text" class="form-control" />
+                            <label for="detalle-descripcion">Nombre</label>
+                            <input disabled v-model="producto.nombre" type="text" placeholder="Nombre del producto"
+                                class="form-control" />
                         </div>
                     </div>
 
                     <div class="col-12 col-md-6 mb-2">
                         <div class="form-group">
-                            <label for="detalle-stock-actual">Stock Actual</label>
-                            <input type="number" value="0" class="form-control" />
+                            <label for="detalle-stock-actual">Descipción</label>
+                            <input disabled v-model="producto.descripcion" type="text"
+                                placeholder="Descripción del producto" class="form-control" />
                         </div>
                     </div>
                 </div>
@@ -168,14 +159,14 @@
                 <div class="row">
                     <div class="col-12 col-md-6 mb-2">
                         <div class="form-group">
-                            <label for="detalle-unidad">Unidad</label>
-                            <input type="text" class="form-control" />
+                            <label for="detalle-unidad">Stock</label>
+                            <input disabled v-model="producto.stock" type="text" class="form-control" />
                         </div>
                     </div>
                     <div class="col-12 col-md-6 mb-2">
                         <div class="form-group">
-                            <label for="detalle-costo">Costo</label>
-                            <input type="number" value="0" class="form-control" />
+                            <label for="detalle-costo">Precio</label>
+                            <input disabled v-model="producto.precio" type="number" class="form-control" />
                         </div>
                     </div>
                 </div>
@@ -183,14 +174,15 @@
                     <div class="col-12 col-md-6 mb-2">
                         <div class="form-group">
                             <label for="detalle-cantidad">Cantidad</label>
-                            <input type="number" value="0" class="form-control" />
+                            <input v-model="cantidad" type="number" class="form-control" />
                         </div>
                     </div>
                 </div>
 
             </template>
             <template #footer>
-                <button type="button" class="btn btn-success" data-dismiss="modal">Agregar</button>
+                <button @click="agregarProducto()" type="button" class="btn btn-success"
+                    data-dismiss="modal">Agregar</button>
             </template>
         </modal>
     </teleport>
@@ -201,46 +193,56 @@
                     <table class="table table-bordered" aria-label="tabla-movimiento">
                         <thead class="bg-secondary text-white">
                             <tr>
-                                <th scope="col">ID</th>
+                                <th scope="col">CÓDIGO</th>
+                                <th scope="col">CÓDIGO FACTURA</th>
                                 <th scope="col">FECHA</th>
-                                <th scope="col">CANTIDAD</th>
                                 <th scope="col">TIPO</th>
+                                <th scope="col">RESPONSABLE</th>
                                 <th scope="col">ACCIONES</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>M001</td>
+                                <td>MO-001</td>
+                                <td>spodl545s45</td>
                                 <td>03/05/2022</td>
-                                <td>62</td>
                                 <td>Salida</td>
+                                <td>Pedro Navarro Suarez</td>
                                 <td>
-                                    <button class="btn btn-info mr-2"><i class="fa fa-eye" aria-hidden="true"></i></button>
-                                    <button class="btn btn-success mr-2"><i class="far fa-edit" aria-hidden="true"></i></button>
+                                    <button class="btn btn-info mr-2"><i class="fa fa-eye"
+                                            aria-hidden="true"></i></button>
+                                    <button class="btn btn-success mr-2"><i class="far fa-edit"
+                                            aria-hidden="true"></i></button>
                                     <button type="button" class="btn btn-danger mr-2"><i aria-hidden="true"
                                             class="fas fa-trash"></i></button>
                                 </td>
                             </tr>
                             <tr>
-                                <td>M002</td>
+                                <td>MO-002</td>
+                                <td>spodl545s45</td>
                                 <td>03/05/2022</td>
-                                <td>62</td>
                                 <td>Salida</td>
+                                <td>Pedro Navarro Suarez</td>
                                 <td>
-                                    <button class="btn btn-info mr-2"><i class="fa fa-eye" aria-hidden="true"></i></button>
-                                    <button class="btn btn-success mr-2"><i class="far fa-edit" aria-hidden="true"></i></button>
-                                    <button type="button" class="btn btn-danger mr-2"><i
-                                            class="fas fa-trash" aria-hidden="true"></i></button>
+                                    <button class="btn btn-info mr-2"><i class="fa fa-eye"
+                                            aria-hidden="true"></i></button>
+                                    <button class="btn btn-success mr-2"><i class="far fa-edit"
+                                            aria-hidden="true"></i></button>
+                                    <button type="button" class="btn btn-danger mr-2"><i aria-hidden="true"
+                                            class="fas fa-trash"></i></button>
                                 </td>
                             </tr>
                             <tr>
-                                <td>M003</td>
+                                <td>MO-001</td>
+                                <td>spodl545s45</td>
                                 <td>03/05/2022</td>
-                                <td>62</td>
                                 <td>Salida</td>
+                                <td>Pedro Navarro Suarez</td>
                                 <td>
-                                    <button class="btn btn-info mr-2"><i class="fa fa-eye" aria-hidden="true"></i></button>
-                                    <button class="btn btn-success mr-2"><i class="far fa-edit" aria-hidden="true"></i></button>
+                                    <button class="btn btn-info mr-2"><i class="fa fa-eye"
+                                            aria-hidden="true"></i></button>
+                                    <button class="btn btn-success mr-2"><i class="far fa-edit"
+                                            aria-hidden="true"></i></button>
                                     <button type="button" class="btn btn-danger mr-2"><i aria-hidden="true"
                                             class="fas fa-trash"></i></button>
                                 </td>
@@ -259,13 +261,23 @@ import { mapState } from 'vuex';
 import ContentHeader from '@/components/ContentHeader.vue';
 import Content from '@/components/Content.vue';
 import Modal from '../components/Modal.vue';
+import DataTable from './DataTable.vue';
+import { useVuelidate } from '@vuelidate/core'
+import { required, minValue, minLength, helpers, maxLength } from '@vuelidate/validators'
+import store from '../store'
 
 import { ServicioMovimientos } from '@/services/ServicesMovements';
 import { ServicioProducto } from '@/services/ServicesProducts';
 
+//expresion que solo admite letras de a-z y A-Z, incluido los espacios
+const caracterValido = helpers.regex(/^[a-zA-Z]+(\s[a-zA-Z]+)*$/);
+//cadena: /^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/
+
+const numeroEntero = helpers.regex(/^\d+$/);
+
 export default {
     components: {
-        ContentHeader, Content, Modal
+        ContentHeader, Content, Modal, DataTable
     },
     data() {
         return {
@@ -273,11 +285,12 @@ export default {
             movimietos: [],
             movimiento: {
                 codigo: '',
-                almacen: '',
-                proveedor: '',
+                factura: '',
+                id_responsable: '',
+                name_responsable: '',
                 fecha: '',
-                tipo: '--Seleccione un tipo--',
-                productos: []
+                tipo: '',
+                lista_items: []
             },
             showModal: false,
             showModal1: false,
@@ -288,16 +301,46 @@ export default {
             tipos: ["Entrada", "Salida"],
             cadena_buscar: '',
             movimientosPaginados: [],
-            listaProductos: [],
+            listaDetalleProductos: [],
             producto: {
                 codigo: '',
                 nombre: '',
                 descripcion: '',
-                stock_actual: 0,
-                unidad: '',
-                costo: 0,
+                stock: 0,
+                precio: 0,
+            },
+            cantidad: 1,
+            detalleProducto: {
+                producto: {
+                    codigo: '',
+                    nombre: '',
+                    descripcion: '',
+                    stock: 0,
+                    precio: 0,
+                },
+                cantidad: 1
             }
-
+        }
+    },
+    setup: () => ({
+        v$: useVuelidate()
+    }),
+    validations() {
+        return {
+            movimiento: {
+                //validaciones para el campo de codigo
+                codigo: {
+                    required: helpers.withMessage('El valor es requerido', required),
+                    minLength: helpers.withMessage('El mínimo número de caracteres es 6', minLength(6)),
+                    maxLength: helpers.withMessage('El máximo número de caracteres es 10', maxLength(10))
+                },
+                //validaciones para el campo de descripcion
+                factura: {
+                    required: helpers.withMessage('El valor es requerido', required),
+                    minLength: helpers.withMessage('El mínimo número de caracteres es 8', minLength(8)),
+                    maxLength: helpers.withMessage('El máximo número de caracteres es 10', maxLength(10))
+                },
+            },
 
         }
     },
@@ -376,104 +419,152 @@ export default {
             })
         },
         guardar() {
-                if (this.modificar) {
-                    const serviciomovimientos = new ServicioMovimientos()
-                    serviciomovimientos.modificar(this.movimiento, this.id_movimiento).then(data => {
-                        const response = data
+            if (this.modificar) {
+                const serviciomovimientos = new ServicioMovimientos()
+                serviciomovimientos.modificar(this.movimiento, this.id_movimiento).then(data => {
+                    const response = data
 
-                        if (response.status === 200) {
-                            this.$swal.fire({
-                                icon: 'success',
-                                title: 'Movimiento Editado',
-                                text: "Click en el botón para salir!",
-                                showConfirmButton: true,
-                                confirmButtonText: 'listo',
-                                confirmButtonColor: 'btn btn-success',
-                            })
-                            this.mostrarMovimientos();
-                            //cerrar modal
-                            //por definir
-                        } else {
-                            this.$swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: 'No se pudo modificar!',
-                            })
-                        }
-                    }, error => {
+                    if (response.status === 200) {
+                        this.$swal.fire({
+                            icon: 'success',
+                            title: 'Movimiento Editado',
+                            text: "Click en el botón para salir!",
+                            showConfirmButton: true,
+                            confirmButtonText: 'listo',
+                            confirmButtonColor: 'btn btn-success',
+                        })
+                        this.mostrarMovimientos();
+                        //cerrar modal
+                        //por definir
+                    } else {
                         this.$swal.fire({
                             icon: 'error',
                             title: 'Oops...',
                             text: 'No se pudo modificar!',
                         })
+                    }
+                }, error => {
+                    this.$swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'No se pudo modificar!',
                     })
-                } else {
-                    const serviciomovimientos = new ServicioMovimientos()
-                    serviciomovimientos.registrar(this.movimiento).then(data => {
-                        const response = data
-                        if (response.status === 200) {
-                            this.$swal.fire({
-                                icon: 'success',
-                                title: 'Movimiento Registrado',
-                                text: "Click en el botón para salir!",
-                                showConfirmButton: true,
-                                confirmButtonText: 'listo',
-                                confirmButtonColor: 'btn btn-success',
-                            })
-                            this.mostrarMovimientos();
-                            this.limpiarFormuralio();
-                        } else {
-                            this.$swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: 'No se pudo registrar!',
-                            })
-                        }
-                    }, error => {
+                })
+            } else {
+
+                /* 
+                    Autor: Gino Rubio Pacheco
+                    fecha: /11/2022
+                    función relacionada al CUS de Registrar movimiento
+                */
+
+                this.movimiento.lista_items = this.listaDetalleProductos
+                const serviciomovimientos = new ServicioMovimientos()
+                serviciomovimientos.registrar(this.movimiento).then(data => {
+                    const response = data
+                    console.log(response)
+                    if (response.status === 200) {
+                        this.$swal.fire({
+                            icon: 'success',
+                            title: 'Movimiento Registrado',
+                            text: "Click en el botón para salir!",
+                            showConfirmButton: true,
+                            confirmButtonText: 'listo',
+                            confirmButtonColor: 'btn btn-success',
+                        })
+                        this.mostrarMovimientos();
+                        this.limpiarFormuralio();
+                    } else {
                         this.$swal.fire({
                             icon: 'error',
                             title: 'Oops...',
                             text: 'No se pudo registrar!',
                         })
+                    }
+                }, error => {
+                    this.$swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'No se pudo registrar!',
                     })
-                }
+                })
+            }
         },
         agregarProducto() {
+            /* 
+                Autor: Gino Rubio Pacheco
+                fecha: /11/2022
+                función relacionada al CUS de agregar productos al movimiento
+            */
+            //validar codigo vacio
             //metodo para validar el stock del producto
             /**
                 Validar la cantidad pedida en el movimiento con el stock
                 //por realizar
              */
+            let codigo = this.producto.codigo;
+            let nombre = this.producto.nombre;
+            let descripcion = this.producto.descripcion;
+            let stock = this.producto.stock;
+            let precio = this.producto.precio;
+            let cantidad = this.cantidad;
 
-            this.listaProductos.push(this.producto)
-            this.producto = {
-                codigo: '',
-                nombre: '',
-                descripcion: '',
-                stock_actual: 0,
-                unidad: '',
-                costo: 0,
-                cantidad: 0
+            if (this.listaDetalleProductos.some(detalle => detalle.producto.codigo = codigo)) {
+                console.log("productos listados: " + this.listaDetalleProductos)
+                this.$swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Este producto ya fue agregado!',
+                })
+            } else {
+                this.detalleProducto.producto.codigo = codigo
+                this.detalleProducto.producto.nombre = nombre
+                this.detalleProducto.producto.descripcion = descripcion
+                this.detalleProducto.producto.stock = stock
+                this.detalleProducto.producto.precio = precio
+                this.detalleProducto.cantidad = cantidad
+
+                this.listaDetalleProductos.push(this.detalleProducto)
+                console.log("productos listados: " + this.listaDetalleProductos.forEach(detalle => detalle))
+                this.producto = {
+                    codigo: '',
+                    nombre: '',
+                    descripcion: '',
+                    stock: 0,
+                    precio: 0
+                };
+                this.cantidad = 1;
+                this.$swal.fire({
+                    icon: 'success',
+                    title: 'Producto agregado al movimiento',
+                    text: "Click en el botón para salir!",
+                    showConfirmButton: true,
+                    confirmButtonText: 'ok',
+                    confirmButtonColor: 'btn btn-success',
+                })
             }
         },
         borrarProducto(index) {
             //elimina 1 elemento del arreglo a partir del numero de index
-            this.listaProductos.splice(index, 1)
+            this.listaDetalleProductos.splice(index, 1)
         },
-        buscarProducto(id) {
-            if (id) {
+        buscarProducto(codigo) {
+            /* 
+                Autor: Gino Rubio Pacheco
+                fecha: /11/2022
+                función relacionada al CUS de agregar producto al movimiento,
+                permite realizar la busqueda del producto
+            */
+            if (codigo) {
                 //peticion al servidor para buscar
                 const servicioProducto = new ServicioProducto()
-                servicioProducto.buscar(id).then(data => {
+                servicioProducto.buscar(codigo).then(data => {
                     const response = data
-
                     if (response.status === 200) {
-                        this.producto.codigo = response.data.codigo
                         this.producto.nombre = response.data.nombre
                         this.producto.descripcion = response.data.descripcion
-                        this.producto.stock_actual = response.data.stock_actual
-                        this.producto.unidad = response.data.unidad
-                        this.producto.costo = response.data.costo
+                        this.producto.stock = response.data.stock
+                        this.producto.precio = response.data.precio
                     } else {
                         this.$swal.fire({
                             icon: 'error',
@@ -482,23 +573,29 @@ export default {
                         })
                     }
                 }, error => {
-                    console.log("producto no encontrado")
+                    this.$swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'No se pudo encontrar el producto!',
+                    })
                 })
             } else {
-                console.log("producto no encontrado")
+                this.$swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Código requerido!',
+                })
             }
-
         },
         abrirModal(data = {}) {
             if (this.modificar) {
                 this.tituloModal = "Modificar Movimiento"
                 this.id_movimiento = data.codigo;
                 this.movimiento.codigo = data.codigo;
-                this.movimiento.almacen = data.almacen;
-                this.movimiento.proveedor = data.proveedor;
+                this.movimiento.factura = data.factura;
                 this.movimiento.fecha = data.fecha;
                 this.movimiento.tipo = data.tipo;
-                this.movimiento.productos = data.productos;
+                this.movimiento.lista_items = data.lista_items;
 
             } else {
                 this.tituloModal = "Registrar Movimiento"
@@ -507,11 +604,11 @@ export default {
         },
         limpiarFormuralio() {
             this.movimiento.codigo = '';
-            this.movimiento.almacen = '';
-            this.movimiento.proveedor = '';
+            this.movimiento.factura = '';
             this.movimiento.fecha = '';
             this.movimiento.tipo = '';
-            this.movimiento.productos = [];
+            this.movimiento.lista_items = [];
+            this.listaDetalleProductos = [];
         },
         buscar(id) {
             if (id) {
@@ -534,12 +631,17 @@ export default {
                     this.mostrarMovimientos()
                 })
             } else {
-                this.mostrarMovimientos()
+                this.$swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'No se pudo encontrar el movimiento!',
+                })
             }
         }
     },
     created() {
-
+        this.movimiento.name_responsable = `${store.state.username}`;
+        this.movimiento.id_responsable = `${store.state.id}`;
     }
 }
 </script>

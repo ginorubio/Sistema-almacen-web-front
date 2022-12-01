@@ -24,7 +24,7 @@
     </div>
     <teleport to="body">
         <!-- use the modal component, pass in the prop -->
-        <modal :show="showModal" @close="showModal = false">
+        <modal :show="showModal" @close="showModal = false; v$.$reset()">
             <template #header>
                 <h3>{{ tituloModal }}</h3>
             </template>
@@ -216,7 +216,7 @@ import { useVuelidate } from '@vuelidate/core'
 import { required, minValue, minLength, helpers, maxLength } from '@vuelidate/validators'
 
 //Expresion que solo admite digitos
-const numberValido = helpers.regex(/^\d+$/);
+const numeroEntero = helpers.regex(/^\d+$/);
 //expresion que solo admite letras de a-z y A-Z, incluido los espacios
 const caracterValido = helpers.regex(/^[a-zA-Z]+(\s[a-zA-Z]+)*$/);
 //cadena: /^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/
@@ -295,11 +295,13 @@ export default {
                 //validaciones para el campo de stock
                 stock: {
                     required: helpers.withMessage('El valor es requerido', required),
-                    minValue: helpers.withMessage('El mínimo valor es 0', minValue(0))
+                    minValue: helpers.withMessage('El mínimo valor es 0', minValue(0)),
+                    numeroEntero: helpers.withMessage('Solo número entero', numeroEntero)
                 },
                 stockMinimo: {
                     required: helpers.withMessage('El valor es requerido', required),
-                    minValue: helpers.withMessage('El mínimo valor es 0', minValue(0))
+                    minValue: helpers.withMessage('El mínimo valor es 0', minValue(0)),
+                    numeroEntero: helpers.withMessage('Solo número entero', numeroEntero)
                 },
                 //validaciones para el campo de costo
                 costo: {
@@ -648,7 +650,7 @@ export default {
         },
         /* 
             Autor: Gino Rubio Pacheco
-            fecha: /11/2022
+            fecha: 21/11/2022
             función relacionada al CUS de Buscar Productos por código
         */
         buscar(codigo) {

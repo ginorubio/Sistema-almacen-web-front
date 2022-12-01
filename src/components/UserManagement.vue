@@ -25,7 +25,7 @@
     </div>
     <teleport to="body">
         <!-- use the modal component, pass in the prop -->
-        <modal :show="showModal" @close="showModal = false">
+        <modal :show="showModal" @close="showModal = false; v$.$reset()">
             <template #header>
                 <h3>{{ tituloModal }}</h3>
             </template>
@@ -282,6 +282,8 @@ export default {
             //se llama al metodo mostrar usuarios
             serviciousuario.mostrar().then(data => {
                 const response = data
+
+                console.log(response)
                 if (response.status === 200) {
                     this.usuarios = response.data;
                 } else {
