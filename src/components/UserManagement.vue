@@ -36,7 +36,7 @@
                             <label for="nombre">NOMBRE</label>
                             <input v-if="modificar == 3" disabled type="text" class="form-control"
                                 v-model="usuario.username" />
-                            <input v-else type="text" class="form-control" v-model="usuario.username" />
+                            <input v-else type="text" class="form-control" placeholder="Digite el nombre" v-model="usuario.username" />
                         </div>
                         <div class="text-danger" v-if="v$.usuario.username.$error">
                             {{ v$.usuario.username.$errors[0].$message }}
@@ -48,7 +48,7 @@
                             <label for="dni">DNI</label>
                             <input v-if="modificar == 2" disabled class="form-control" type="text"
                                 v-model="usuario.dni" />
-                            <input v-else class="form-control" type="text" v-model="usuario.dni" />
+                            <input v-else class="form-control" type="text" placeholder="Digite el dni" v-model="usuario.dni" />
                         </div>
                         <div class="text-danger" v-if="v$.usuario.dni.$error">
                             {{ v$.usuario.dni.$errors[0].$message }}
@@ -61,7 +61,7 @@
                             <label for="email">CORREO</label>
                             <input v-if="modificar == 3" disabled class="form-control" type="email"
                                 v-model="usuario.email" />
-                            <input v-else class="form-control" type="email" v-model="usuario.email" />
+                            <input v-else class="form-control" type="email" placeholder="Digite el correo" v-model="usuario.email" />
                         </div>
                         <div class="text-danger" v-if="v$.usuario.email.$error">
                             {{ v$.usuario.email.$errors[0].$message }}
@@ -73,7 +73,7 @@
                             <label for="contrasena">CONTRASEÑA</label>
                             <input v-if="modificar == 3" disabled class="form-control" type="password"
                                 v-model="usuario.password" />
-                            <input v-else class="form-control" type="password" v-model="usuario.password" />
+                            <input v-else class="form-control" type="password" placeholder="Digite la contraseña" v-model="usuario.password" />
                         </div>
                         <div class="text-danger" v-if="v$.usuario.password.$error">
                             {{ v$.usuario.password.$errors[0].$message }}
@@ -83,7 +83,7 @@
                     <div v-if="modificar != 3" class="col-12 mb-2">
                         <div class="form-group">
                             <label for="contrasena">REPETIR CONTRASEÑA</label>
-                            <input class="form-control" type="password" v-model="usuario.repassword" />
+                            <input class="form-control" type="password" placeholder="Repetir la contraseña" v-model="usuario.repassword" />
                         </div>
                         <div class="text-danger" v-if="v$.usuario.repassword.$error">
                             {{ v$.usuario.repassword.$errors[0].$message }}

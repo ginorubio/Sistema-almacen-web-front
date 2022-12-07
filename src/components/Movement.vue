@@ -2,8 +2,8 @@
     <content-header title="Movimientos" />
     <div class="col-12 mb-2">
         <!-- Button to Open the Modal -->
-        <button id="show-modal" type="button" @click.prevent="showModal = true, modificar = false; abrirModal()"
-            class="btn btn-primary">
+        <button v-if="$store.state.rol == 'jefe_almacen'" id="show-modal" type="button"
+            @click.prevent="showModal = true, modificar = false; abrirModal()" class="btn btn-primary">
             <i class="fas fa-plus-circle mr-2" aria-hidden="true"></i> Nuevo Movimiento
         </button>
     </div>
@@ -23,12 +23,18 @@
                             <input type="text" class="form-control" placeholder="Código de movimiento"
                                 v-model="movimiento.codigo">
                         </div>
+                        <div class="text-danger" v-if="v$.movimiento.codigo.$error">
+                            {{ v$.movimiento.codigo.$errors[0].$message }}
+                        </div>
                     </div>
 
                     <div class="col-sm mb-2">
                         <div class="form-group">
                             <label for="fecha">Fecha</label>
                             <input type="date" class="form-control" v-model="movimiento.fecha" />
+                        </div>
+                        <div class="text-danger" v-if="v$.movimiento.fecha.$error">
+                            {{ v$.movimiento.fecha.$errors[0].$message }}
                         </div>
                     </div>
                 </div>
@@ -40,6 +46,9 @@
                             <input type="text" class="form-control" placeholder="Código de factura"
                                 v-model="movimiento.factura" />
                         </div>
+                        <div class="text-danger" v-if="v$.movimiento.factura.$error">
+                            {{ v$.movimiento.factura.$errors[0].$message }}
+                        </div>
                     </div>
 
                     <div class="col-sm mb-2">
@@ -49,6 +58,9 @@
                                 <option disabled selected value="">--Seleccione un tipo--</option>
                                 <option v-for="tipo in tipos">{{ tipo }}</option>
                             </select>
+                        </div>
+                        <div class="text-danger" v-if="v$.movimiento.tipo.$error">
+                            {{ v$.movimiento.tipo.$errors[0].$message }}
                         </div>
                     </div>
                 </div>
@@ -263,7 +275,7 @@ import Content from '@/components/Content.vue';
 import Modal from '../components/Modal.vue';
 import DataTable from './DataTable.vue';
 import { useVuelidate } from '@vuelidate/core'
-import { required, minValue, minLength, helpers, maxLength } from '@vuelidate/validators'
+import { required, minLength, helpers, maxLength } from '@vuelidate/validators'
 import store from '../store'
 
 import { ServicioMovimientos } from '@/services/ServicesMovements';
@@ -279,6 +291,9 @@ export default {
     components: {
         ContentHeader, Content, Modal, DataTable
     },
+    setup: () => ({
+        v$: useVuelidate()
+    }),
     data() {
         return {
             cabecera: '',
@@ -310,21 +325,8 @@ export default {
                 precio: 0,
             },
             cantidad: 1,
-            detalleProducto: {
-                producto: {
-                    codigo: '',
-                    nombre: '',
-                    descripcion: '',
-                    stock: 0,
-                    precio: 0,
-                },
-                cantidad: 1
-            }
         }
     },
-    setup: () => ({
-        v$: useVuelidate()
-    }),
     validations() {
         return {
             movimiento: {
@@ -340,8 +342,15 @@ export default {
                     minLength: helpers.withMessage('El mínimo número de caracteres es 8', minLength(8)),
                     maxLength: helpers.withMessage('El máximo número de caracteres es 10', maxLength(10))
                 },
+                //validacion del campo tipo
+                tipo: {
+                    required: helpers.withMessage('El valor es requerido', required)
+                },
+                //validacion de fecha
+                fecha: {
+                    required: helpers.withMessage('El valor es requerido', required)
+                }
             },
-
         }
     },
     computed: {
@@ -419,76 +428,94 @@ export default {
             })
         },
         guardar() {
-            if (this.modificar) {
-                const serviciomovimientos = new ServicioMovimientos()
-                serviciomovimientos.modificar(this.movimiento, this.id_movimiento).then(data => {
-                    const response = data
+            //se llama al validador
+            this.v$.$validate();
 
-                    if (response.status === 200) {
-                        this.$swal.fire({
-                            icon: 'success',
-                            title: 'Movimiento Editado',
-                            text: "Click en el botón para salir!",
-                            showConfirmButton: true,
-                            confirmButtonText: 'listo',
-                            confirmButtonColor: 'btn btn-success',
-                        })
-                        this.mostrarMovimientos();
-                        //cerrar modal
-                        //por definir
-                    } else {
+            //verificamos las validaciones realizadas en los campos
+            if (!this.v$.$error) {
+                if (this.modificar) {
+                    const serviciomovimientos = new ServicioMovimientos()
+                    serviciomovimientos.modificar(this.movimiento, this.id_movimiento).then(data => {
+                        const response = data
+
+                        if (response.status === 200) {
+                            this.$swal.fire({
+                                icon: 'success',
+                                title: 'Movimiento Editado',
+                                text: "Click en el botón para salir!",
+                                showConfirmButton: true,
+                                confirmButtonText: 'listo',
+                                confirmButtonColor: 'btn btn-success',
+                            })
+                            //this.mostrarMovimientos();
+                            //cerrar modal
+                            //por definir
+                        } else {
+                            this.$swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'No se pudo modificar!',
+                            })
+                        }
+                    }, error => {
                         this.$swal.fire({
                             icon: 'error',
                             title: 'Oops...',
                             text: 'No se pudo modificar!',
                         })
-                    }
-                }, error => {
-                    this.$swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'No se pudo modificar!',
                     })
-                })
-            } else {
+                } else {
 
-                /* 
-                    Autor: Gino Rubio Pacheco
-                    fecha: /11/2022
-                    función relacionada al CUS de Registrar movimiento
-                */
+                    /* 
+                        Autor: Gino Rubio Pacheco
+                        fecha: /11/2022
+                        función relacionada al CUS de Registrar movimiento
+                    */
+                    if (this.listaDetalleProductos.length != 0) {
+                        this.movimiento.lista_items = this.listaDetalleProductos
 
-                this.movimiento.lista_items = this.listaDetalleProductos
-                const serviciomovimientos = new ServicioMovimientos()
-                serviciomovimientos.registrar(this.movimiento).then(data => {
-                    const response = data
-                    console.log(response)
-                    if (response.status === 200) {
-                        this.$swal.fire({
-                            icon: 'success',
-                            title: 'Movimiento Registrado',
-                            text: "Click en el botón para salir!",
-                            showConfirmButton: true,
-                            confirmButtonText: 'listo',
-                            confirmButtonColor: 'btn btn-success',
+                        const serviciomovimientos = new ServicioMovimientos()
+                        serviciomovimientos.registrar(this.movimiento).then(data => {
+                            const response = data
+                            console.log(response)
+                            if (response.status === 200) {
+                                this.$swal.fire({
+                                    icon: 'success',
+                                    title: 'Movimiento Registrado',
+                                    text: "Click en el botón para salir!",
+                                    showConfirmButton: true,
+                                    confirmButtonText: 'listo',
+                                    confirmButtonColor: 'btn btn-success',
+                                })
+                                this.mostrarMovimientos();
+                                this.limpiarFormuralio();
+                            } else {
+                                this.$swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: 'No se pudo registrar!',
+                                })
+                            }
+                        }, error => {
+                            this.$swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'No se pudo registrar!',
+                            })
                         })
-                        this.mostrarMovimientos();
-                        this.limpiarFormuralio();
                     } else {
+                        //lista de detalle del movimiento vacio
                         this.$swal.fire({
                             icon: 'error',
                             title: 'Oops...',
-                            text: 'No se pudo registrar!',
+                            text: 'Lista vacía!',
                         })
                     }
-                }, error => {
-                    this.$swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'No se pudo registrar!',
-                    })
-                })
+                }
+            } else {
+                this.movimiento.error = true;
             }
+
         },
         agregarProducto() {
             /* 
@@ -496,51 +523,57 @@ export default {
                 fecha: /11/2022
                 función relacionada al CUS de agregar productos al movimiento
             */
+            let detalleProducto = {
+                producto: {
+                    codigo: this.producto.codigo,
+                    nombre: this.producto.nombre,
+                    descripcion: this.producto.descripcion,
+                    stock: this.producto.stock,
+                    precio: this.producto.precio,
+                },
+                cantidad: this.cantidad
+            }
             //validar codigo vacio
-            //metodo para validar el stock del producto
-            /**
-                Validar la cantidad pedida en el movimiento con el stock
-                //por realizar
-             */
-            let codigo = this.producto.codigo;
-            let nombre = this.producto.nombre;
-            let descripcion = this.producto.descripcion;
-            let stock = this.producto.stock;
-            let precio = this.producto.precio;
-            let cantidad = this.cantidad;
-
-            if (this.listaDetalleProductos.some(detalle => detalle.producto.codigo = codigo)) {
-                console.log("productos listados: " + this.listaDetalleProductos)
+            if (this.producto.nombre) {
+                if (this.listaDetalleProductos.find(detalle => detalle.producto.codigo === detalleProducto.producto.codigo)) {
+                    this.$swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Este producto ya fue agregado!',
+                    })
+                } else {
+                    //validacion de la cantidad
+                    if (this.cantidad <= this.producto.stock) {
+                        this.listaDetalleProductos.push(detalleProducto)
+                        this.producto = {
+                            codigo: '',
+                            nombre: '',
+                            descripcion: '',
+                            stock: 0,
+                            precio: 0
+                        };
+                        this.cantidad = 1;
+                        this.$swal.fire({
+                            icon: 'success',
+                            title: 'Producto agregado al movimiento',
+                            text: "Click en el botón para salir!",
+                            showConfirmButton: true,
+                            confirmButtonText: 'ok',
+                            confirmButtonColor: 'btn btn-success',
+                        })
+                    } else {
+                        this.$swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'La cantidad debe ser menor o igual que el stock!',
+                        })
+                    }
+                }
+            } else {
                 this.$swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: 'Este producto ya fue agregado!',
-                })
-            } else {
-                this.detalleProducto.producto.codigo = codigo
-                this.detalleProducto.producto.nombre = nombre
-                this.detalleProducto.producto.descripcion = descripcion
-                this.detalleProducto.producto.stock = stock
-                this.detalleProducto.producto.precio = precio
-                this.detalleProducto.cantidad = cantidad
-
-                this.listaDetalleProductos.push(this.detalleProducto)
-                console.log("productos listados: " + this.listaDetalleProductos.forEach(detalle => detalle))
-                this.producto = {
-                    codigo: '',
-                    nombre: '',
-                    descripcion: '',
-                    stock: 0,
-                    precio: 0
-                };
-                this.cantidad = 1;
-                this.$swal.fire({
-                    icon: 'success',
-                    title: 'Producto agregado al movimiento',
-                    text: "Click en el botón para salir!",
-                    showConfirmButton: true,
-                    confirmButtonText: 'ok',
-                    confirmButtonColor: 'btn btn-success',
+                    text: 'Digite los datos corectamente!',
                 })
             }
         },

@@ -38,7 +38,7 @@
 
                             <input v-if="modificar == 3 || modificar == 2" disabled class="form-control" id="codigo"
                                 v-model="producto.codigo" />
-                            <input v-else class="form-control" id="codigo" v-model="producto.codigo" />
+                            <input v-else class="form-control" id="codigo" placeholder="Digite el codigo" v-model="producto.codigo" />
 
                         </div>
                         <div class="text-danger" v-if="v$.producto.codigo.$error">
@@ -51,7 +51,7 @@
                             <label for="nombre">Nombre</label>
                             <input v-if="modificar == 3 || modificar == 2" disabled class="form-control" id="nombre"
                                 v-model="producto.nombre" />
-                            <input v-else class="form-control" id="nombre" v-model="producto.nombre" />
+                            <input v-else class="form-control" id="nombre" placeholder="Digite el nombre" v-model="producto.nombre" />
                         </div>
                         <div class="text-danger" v-if="v$.producto.nombre.$error">
                             {{ v$.producto.nombre.$errors[0].$message }}
@@ -63,7 +63,7 @@
                             <label for="descripcion">Descripcion</label>
                             <textarea v-if="modificar == 3" disabled class="form-control" id="descripcion"
                                 v-model="producto.descripcion" style="height: 100px"></textarea>
-                            <textarea v-else class="form-control" id="descripcion" v-model="producto.descripcion"
+                            <textarea v-else class="form-control" id="descripcion" placeholder="Digite la descripcion" v-model="producto.descripcion"
                                 style="height: 100px"></textarea>
                         </div>
                         <div class="text-danger" v-if="v$.producto.descripcion.$error">

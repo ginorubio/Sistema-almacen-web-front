@@ -38,7 +38,7 @@
                                 <div v-if="!modificar" class="d-flex codigo-inicio">
                                     <p>C</p>
                                 </div>
-                                <input v-if="!modificar" type="text" class="form-control" v-model="categoria.codigo">
+                                <input v-if="!modificar" type="text" class="form-control"  placeholder="Digite el codigo" v-model="categoria.codigo">
                                 <input v-else disabled type="text" class="form-control" v-model="categoria.codigo">
                             </div>
                         </div>
@@ -50,9 +50,9 @@
                     <div class="col-12 mb-2">
                         <div class="form-group">
                             <label for="nombre">Nombre</label>
-                            <textarea v-if="!modificar" class="form-control" id="nombre" v-model="categoria.nombre"
+                            <textarea v-if="!modificar" class="form-control" id="nombre" placeholder="Digite el nombre" v-model="categoria.nombre"
                                 style="height: 100px"></textarea>
-                            <textarea v-else disabled class="form-control" id="nombre" v-model="categoria.nombre"
+                            <textarea v-else disabled class="form-control" id="nombre"  v-model="categoria.nombre"
                                 style="height: 100px"></textarea>
                         </div>
                         <div class="text-danger" v-if="v$.categoria.nombre.$error">

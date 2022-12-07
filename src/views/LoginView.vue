@@ -15,7 +15,7 @@
           </div>
           <div>
             <h5>Correo</h5>
-            <input class="input" type="email" required v-model="usuario.email">
+            <input class="input" type="email" v-model="usuario.email" >
           </div>
         </div>
         <div class="input-div two">
@@ -24,7 +24,7 @@
           </div>
           <div>
             <h5>Contraseña</h5>
-            <input class="input" type="password" required v-model="usuario.password">
+            <input class="input" type="password" v-model="usuario.password" >
           </div>
         </div>
         <p v-if="usuario.error" class="text-danger">Correo o contraseña incorrecta.</p>

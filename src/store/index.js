@@ -20,7 +20,6 @@ export default createStore({
       //para posteriormente ser guardados en el state de la aplicacion
       //y accedido desde cualquier parte de la aplicacion
       let decoded = VueJwtDecode.decode(token);
-      console.log("Decodificacion: "+token)
       state.username = decoded.username;
       state.rol = decoded.rol;
       state.id= decoded.id;
