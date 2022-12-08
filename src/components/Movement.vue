@@ -2,7 +2,7 @@
     <content-header title="Movimientos" />
     <div class="col-12 mb-2">
         <!-- Button to Open the Modal -->
-        <button v-if="$store.state.rol == 'jefe_almacen'" id="show-modal" type="button"
+        <button v-if="$store.state.rol != 'admin'" id="show-modal" type="button"
             @click.prevent="showModal = true, modificar = false; abrirModal()" class="btn btn-primary">
             <i class="fas fa-plus-circle mr-2" aria-hidden="true"></i> Nuevo Movimiento
         </button>
@@ -236,7 +236,7 @@
                     <td>
                         <button @click="showModal = true; modificar = 3; abrirModal(movimiento)"
                             class="btn btn-info mr-2"><i class="fa fa-eye" aria-hidden="true"></i></button>
-                        <button v-if="movimiento.estado != 'habilitado' && $store.state.rol == 'jefe_almacen'"
+                        <button v-if="movimiento.estado != 'Anulado' && $store.state.rol == 'jefe_almacen'"
                             type="button" @click="borrarMovimiento(movimiento)" class="btn btn-danger mr-2"><i
                                 class="fas fa-trash" aria-hidden="true"></i></button>
 
