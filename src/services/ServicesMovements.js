@@ -12,18 +12,17 @@ export class ServicioMovimientos {
     async mostrar() {
         try {
             //ruta para obtener información del back
-            const res = await fetch(this.URL+'/read', { headers: this.cabecera })
+            const res = await fetch(this.URL+'/aprobados', { headers: this.cabecera })
             const response = await res.json()
             return response;
-
         } catch (error) {
             return error
         }
     }
 
-    async eliminar(id_movimiento) {
+    async eliminar(codigo_movimiento) {
         try {
-            const res = await fetch(this.URL + '/delete/' + id_movimiento, { method: 'DELETE', headers: this.cabecera })
+            const res = await fetch(this.URL + '/anular_mov/' + codigo_movimiento, { method: 'PUT', headers: this.cabecera })
             const response = await res.json()
             return response
 
@@ -42,7 +41,6 @@ export class ServicioMovimientos {
             const res = await fetch(this.URL + "/create", { method: 'POST', headers: this.cabecera, body: JSON.stringify(movimiento)})
 
             const response = await res.json()
-            console.log(response)
             return response
         } catch (error) {
             return error
@@ -59,10 +57,11 @@ export class ServicioMovimientos {
         }
     }
 
-    async buscar(nombre_movimiento) {
+    async buscar(codigo_movimiento) {
         try {
-            const res = await fetch(this.URL + '/read/' + nombre_movimiento, { headers: this.cabecera})
+            const res = await fetch(this.URL + '/searchByCode/' + codigo_movimiento, { headers: this.cabecera})
             const response = await res.json()
+            console.log(response)
             return response
         } catch (error) {
             return error

@@ -131,18 +131,18 @@
                         <div class="form-group">
                             <label v-if="modificar == 2" for="rol">Categoría</label>
                             <select v-if="modificar == 3 || modificar == 2" disabled id="categoria" name="categoria"
-                                class="form-control" v-model="producto.nomcategoria">
+                                class="form-control" v-model="producto.nomCategoria">
                                 <option disabled selected value="">--Seleccione un categoría--</option>
                                 <option v-for="categoria in categorias">{{ categoria.nombre }}</option>
                             </select>
                             <select v-else id="categoria" name="categoria" class="form-control"
-                                v-model="producto.nomcategoria">
+                                v-model="producto.nomCategoria">
                                 <option disabled selected value="">--Seleccione una categoría--</option>
                                 <option v-for="categoria in categorias">{{ categoria.nombre }}</option>
                             </select>
                         </div>
-                        <div class="text-danger" v-if="v$.producto.nomcategoria.$error">
-                            {{ v$.producto.nomcategoria.$errors[0].$message }}
+                        <div class="text-danger" v-if="v$.producto.nomCategoria.$error">
+                            {{ v$.producto.nomCategoria.$errors[0].$message }}
                         </div>
                     </div>
                 </div>
@@ -166,26 +166,26 @@
             </template>
             <template #thead>
                 <tr>
-                    <th scope="col">ID</th>
                     <th scope="col">CÓDIGO</th>
                     <th scope="col">NOMBRE</th>
                     <th scope="col">DESCRIPCION</th>
                     <th scope="col">PRECIO</th>
                     <th scope="col">STOCK</th>
                     <th scope="col">STOCK MINIMO</th>
+                    <th scope="col">CATEGORÍA</th>
                     <th scope="col">ACCIONES</th>
                 </tr>
             </template>
 
             <template #tbody>
                 <tr v-for="producto in productosPaginados" :key="producto._id">
-                    <td>{{ producto._id }}</td>
                     <td>{{ producto.codigo }}</td>
                     <td>{{ producto.nombre }}</td>
                     <td>{{ producto.descripcion }}</td>
                     <td>{{ producto.precio }}</td>
                     <td>{{ producto.stock }}</td>
                     <td>{{ producto.stockMinimo }}</td>
+                    <td>{{ producto.nomCategoria }}</td>
                     <td>
                         <button @click="showModal = true; modificar = 3; abrirModal(producto)"
                             class="btn btn-info mr-2"><i class="fa fa-eye" aria-hidden="true"></i></button>
@@ -241,7 +241,7 @@ export default {
             producto: {
                 descripcion: "",
                 precio: "",
-                nomcategoria: "",
+                nomCategoria: "",
                 nombre: "",
                 codigo: "",
                 stock: "",
@@ -276,7 +276,7 @@ export default {
                     minValue: helpers.withMessage('El mínimo valor es 0', minValue(0))
                 },
                 //validaciones para el campo de categoria
-                nomcategoria: {
+                nomCategoria: {
                     required: helpers.withMessage('El valor es requerido', required),
                 },
                 //validaciones para el campo de nombre
@@ -570,6 +570,8 @@ export default {
                         fecha: 07/11/2022
                         función relacionada al CUS de Registrar Productos
                     */
+
+                    console.log("agregando producto: "+this.producto)
                     //instancia del servicio de producto
                     const servicioproducto = new ServicioProducto()
                     //se llama al metodo registrar productos
@@ -617,8 +619,8 @@ export default {
                 this.producto.precio = data.precio;
                 this.producto.nombre = data.nombre;
                 this.producto.codigo = data.codigo;
-                const index = this.categorias.findIndex(x => x.descripcion == data.categoria)
-                this.producto.nomcategoria = this.categorias[index].nombre
+                const index = this.categorias.findIndex(x => x.nombre == data.nomCategoria)
+                this.producto.nomCategoria = this.categorias[index].nombre
 
             } else if (this.modificar == 1) {
                 this.tituloModal = "Registrar Producto"
@@ -633,14 +635,14 @@ export default {
                 this.producto.precio = data.precio;
                 this.producto.nombre = data.nombre;
                 this.producto.codigo = data.codigo;
-                const index = this.categorias.findIndex(x => x.descripcion == data.categoria)
-                this.producto.nomcategoria = this.categorias[index].nombre
+                const index = this.categorias.findIndex(x => x.nombre == data.nomCategoria)
+                this.producto.nomCategoria = this.categorias[index].nombre
             }
         },
         limpiarFormuralio() {
             this.producto.descripcion = '';
             this.producto.precio = 0;
-            this.producto.nomcategoria = '';
+            this.producto.nomCategoria = '';
             this.producto.stock = 0;
             this.producto.stockMinimo = 0;
             this.producto.costo = 0;

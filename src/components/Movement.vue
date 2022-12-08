@@ -88,6 +88,7 @@
                                 <th>CÓDIGO</th>
                                 <th>NOMBRE</th>
                                 <th>DESCRIPCION</th>
+                                <th>CATEGORÍA</th>
                                 <th>STOCK</th>
                                 <th>PRECIO</th>
                                 <th>CANTIDAD</th>
@@ -95,12 +96,13 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(detalle, index) in listaDetalleProductos" :key="detalle.producto.codigo">
-                                <td>{{ detalle.producto.codigo }}</td>
-                                <td>{{ detalle.producto.nombre }}</td>
-                                <td>{{ detalle.producto.descripcion }}</td>
-                                <td>{{ detalle.producto.stock }}</td>
-                                <td>{{ detalle.producto.precio }}</td>
+                            <tr v-for="(detalle, index) in listaDetalleProductos" :key="detalle.codigo_product">
+                                <td>{{ detalle.codigo_product }}</td>
+                                <td>{{ detalle.nombre }}</td>
+                                <td>{{ detalle.descripcion }}</td>
+                                <td>{{ detalle.categoria }}</td>
+                                <td>{{ detalle.stock }}</td>
+                                <td>{{ detalle.precio }}</td>
                                 <td>
                                     {{ detalle.cantidad }}
                                 </td>
@@ -185,6 +187,13 @@
                 <div class="row">
                     <div class="col-12 col-md-6 mb-2">
                         <div class="form-group">
+                            <label for="detalle-unidad">Categoría</label>
+                            <input disabled v-model="producto.nomCategoria" type="text"
+                                placeholder="Nombre de categoria" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 mb-2">
+                        <div class="form-group">
                             <label for="detalle-cantidad">Cantidad</label>
                             <input v-model="cantidad" type="number" class="form-control" />
                         </div>
@@ -199,72 +208,42 @@
         </modal>
     </teleport>
     <content>
-        <div class="row">
-            <div class="col-12">
-                <div class="table-responsive">
-                    <table class="table table-bordered" aria-label="tabla-movimiento">
-                        <thead class="bg-secondary text-white">
-                            <tr>
-                                <th scope="col">CÓDIGO</th>
-                                <th scope="col">CÓDIGO FACTURA</th>
-                                <th scope="col">FECHA</th>
-                                <th scope="col">TIPO</th>
-                                <th scope="col">RESPONSABLE</th>
-                                <th scope="col">ACCIONES</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>MO-001</td>
-                                <td>spodl545s45</td>
-                                <td>03/05/2022</td>
-                                <td>Salida</td>
-                                <td>Pedro Navarro Suarez</td>
-                                <td>
-                                    <button class="btn btn-info mr-2"><i class="fa fa-eye"
-                                            aria-hidden="true"></i></button>
-                                    <button class="btn btn-success mr-2"><i class="far fa-edit"
-                                            aria-hidden="true"></i></button>
-                                    <button type="button" class="btn btn-danger mr-2"><i aria-hidden="true"
-                                            class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>MO-002</td>
-                                <td>spodl545s45</td>
-                                <td>03/05/2022</td>
-                                <td>Salida</td>
-                                <td>Pedro Navarro Suarez</td>
-                                <td>
-                                    <button class="btn btn-info mr-2"><i class="fa fa-eye"
-                                            aria-hidden="true"></i></button>
-                                    <button class="btn btn-success mr-2"><i class="far fa-edit"
-                                            aria-hidden="true"></i></button>
-                                    <button type="button" class="btn btn-danger mr-2"><i aria-hidden="true"
-                                            class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>MO-001</td>
-                                <td>spodl545s45</td>
-                                <td>03/05/2022</td>
-                                <td>Salida</td>
-                                <td>Pedro Navarro Suarez</td>
-                                <td>
-                                    <button class="btn btn-info mr-2"><i class="fa fa-eye"
-                                            aria-hidden="true"></i></button>
-                                    <button class="btn btn-success mr-2"><i class="far fa-edit"
-                                            aria-hidden="true"></i></button>
-                                    <button type="button" class="btn btn-danger mr-2"><i aria-hidden="true"
-                                            class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+        <data-table :lista="movimientos" @getValues="setValues">
+            <template #button_buscar>
+                <label class="mr-2" for="">BUSCAR:</label>
+                <input class="rounded-pill" placeholder="Buscar por código" type="search" v-model="cadena_buscar">
+                <button class="btn btn-primary mr-2" @click="buscar(cadena_buscar)"><i class="fas fa-search"
+                        aria-hidden="true"></i></button>
+            </template>
+            <template #thead>
+                <tr>
+                    <th scope="col">CÓDIGO</th>
+                    <th scope="col">CÓDIGO FACTURA</th>
+                    <th scope="col">FECHA</th>
+                    <th scope="col">TIPO</th>
+                    <th scope="col">RESPONSABLE</th>
+                    <th scope="col">ACCIONES</th>
+                </tr>
+            </template>
 
-                </div>
-            </div>
-        </div>
+            <template #tbody>
+                <tr v-for="movimiento in movimientosPaginados" :key="producto._id">
+                    <td>{{ movimiento.codigo }}</td>
+                    <td>{{ movimiento.factura }}</td>
+                    <td>{{ movimiento.fecha }}</td>
+                    <td>{{ movimiento.tipo }}</td>
+                    <td>{{ movimiento.name_responsable }}</td>
+                    <td>
+                        <button @click="showModal = true; modificar = 3; abrirModal(movimiento)"
+                            class="btn btn-info mr-2"><i class="fa fa-eye" aria-hidden="true"></i></button>
+                        <button v-if="movimiento.estado != 'habilitado' && $store.state.rol == 'jefe_almacen'"
+                            type="button" @click="borrarMovimiento(movimiento)" class="btn btn-danger mr-2"><i
+                                class="fas fa-trash" aria-hidden="true"></i></button>
+
+                    </td>
+                </tr>
+            </template>
+        </data-table>
     </content>
 </template>
   
@@ -281,12 +260,6 @@ import store from '../store'
 import { ServicioMovimientos } from '@/services/ServicesMovements';
 import { ServicioProducto } from '@/services/ServicesProducts';
 
-//expresion que solo admite letras de a-z y A-Z, incluido los espacios
-const caracterValido = helpers.regex(/^[a-zA-Z]+(\s[a-zA-Z]+)*$/);
-//cadena: /^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/
-
-const numeroEntero = helpers.regex(/^\d+$/);
-
 export default {
     components: {
         ContentHeader, Content, Modal, DataTable
@@ -297,7 +270,7 @@ export default {
     data() {
         return {
             cabecera: '',
-            movimietos: [],
+            movimientos: [],
             movimiento: {
                 codigo: '',
                 factura: '',
@@ -321,6 +294,7 @@ export default {
                 codigo: '',
                 nombre: '',
                 descripcion: '',
+                nomCategoria: '',
                 stock: 0,
                 precio: 0,
             },
@@ -366,7 +340,7 @@ export default {
             const serviciomovimientos = new ServicioMovimientos()
             serviciomovimientos.mostrar().then(res => {
                 const response = res
-                this.movimietos = response.data;
+                this.movimientos = response.data;
             }, error => {
                 console.log(error)
             })
@@ -382,11 +356,11 @@ export default {
                 buttonsStyling: false
             })
             alertEliminar.fire({
-                title: 'Desea Eliminar?',
-                text: `Se eliminará el movimiento ${movimiento.codigo}`,
+                title: 'Desea Anular el movimiento?',
+                text: `Se anulará el movimiento ${movimiento.codigo}`,
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Sí, Eliminar!',
+                confirmButtonText: 'Sí, Anular!',
                 cancelButtonText: 'No, Cancelar!',
                 reverseButtons: true
             }).then(async (result) => {
@@ -398,7 +372,7 @@ export default {
                         const response = data
                         if (response.status === 200) {
                             alertEliminar.fire(
-                                'Eliminado!',
+                                'Anulado!',
                                 `El movimiento ${movimiento.codigo}.`,
                                 'success'
                             )
@@ -406,14 +380,14 @@ export default {
                         } else {
                             alertEliminar.fire(
                                 'Cancelado',
-                                `El movimiento ${movimiento.codigo} no se pudo eliminar.`,
+                                `El movimiento ${movimiento.codigo} no se pudo anular.`,
                                 'error'
                             )
                         }
                     }, error => {
                         alertEliminar.fire(
                             'Cancelado',
-                            `El movimiento ${movimiento.codigo} no se pudo eliminar.`,
+                            `El movimiento ${movimiento.codigo} no se pudo anular.`,
                             'error'
                         )
                     })
@@ -421,7 +395,7 @@ export default {
                 } else if (result.dismiss === this.$swal.DismissReason.cancel) {
                     alertEliminar.fire(
                         'Cancelado',
-                        `El movimiento ${movimiento.codigo} no fue eliminado.`,
+                        `El movimiento ${movimiento.codigo} no fue anulado.`,
                         'error'
                     )
                 }
@@ -447,7 +421,7 @@ export default {
                                 confirmButtonText: 'listo',
                                 confirmButtonColor: 'btn btn-success',
                             })
-                            //this.mostrarMovimientos();
+                            this.mostrarMovimientos();
                             //cerrar modal
                             //por definir
                         } else {
@@ -487,7 +461,7 @@ export default {
                                     confirmButtonText: 'listo',
                                     confirmButtonColor: 'btn btn-success',
                                 })
-                                this.mostrarMovimientos();
+                                //this.mostrarMovimientos();
                                 this.limpiarFormuralio();
                             } else {
                                 this.$swal.fire({
@@ -524,18 +498,17 @@ export default {
                 función relacionada al CUS de agregar productos al movimiento
             */
             let detalleProducto = {
-                producto: {
-                    codigo: this.producto.codigo,
-                    nombre: this.producto.nombre,
-                    descripcion: this.producto.descripcion,
-                    stock: this.producto.stock,
-                    precio: this.producto.precio,
-                },
+                codigo_product: this.producto.codigo,
+                nombre: this.producto.nombre,
+                descripcion: this.producto.descripcion,
+                stock: this.producto.stock,
+                precio: this.producto.precio,
+                nomCategoria: this.producto.nomCategoria,
                 cantidad: this.cantidad
             }
             //validar codigo vacio
             if (this.producto.nombre) {
-                if (this.listaDetalleProductos.find(detalle => detalle.producto.codigo === detalleProducto.producto.codigo)) {
+                if (this.listaDetalleProductos.find(detalle => detalle.codigo_product === detalleProducto.codigo_product)) {
                     this.$swal.fire({
                         icon: 'error',
                         title: 'Oops...',
@@ -544,23 +517,33 @@ export default {
                 } else {
                     //validacion de la cantidad
                     if (this.cantidad <= this.producto.stock) {
-                        this.listaDetalleProductos.push(detalleProducto)
-                        this.producto = {
-                            codigo: '',
-                            nombre: '',
-                            descripcion: '',
-                            stock: 0,
-                            precio: 0
-                        };
-                        this.cantidad = 1;
-                        this.$swal.fire({
-                            icon: 'success',
-                            title: 'Producto agregado al movimiento',
-                            text: "Click en el botón para salir!",
-                            showConfirmButton: true,
-                            confirmButtonText: 'ok',
-                            confirmButtonColor: 'btn btn-success',
-                        })
+                        if (this.cantidad >= 0) {
+                            this.listaDetalleProductos.push(detalleProducto)
+                            this.producto = {
+                                codigo: '',
+                                nombre: '',
+                                descripcion: '',
+                                nomCategoria: '',
+                                stock: 0,
+                                precio: 0
+                            };
+                            this.cantidad = 1;
+                            this.$swal.fire({
+                                icon: 'success',
+                                title: 'Producto agregado al movimiento',
+                                text: "Click en el botón para salir!",
+                                showConfirmButton: true,
+                                confirmButtonText: 'ok',
+                                confirmButtonColor: 'btn btn-success',
+                            })
+                        } else {
+                            this.$swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'La cantidad no puede ser negativa!',
+                            })
+                        }
+
                     } else {
                         this.$swal.fire({
                             icon: 'error',
@@ -598,6 +581,7 @@ export default {
                         this.producto.descripcion = response.data.descripcion
                         this.producto.stock = response.data.stock
                         this.producto.precio = response.data.precio
+                        this.producto.nomCategoria = response.data.nomCategoria
                     } else {
                         this.$swal.fire({
                             icon: 'error',
@@ -643,13 +627,13 @@ export default {
             this.movimiento.lista_items = [];
             this.listaDetalleProductos = [];
         },
-        buscar(id) {
-            if (id) {
+        buscar(codigo) {
+            if (codigo) {
                 let movimiento = []
                 const serviciomovimientos = new ServicioMovimientos()
-                serviciomovimientos.buscar(id).then(data => {
+                serviciomovimientos.buscar(codigo).then(data => {
                     const response = data
-
+                    console.log(response)
                     if (response.status === 200) {
                         movimiento[0] = response.data
                         this.movimientos = movimiento
@@ -664,15 +648,12 @@ export default {
                     this.mostrarMovimientos()
                 })
             } else {
-                this.$swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'No se pudo encontrar el movimiento!',
-                })
+                this.mostrarMovimientos()
             }
         }
     },
     created() {
+        this.mostrarMovimientos();
         this.movimiento.name_responsable = `${store.state.username}`;
         this.movimiento.id_responsable = `${store.state.id}`;
     }
