@@ -23,6 +23,12 @@
 
         </div>
     </div>
+    <!-- 
+        Autor: Aldo Ramirez
+        fecha: 05/10/2022
+
+        Modal para el resgistro, descripcion y edicion de la categoria
+    -->
     <teleport to="body">
         <!-- use the modal component, pass in the prop -->
         <modal :show="showModal" @close="showModal = false; v$.$reset()">
@@ -68,6 +74,12 @@
         </modal>
     </teleport>
     <content>
+         <!-- 
+            Autor: Aldo Ramirez
+            fecha: 05/10/2022
+
+            Tabla de la lista de categorias
+        -->
         <data-table :lista="categorias" @getValues="setValues">
 
             <template #button_buscar>
@@ -149,6 +161,11 @@ export default {
     },
     validations() {
         return {
+            /* 
+                Autor: Aldo Ramirez
+                fecha: 05/10/2022
+                validaciones de los campos del producto usando el VueValidate 
+            */
             categoria: {
                 //validaciones para el campo de codigo
                 codigo: {
@@ -172,6 +189,11 @@ export default {
             //retorno de la lista paginada
             this.categoriasPaginadas = obj;
         },
+        /* 
+            Autor: Deyvi Ramos Panaifo
+            fecha: 25/10/2022
+            función relacionada al CUS de Listar Categorias Habilitadas
+        */
         mostrarCategorias() {
             this.activeCategoriaHabilitados = true;
             this.activeCategoriaInhabilitados = false;
@@ -191,6 +213,11 @@ export default {
                 console.log(error)
             })
         },
+        /* 
+            Autor: Aldo Ramirez
+            fecha: 25/10/2022
+            función relacionada al CUS de Listar Categorias inhabilitadas
+        */
         mostrarCategoriasInhabilitados() {
             this.activeCategoriaHabilitados = false;
             this.activeCategoriaInhabilitados = true;
@@ -208,6 +235,11 @@ export default {
                 console.log(error)
             })
         },
+        /* 
+            Autor: Aldo Ramirez
+            fecha: 05/11/2022
+            función relacionada al CUS de descender categoria
+        */
         descenderCategoria(categoria) {
 
             //Alert para eliminación
@@ -265,6 +297,11 @@ export default {
                 }
             })
         },
+        /* 
+            Autor: Aldo Ramirez
+            fecha: 05/11/2022
+            función relacionada al CUS de ascender categoria
+        */
         ascenderCategoria(categoria) {
 
             //Alert para eliminación
@@ -402,6 +439,12 @@ export default {
             }
 
         },
+        /* 
+            Autor: Deyvi Carlos Ramos Panaifo
+            fecha: 22/10/2022
+            función que permite a activar un modal donde se vizualizaran
+            los campos de la categoria
+        */
         abrirModal(data = {}) {
             if (this.modificar) {
                 this.tituloModal = "Modificar Categoria"
@@ -414,6 +457,11 @@ export default {
                 this.limpiarFormuralio();
             }
         },
+        /* 
+            Autor: Deyvi Carlos Ramos Panaifo
+            fecha: 22/10/2022
+            función que permite a reestablecer al estado inicial las variables
+        */
         limpiarFormuralio() {
             this.categoria.nombre = '';
             this.categoria.codigo = '';

@@ -7,7 +7,12 @@
             <i class="fas fa-plus-circle mr-2" aria-hidden="true"></i> Nuevo Movimiento
         </button>
     </div>
-    <!-- Modal para agregar los movimientos -->
+    <!-- 
+        Autor: Gino Rubio Pacheco
+        fecha: 23/11/2022
+
+        Modal para agregar los movimientos 
+    -->
     <teleport to="body">
         <!-- use the modal component, pass in the prop -->
         <modal :show="showModal" @close="showModal = false; v$.$reset()" tamanio="modal-xl">
@@ -129,10 +134,9 @@
 
     <!--
         Autor: Gino Rubio Pacheco
-        fecha: /11/2022
-        Modal asociado al CUS agregar producto al movimiento
+        fecha: 23/11/2022
+        Modal para agregar producto a los movimientos
     -->
-    <!-- Modal para agregar producto a los movimientos -->
     <teleport to="body">
         <!-- use the modal component, pass in the prop -->
         <modal :show="showModal1" @close="showModal1 = false" tamanio="modal-lg">
@@ -315,6 +319,11 @@ export default {
     },
     validations() {
         return {
+            /* 
+                Autor: Gino Rubio Pacheco
+                fecha: 05/11/2022
+                validaciones de los campos del movimiento usando el VueValidate 
+            */
             movimiento: {
                 //validaciones para el campo de codigo
                 codigo: {
@@ -622,6 +631,12 @@ export default {
                 })
             }
         },
+        /* 
+            Autor: Deyvi Carlos Ramos Panaifo
+            fecha: 22/10/2022
+            función que permite a activar un modal donde se vizualizaran
+            los campos del movimiento
+        */
         abrirModal(data = {}) {
             if (this.modificar) {
                 this.tituloModal = "Modificar Movimiento"
@@ -637,6 +652,11 @@ export default {
                 this.limpiarFormuralio();
             }
         },
+        /* 
+            Autor: Gino Rubio Pacheco
+            fecha: 05/11/2022
+            función que permite a reestablecer al estado inicial las variables
+        */
         limpiarFormuralio() {
             this.movimiento.codigo = '';
             this.movimiento.factura = '';
@@ -676,6 +696,7 @@ export default {
             }
         }
     },
+    //inicializamos algunos metodos
     created() {
         this.mostrarMovimientos();
         this.movimiento.name_responsable = `${store.state.username}`;

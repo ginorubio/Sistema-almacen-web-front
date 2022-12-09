@@ -22,8 +22,14 @@
 
         </div>
     </div>
-    <teleport to="body">
-        <!-- use the modal component, pass in the prop -->
+    <!-- 
+        Autor: Deyvi Ramos Panaifo
+        fecha: 05/11/2022
+
+        Modal para el resgistro, descripcion y edicion del producto
+    -->
+    <teleport to="body"> 
+          <!-- use the modal component, pass in the prop -->
         <modal :show="showModal" @close="showModal = false; v$.$reset()">
             <template #header>
                 <h3>{{ tituloModal }}</h3>
@@ -155,6 +161,12 @@
         </modal>
     </teleport>
     <content>
+        <!-- 
+            Autor: Deyvi Ramos Panaifo
+            fecha: 05/11/2022
+
+            Tabla de la lista de productos
+        -->
         <data-table :lista="productos" @getValues="setValues">
             <template #button_buscar>
                 <label class="mr-2" for="">BUSCAR:</label>
@@ -263,6 +275,11 @@ export default {
     },
     validations() {
         return {
+            /* 
+                Autor: Deyvi Ramos Panaifo
+                fecha: 05/11/2022
+                validaciones de los campos del producto usando el VueValidate 
+            */
             producto: {
                 //validaciones para el campo de descripcion
                 descripcion: {
@@ -345,8 +362,6 @@ export default {
             función relacionada al CUS de Listar Productos con stock mínimo
         */
         mostrarStockMinimo() {
-
-
             const servicioproducto = new ServicioProducto()
 
             servicioproducto.mostrarStockMinimo().then(data => {
@@ -608,6 +623,12 @@ export default {
             }
 
         },
+        /* 
+            Autor: Deyvi Carlos Ramos Panaifo
+            fecha: 22/10/2022
+            función que permite a activar un modal donde se vizualizaran
+            los campos del producto
+        */
         abrirModal(data = {}) {
             if (this.modificar == 2) {
                 this.tituloModal = "Modificar Producto"
@@ -639,6 +660,11 @@ export default {
                 this.producto.nomCategoria = this.categorias[index].nombre
             }
         },
+        /* 
+            Autor: Deyvi Carlos Ramos Panaifo
+            fecha: 22/10/2022
+            función que permite a reestablecer al estado inicial las variables
+        */
         limpiarFormuralio() {
             this.producto.descripcion = '';
             this.producto.precio = 0;
