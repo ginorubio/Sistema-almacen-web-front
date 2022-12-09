@@ -81,6 +81,12 @@
                         </div>
                     </div>
                 </div>
+                <!-- 
+                    Autor: Gino Rubio Pacheco
+                    fecha: 23/11/2022
+                    
+                    Tabla de la lista de productos
+                -->
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped">
                         <thead>
@@ -100,7 +106,7 @@
                                 <td>{{ detalle.codigo_product }}</td>
                                 <td>{{ detalle.nombre }}</td>
                                 <td>{{ detalle.descripcion }}</td>
-                                <td>{{ detalle.categoria }}</td>
+                                <td>{{ detalle.nomCategoria }}</td>
                                 <td>{{ detalle.stock }}</td>
                                 <td>{{ detalle.precio }}</td>
                                 <td>
@@ -208,6 +214,12 @@
         </modal>
     </teleport>
     <content>
+        <!-- 
+            Autor: Gino Rubio Pacheco
+            fecha: 23/11/2022
+
+            Tabla de la lista de movimientos
+        -->
         <data-table :lista="movimientos" @getValues="setValues">
             <template #button_buscar>
                 <label class="mr-2" for="">BUSCAR:</label>
@@ -345,6 +357,12 @@ export default {
                 console.log(error)
             })
         },
+         /* 
+            Autor: Gino Rubio Pacheco
+            fecha: 05/11/2022
+            función relacionada al CUS de anular movimientos por codigo,
+            permite realizar la anulacion de un movimiento
+        */
         borrarMovimiento(movimiento) {
 
             //Alert para eliminación
@@ -442,7 +460,7 @@ export default {
 
                     /* 
                         Autor: Gino Rubio Pacheco
-                        fecha: /11/2022
+                        fecha: 29/11/2022
                         función relacionada al CUS de Registrar movimiento
                     */
                     if (this.listaDetalleProductos.length != 0) {
@@ -461,7 +479,7 @@ export default {
                                     confirmButtonText: 'listo',
                                     confirmButtonColor: 'btn btn-success',
                                 })
-                                //this.mostrarMovimientos();
+                                this.mostrarMovimientos();
                                 this.limpiarFormuralio();
                             } else {
                                 this.$swal.fire({
@@ -494,7 +512,7 @@ export default {
         agregarProducto() {
             /* 
                 Autor: Gino Rubio Pacheco
-                fecha: /11/2022
+                fecha: 29/11/2022
                 función relacionada al CUS de agregar productos al movimiento
             */
             let detalleProducto = {
@@ -567,7 +585,7 @@ export default {
         buscarProducto(codigo) {
             /* 
                 Autor: Gino Rubio Pacheco
-                fecha: /11/2022
+                fecha: 23/11/2022
                 función relacionada al CUS de agregar producto al movimiento,
                 permite realizar la busqueda del producto
             */
@@ -627,6 +645,12 @@ export default {
             this.movimiento.lista_items = [];
             this.listaDetalleProductos = [];
         },
+         /* 
+            Autor: Gino Rubio Pacheco
+            fecha: 05/11/2022
+            función relacionada al CUS de buscar movimientos por codigo,
+            permite realizar la busqueda del movimiento
+        */
         buscar(codigo) {
             if (codigo) {
                 let movimiento = []

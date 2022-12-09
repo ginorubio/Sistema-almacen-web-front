@@ -19,7 +19,12 @@ export class ServicioMovimientos {
             return error
         }
     }
-
+    /* 
+        Autor: Gino Rubio Pacheco
+        fecha: 06/11/2022
+        llamada a la api al CUS de anular o eliminar movimiento desde el Front-End al
+        Back-End 
+    */
     async eliminar(codigo_movimiento) {
         try {
             const res = await fetch(this.URL + '/anular_mov/' + codigo_movimiento, { method: 'PUT', headers: this.cabecera })
@@ -32,7 +37,7 @@ export class ServicioMovimientos {
     }
     /* 
         Autor: Gino Rubio Pacheco
-        fecha: /11/2022
+        fecha: 28/11/2022
         llamada a la api al CUS de Resgistrar movimiento desde el Front-End al
         Back-End 
     */
@@ -56,7 +61,12 @@ export class ServicioMovimientos {
             return error
         }
     }
-
+    /* 
+        Autor: Gino Rubio Pacheco
+        fecha: 06/11/2022
+        llamada a la api al CUS de buscar movimiento desde el Front-End al
+        Back-End 
+    */
     async buscar(codigo_movimiento) {
         try {
             const res = await fetch(this.URL + '/searchByCode/' + codigo_movimiento, { headers: this.cabecera})
