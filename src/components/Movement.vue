@@ -88,7 +88,7 @@
                     Tabla de la lista de productos
                 -->
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped">
+                    <table class="table table-bordered table-striped" aria-label="tabla-description-producto">
                         <thead>
                             <tr>
                                 <th>CÓDIGO</th>
@@ -114,7 +114,7 @@
                                 </td>
                                 <td>
                                     <button type="button" @click="borrarProducto(index)" class="btn btn-danger "><i
-                                            class="fas fa-trash"></i></button>
+                                            class="fas fa-trash" aria-hidden="true"></i></button>
                                 </td>
                             </tr>
                         </tbody>
