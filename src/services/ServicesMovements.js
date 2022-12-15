@@ -19,6 +19,16 @@ export class ServicioMovimientos {
             return error
         }
     }
+    async mostrarAnulados() {
+        try {
+            //ruta para obtener información del back
+            const res = await fetch(this.URL+'/anulados', { headers: this.cabecera })
+            const response = await res.json()
+            return response;
+        } catch (error) {
+            return error
+        }
+    }
     /* 
         Autor: Gino Rubio Pacheco
         fecha: 06/11/2022

@@ -6,6 +6,21 @@
             @click.prevent="showModal = true, modificar = false; abrirModal()" class="btn btn-primary">
             <i class="fas fa-plus-circle mr-2" aria-hidden="true"></i> Nuevo Movimiento
         </button>
+        <div class="d-flex justify-content-end">
+            <div>
+                <div class="habilidados" :class="{ estadoactivo: activeMovimientosAprobados }">
+                    <button type="button" @click="activeMovimientosAprobados = true; mostrarMovimientos()">
+                        <i class="fas fa-circle mr-2" aria-hidden="true"></i> <strong>Aprobados</strong>
+                    </button>
+                </div>
+                <div class="inhabilitados" :class="{ estadoinhabilitado: activeMovimientosAnulados }">
+                    <button type="button" @click="activeMovimientosAnulados == true, mostrarMovimientosAnulados()">
+                        <i class="fas fa-circle mr-2" aria-hidden="true"></i> <strong>Anulados</strong>
+                    </button>
+                </div>
+            </div>
+
+        </div>
     </div>
     <!-- 
         Autor: Gino Rubio Pacheco
@@ -306,6 +321,8 @@ export default {
             cadena_buscar: '',
             movimientosPaginados: [],
             listaDetalleProductos: [],
+            activeMovimientosAprobados: true,
+            activeMovimientosAnulados: false,
             producto: {
                 codigo: '',
                 nombre: '',
@@ -357,9 +374,23 @@ export default {
             this.movimientosPaginados = obj;
         },
         mostrarMovimientos() {
+
+            this.activeMovimientosAprobados = true;
+            this.activeMovimientosAnulados = false;
             //instancia del servicio
             const serviciomovimientos = new ServicioMovimientos()
             serviciomovimientos.mostrar().then(res => {
+                const response = res
+                this.movimientos = response.data;
+            }, error => {
+                console.log(error)
+            })
+        },
+        mostrarMovimientosAnulados(){
+            this.activeMovimientosAprobados = false;
+            this.activeMovimientosAnulados = true;
+            const serviciomovimientos = new ServicioMovimientos()
+            serviciomovimientos.mostrarAnulados().then(res => {
                 const response = res
                 this.movimientos = response.data;
             }, error => {
