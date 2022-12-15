@@ -41,7 +41,7 @@ export default {
         lista: {
             type: Array,
             default: () => []
-        }
+        },
     },
     data() {
         return {
@@ -75,7 +75,6 @@ export default {
                 this.pages.push(i);
             }
             this.listaPaginada();
-
         },
     }
 }

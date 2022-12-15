@@ -81,12 +81,24 @@ export class ServicioMovimientos {
         try {
             const res = await fetch(this.URL + '/searchByCode/' + codigo_movimiento, { headers: this.cabecera})
             const response = await res.json()
+            return response
+        } catch (error) {
+            return error
+        }
+    }
+    /*
+        Autor: 
+        fecha: 
+        
+    */
+    async generarReporte(codigo_movimiento){
+        try {
+            const res = await fetch(this.URL + '/reporte/' + codigo_movimiento, { headers: this.cabecera})
+            const response = await res.json()
             console.log(response)
             return response
         } catch (error) {
             return error
         }
     }
-
-
 }

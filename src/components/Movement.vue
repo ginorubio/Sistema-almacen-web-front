@@ -242,7 +242,8 @@
         <data-table :lista="movimientos" @getValues="setValues">
             <template #button_buscar>
                 <label class="mr-2" for="">BUSCAR:</label>
-                <input class="rounded-pill input-buscar-datatable" placeholder="Buscar por código" type="search" v-model="cadena_buscar">
+                <input class="rounded-pill input-buscar-datatable" placeholder="Buscar por código" type="search"
+                    v-model="cadena_buscar">
                 <button class="btn btn-primary mr-2" @click="buscar(cadena_buscar)"><i class="fas fa-search"
                         aria-hidden="true"></i></button>
             </template>
@@ -265,8 +266,8 @@
                     <td>{{ movimiento.tipo }}</td>
                     <td>{{ movimiento.name_responsable }}</td>
                     <td>
-                        <button @click="showModal = true; modificar = 3; abrirModal(movimiento)"
-                            class="btn btn-info mr-2"><i class="fa fa-eye" aria-hidden="true"></i></button>
+                        <button class="btn btn-secondary mr-2" @click="getReporte(movimiento)"><i class="fa fa-file-pdf"
+                                aria-hidden="true"></i></button>
                         <button v-if="movimiento.estado != 'Anulado' && $store.state.rol == 'jefe_almacen'"
                             type="button" @click="borrarMovimiento(movimiento)" class="btn btn-danger mr-2"><i
                                 class="fas fa-trash" aria-hidden="true"></i></button>
@@ -386,7 +387,7 @@ export default {
                 console.log(error)
             })
         },
-        mostrarMovimientosAnulados(){
+        mostrarMovimientosAnulados() {
             this.activeMovimientosAprobados = false;
             this.activeMovimientosAnulados = true;
             const serviciomovimientos = new ServicioMovimientos()
@@ -397,12 +398,12 @@ export default {
                 console.log(error)
             })
         },
-         /* 
-            Autor: Gino Rubio Pacheco
-            fecha: 05/11/2022
-            función relacionada al CUS de anular movimientos por codigo,
-            permite realizar la anulacion de un movimiento
-        */
+        /* 
+           Autor: Gino Rubio Pacheco
+           fecha: 05/11/2022
+           función relacionada al CUS de anular movimientos por codigo,
+           permite realizar la anulacion de un movimiento
+       */
         borrarMovimiento(movimiento) {
 
             //Alert para eliminación
@@ -696,12 +697,12 @@ export default {
             this.movimiento.lista_items = [];
             this.listaDetalleProductos = [];
         },
-         /* 
-            Autor: Gino Rubio Pacheco
-            fecha: 05/11/2022
-            función relacionada al CUS de buscar movimientos por codigo,
-            permite realizar la busqueda del movimiento
-        */
+        /* 
+           Autor: Gino Rubio Pacheco
+           fecha: 05/11/2022
+           función relacionada al CUS de buscar movimientos por codigo,
+           permite realizar la busqueda del movimiento
+       */
         buscar(codigo) {
             if (codigo) {
                 let movimiento = []
@@ -725,7 +726,36 @@ export default {
             } else {
                 this.mostrarMovimientos()
             }
-        }
+        },
+        getReporte(movimiento) {
+            const serviciomovimientos = new ServicioMovimientos()
+            serviciomovimientos.generarReporte(movimiento.codigo).then(data => {
+                const response = data
+                console.log(response)
+                if (response.status === 200) {
+                    this.$swal.fire({
+                        icon: 'success',
+                        title: 'Reporte Generado',
+                        text: "Click en el botón para salir!",
+                        showConfirmButton: true,
+                        confirmButtonText: 'ok',
+                        confirmButtonColor: 'btn btn-success',
+                    })
+                } else {
+                    this.$swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'No se pudo generar el Reporte!',
+                    })
+                }
+            }).catch((error) => {
+                this.$swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'No se pudo generar el Reporte!',
+                })
+            })
+        },
     },
     //inicializamos algunos metodos
     created() {
@@ -736,34 +766,37 @@ export default {
 }
 </script>
 <style>
-.input-buscar-datatable{
+.input-buscar-datatable {
     width: 500px;
 }
+
 @media (max-width: 1200px) {
-    .input-buscar-datatable{
+    .input-buscar-datatable {
         width: 400px;
     }
 }
+
 @media (max-width: 992px) {
-    .input-buscar-datatable{
+    .input-buscar-datatable {
         width: 300px;
     }
 }
+
 @media (max-width: 660px) {
-    .input-buscar-datatable{
+    .input-buscar-datatable {
         width: 250px;
     }
 }
+
 @media (max-width: 576px) {
-    .input-buscar-datatable{
+    .input-buscar-datatable {
         width: 130px;
     }
 }
+
 @media (max-width: 376px) {
-    .input-buscar-datatable{
+    .input-buscar-datatable {
         width: 170px;
     }
 }
-
-
 </style>
