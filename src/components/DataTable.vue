@@ -1,11 +1,8 @@
 <template>
     <!--Data table prueba-->
     <div class="card">
-        <div class="card-header d-flex justify-content-between">
-            <h3 class="card-title">DataTable</h3>
-            <div>
-                <slot name="button_buscar"></slot>
-            </div>
+        <div class="card-header">
+            <slot name="button_buscar"></slot>
         </div>
         <div class="card-body">
             <div class="table-responsive">

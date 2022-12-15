@@ -242,7 +242,7 @@
         <data-table :lista="movimientos" @getValues="setValues">
             <template #button_buscar>
                 <label class="mr-2" for="">BUSCAR:</label>
-                <input class="rounded-pill" placeholder="Buscar por código" type="search" v-model="cadena_buscar">
+                <input class="rounded-pill input-buscar-datatable" placeholder="Buscar por código" type="search" v-model="cadena_buscar">
                 <button class="btn btn-primary mr-2" @click="buscar(cadena_buscar)"><i class="fas fa-search"
                         aria-hidden="true"></i></button>
             </template>
@@ -735,3 +735,35 @@ export default {
     }
 }
 </script>
+<style>
+.input-buscar-datatable{
+    width: 500px;
+}
+@media (max-width: 1200px) {
+    .input-buscar-datatable{
+        width: 400px;
+    }
+}
+@media (max-width: 992px) {
+    .input-buscar-datatable{
+        width: 300px;
+    }
+}
+@media (max-width: 660px) {
+    .input-buscar-datatable{
+        width: 250px;
+    }
+}
+@media (max-width: 576px) {
+    .input-buscar-datatable{
+        width: 130px;
+    }
+}
+@media (max-width: 376px) {
+    .input-buscar-datatable{
+        width: 170px;
+    }
+}
+
+
+</style>

@@ -170,7 +170,7 @@
         <data-table :lista="productos" @getValues="setValues">
             <template #button_buscar>
                 <label class="mr-2" for="">BUSCAR:</label>
-                <input class="rounded-pill" placeholder="Buscar por código" type="search" v-model="cadena_buscar">
+                <input class="rounded-pill input-buscar-datatable" placeholder="Buscar por código" type="search" v-model="cadena_buscar">
                 <button class="btn btn-primary mr-2" @click="buscar(cadena_buscar)"><i class="fas fa-search"
                         aria-hidden="true"></i></button>
                 <button v-if="activeProductoHabilitados" class="btn btn-primary" @click="mostrarStockMinimo()"><i class="fas fa-search mr-1"
