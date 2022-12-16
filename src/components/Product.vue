@@ -288,12 +288,13 @@ export default {
                 descripcion: {
                     required: helpers.withMessage('El valor es requerido', required),
                     minLength: helpers.withMessage('El mínimo número de caracteres es 5', minLength(5)),
-                    maxLength: helpers.withMessage('El máximo número de caracteres es 50', maxLength(50))
+                    maxLength: helpers.withMessage('El máximo número de caracteres es 150', maxLength(150))
                 },
                 //validaciones para el campo de precio
                 precio: {
                     required: helpers.withMessage('El valor es requerido', required),
-                    minValue: helpers.withMessage('El mínimo valor es 0', minValue(0))
+                    minValue: helpers.withMessage('El mínimo valor es 0', minValue(0)),
+                    maxLength: helpers.withMessage('El máximo número de caracteres es 8', maxLength(8))
                 },
                 //validaciones para el campo de categoria
                 nomCategoria: {
@@ -303,7 +304,8 @@ export default {
                 nombre: {
                     required: helpers.withMessage('El valor es requerido', required),
                     minLength: helpers.withMessage('El mínimo número de caracteres es 5', minLength(5)),
-                    caracteres: helpers.withMessage('Caracter no valido', caracterValido)
+                    caracteres: helpers.withMessage('Caracter no valido', caracterValido),
+                    maxLength: helpers.withMessage('El mínimo número de caracteres es 70', maxLength(70)),
                 },
                 //validaciones para el campo de codigo
                 codigo: {
@@ -316,17 +318,20 @@ export default {
                 stock: {
                     required: helpers.withMessage('El valor es requerido', required),
                     minValue: helpers.withMessage('El mínimo valor es 0', minValue(0)),
-                    numeroEntero: helpers.withMessage('Solo número entero', numeroEntero)
+                    numeroEntero: helpers.withMessage('Solo número entero', numeroEntero),
+                    maxLength: helpers.withMessage('El máximo número de dígitos es 8', maxLength(8))
                 },
                 stockMinimo: {
                     required: helpers.withMessage('El valor es requerido', required),
                     minValue: helpers.withMessage('El mínimo valor es 0', minValue(0)),
-                    numeroEntero: helpers.withMessage('Solo número entero', numeroEntero)
+                    numeroEntero: helpers.withMessage('Solo número entero', numeroEntero),
+                    maxLength: helpers.withMessage('El máximo número de dígitos es 8', maxLength(8))
                 },
                 //validaciones para el campo de costo
                 costo: {
                     required: helpers.withMessage('El valor es requerido', required),
-                    minValue: helpers.withMessage('El mínimo valor es 0', minValue(0))
+                    minValue: helpers.withMessage('El mínimo valor es 0', minValue(0)),
+                    maxLength: helpers.withMessage('El máximo número de caracteres es 8', maxLength(8))
                 },
             }
         }

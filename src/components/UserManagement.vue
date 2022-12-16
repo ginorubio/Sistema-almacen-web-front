@@ -237,6 +237,7 @@ export default {
                 username: {
                     required: helpers.withMessage('El campo es requerido', required),
                     minLength: helpers.withMessage('El mínimo número de caracteres es 3', minLength(3)),
+                    maxLength: helpers.withMessage('El mínimo número de caracteres es 3', minLength(120)),
                     caracteres: helpers.withMessage('Caracter no valido', caracterValido)
                 },
                 dni: {

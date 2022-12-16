@@ -40,7 +40,7 @@
                     <div class="col-sm mb-2">
                         <div class="form-group">
                             <label>Código</label>
-                            <input type="text" class="form-control" placeholder="Código de movimiento"
+                            <input type="text" class="form-control" placeholder="ejemplo: MOV-1 o MOV-000001"
                                 v-model="movimiento.codigo">
                         </div>
                         <div class="text-danger" v-if="v$.movimiento.codigo.$error">
@@ -63,7 +63,7 @@
                     <div class="col-sm mb-2">
                         <div class="form-group">
                             <label for="factura">Código de Factura</label>
-                            <input type="text" class="form-control" placeholder="Código de factura"
+                            <input type="text" class="form-control" placeholder="ejemplo: E001-001"
                                 v-model="movimiento.factura" />
                         </div>
                         <div class="text-danger" v-if="v$.movimiento.factura.$error">
@@ -291,6 +291,11 @@ import store from '../store'
 import { ServicioMovimientos } from '@/services/ServicesMovements';
 import { ServicioProducto } from '@/services/ServicesProducts';
 
+//expresion de codigo del movimiento
+const codigoMovimientoValido = helpers.regex(/^MOV-(\d+){1,6}$/);
+//expresion de codigo de la factura
+const codigoFacturaValida = helpers.regex(/^E(\d+){3}-(\d+){3}$/);
+
 export default {
     components: {
         ContentHeader, Content, Modal, DataTable
@@ -346,14 +351,16 @@ export default {
                 //validaciones para el campo de codigo
                 codigo: {
                     required: helpers.withMessage('El valor es requerido', required),
-                    minLength: helpers.withMessage('El mínimo número de caracteres es 6', minLength(6)),
-                    maxLength: helpers.withMessage('El máximo número de caracteres es 10', maxLength(10))
+                    minLength: helpers.withMessage('El mínimo número de caracteres es 5', minLength(5)),
+                    maxLength: helpers.withMessage('El máximo número de caracteres es 10', maxLength(10)),
+                    codigoMovimientoValido: helpers.withMessage('No tiene el formato MOV-1 o MOV-000001',codigoMovimientoValido ),
                 },
                 //validaciones para el campo de descripcion
                 factura: {
                     required: helpers.withMessage('El valor es requerido', required),
-                    minLength: helpers.withMessage('El mínimo número de caracteres es 8', minLength(8)),
-                    maxLength: helpers.withMessage('El máximo número de caracteres es 10', maxLength(10))
+                    minLength: helpers.withMessage('El número de caracteres es 8', minLength(8)),
+                    maxLength: helpers.withMessage('El número de caracteres es 8', maxLength(8)),
+                    codigoFacturaValida: helpers.withMessage('No tiene el formato E001-001 o E999-999',codigoFacturaValida ),
                 },
                 //validacion del campo tipo
                 tipo: {
