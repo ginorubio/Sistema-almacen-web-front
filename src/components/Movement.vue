@@ -271,7 +271,6 @@
                         <button v-if="movimiento.estado != 'Anulado' && $store.state.rol == 'jefe_almacen'"
                             type="button" @click="borrarMovimiento(movimiento)" class="btn btn-danger mr-2"><i
                                 class="fas fa-trash" aria-hidden="true"></i></button>
-
                     </td>
                 </tr>
             </template>
@@ -333,6 +332,7 @@ export default {
                 precio: 0,
             },
             cantidad: 1,
+            url_pdf: ''
         }
     },
     validations() {
@@ -733,14 +733,16 @@ export default {
                 const response = data
                 console.log(response)
                 if (response.status === 200) {
-                    this.$swal.fire({
-                        icon: 'success',
-                        title: 'Reporte Generado',
-                        text: "Click en el botón para salir!",
-                        showConfirmButton: true,
-                        confirmButtonText: 'ok',
-                        confirmButtonColor: 'btn btn-success',
-                    })
+                    this.url_pdf = response.data
+
+                    const link = document.createElement("a");
+                    link.href = this.url_pdf;
+                    link.target = "_blank";
+                    link.id = "enlace-reporte"
+                    document.body.appendChild(link);
+                    link.click();
+                    document.getElementById("enlace-reporte").remove();
+
                 } else {
                     this.$swal.fire({
                         icon: 'error',
