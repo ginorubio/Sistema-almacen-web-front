@@ -40,7 +40,7 @@
                     <div class="col-sm mb-2">
                         <div class="form-group">
                             <label>Código</label>
-                            <input type="text" class="form-control" placeholder="Código de movimiento"
+                            <input type="text" class="form-control" placeholder="ejemplo: MOV-1 o MOV-000001"
                                 v-model="movimiento.codigo">
                         </div>
                         <div class="text-danger" v-if="v$.movimiento.codigo.$error">
@@ -63,7 +63,7 @@
                     <div class="col-sm mb-2">
                         <div class="form-group">
                             <label for="factura">Código de Factura</label>
-                            <input type="text" class="form-control" placeholder="Código de factura"
+                            <input type="text" class="form-control" placeholder="ejemplo: E001-001"
                                 v-model="movimiento.factura" />
                         </div>
                         <div class="text-danger" v-if="v$.movimiento.factura.$error">
@@ -271,7 +271,6 @@
                         <button v-if="movimiento.estado != 'Anulado' && $store.state.rol == 'jefe_almacen'"
                             type="button" @click="borrarMovimiento(movimiento)" class="btn btn-danger mr-2"><i
                                 class="fas fa-trash" aria-hidden="true"></i></button>
-
                     </td>
                 </tr>
             </template>
@@ -291,6 +290,11 @@ import store from '../store'
 
 import { ServicioMovimientos } from '@/services/ServicesMovements';
 import { ServicioProducto } from '@/services/ServicesProducts';
+
+//expresion de codigo del movimiento
+const codigoMovimientoValido = helpers.regex(/^MOV-(\d+){1,6}$/);
+//expresion de codigo de la factura
+const codigoFacturaValida = helpers.regex(/^E(\d+){3}-(\d+){3}$/);
 
 export default {
     components: {
@@ -333,6 +337,7 @@ export default {
                 precio: 0,
             },
             cantidad: 1,
+            url_pdf: ''
         }
     },
     validations() {
@@ -346,14 +351,16 @@ export default {
                 //validaciones para el campo de codigo
                 codigo: {
                     required: helpers.withMessage('El valor es requerido', required),
-                    minLength: helpers.withMessage('El mínimo número de caracteres es 6', minLength(6)),
-                    maxLength: helpers.withMessage('El máximo número de caracteres es 10', maxLength(10))
+                    minLength: helpers.withMessage('El mínimo número de caracteres es 5', minLength(5)),
+                    maxLength: helpers.withMessage('El máximo número de caracteres es 10', maxLength(10)),
+                    codigoMovimientoValido: helpers.withMessage('No tiene el formato MOV-1 o MOV-000001',codigoMovimientoValido ),
                 },
                 //validaciones para el campo de descripcion
                 factura: {
                     required: helpers.withMessage('El valor es requerido', required),
-                    minLength: helpers.withMessage('El mínimo número de caracteres es 8', minLength(8)),
-                    maxLength: helpers.withMessage('El máximo número de caracteres es 10', maxLength(10))
+                    minLength: helpers.withMessage('El número de caracteres es 8', minLength(8)),
+                    maxLength: helpers.withMessage('El número de caracteres es 8', maxLength(8)),
+                    codigoFacturaValida: helpers.withMessage('No tiene el formato E001-001 o E999-999',codigoFacturaValida ),
                 },
                 //validacion del campo tipo
                 tipo: {
@@ -374,6 +381,12 @@ export default {
             //retorno de la lista paginada
             this.movimientosPaginados = obj;
         },
+        /* 
+           Autor: Gino Rubio Pacheco
+           fecha: 12/12/2022
+           función relacionada al CUS de listar movimientos aprobados,
+           permite obtener la lista de los movimientos aprobados
+       */
         mostrarMovimientos() {
 
             this.activeMovimientosAprobados = true;
@@ -387,6 +400,12 @@ export default {
                 console.log(error)
             })
         },
+        /* 
+           Autor: Deyvi Ramos Panaifo
+           fecha: 13/12/2022
+           función relacionada al CUS de listar movimientos anulados,
+           permite obtener la lista de los movimientos anulados
+       */
         mostrarMovimientosAnulados() {
             this.activeMovimientosAprobados = false;
             this.activeMovimientosAnulados = true;
@@ -575,39 +594,30 @@ export default {
                     })
                 } else {
                     //validacion de la cantidad
-                    if (this.cantidad <= this.producto.stock) {
-                        if (this.cantidad >= 0) {
-                            this.listaDetalleProductos.push(detalleProducto)
-                            this.producto = {
-                                codigo: '',
-                                nombre: '',
-                                descripcion: '',
-                                nomCategoria: '',
-                                stock: 0,
-                                precio: 0
-                            };
-                            this.cantidad = 1;
-                            this.$swal.fire({
-                                icon: 'success',
-                                title: 'Producto agregado al movimiento',
-                                text: "Click en el botón para salir!",
-                                showConfirmButton: true,
-                                confirmButtonText: 'ok',
-                                confirmButtonColor: 'btn btn-success',
-                            })
-                        } else {
-                            this.$swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: 'La cantidad no puede ser negativa!',
-                            })
-                        }
-
+                    if (this.cantidad >= 0) {
+                        this.listaDetalleProductos.push(detalleProducto)
+                        this.producto = {
+                            codigo: '',
+                            nombre: '',
+                            descripcion: '',
+                            nomCategoria: '',
+                            stock: 0,
+                            precio: 0
+                        };
+                        this.cantidad = 1;
+                        this.$swal.fire({
+                            icon: 'success',
+                            title: 'Producto agregado al movimiento',
+                            text: "Click en el botón para salir!",
+                            showConfirmButton: true,
+                            confirmButtonText: 'ok',
+                            confirmButtonColor: 'btn btn-success',
+                        })
                     } else {
                         this.$swal.fire({
                             icon: 'error',
                             title: 'Oops...',
-                            text: 'La cantidad debe ser menor o igual que el stock!',
+                            text: 'La cantidad no puede ser negativa!',
                         })
                     }
                 }
@@ -724,23 +734,35 @@ export default {
                     this.mostrarMovimientos()
                 })
             } else {
-                this.mostrarMovimientos()
+                this.$swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'El campo del código no puede estar vacío!',
+                })
             }
         },
+        /* 
+            Autor: Aldo Ramirez
+            fecha: 13/12/2022
+            permite generar el reporte de 1 un movimiento
+        */
         getReporte(movimiento) {
             const serviciomovimientos = new ServicioMovimientos()
             serviciomovimientos.generarReporte(movimiento.codigo).then(data => {
                 const response = data
                 console.log(response)
                 if (response.status === 200) {
-                    this.$swal.fire({
-                        icon: 'success',
-                        title: 'Reporte Generado',
-                        text: "Click en el botón para salir!",
-                        showConfirmButton: true,
-                        confirmButtonText: 'ok',
-                        confirmButtonColor: 'btn btn-success',
-                    })
+                    this.url_pdf = response.data
+
+                    const link = document.createElement("a");
+                    link.href = this.url_pdf;
+                    link.target = "_blank";
+                    link.id = "enlace-reporte"
+                    link.rel = "noreferrer noopener"
+                    document.body.appendChild(link);
+                    link.click();
+                    document.getElementById("enlace-reporte").remove();
+
                 } else {
                     this.$swal.fire({
                         icon: 'error',

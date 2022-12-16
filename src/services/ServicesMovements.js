@@ -8,7 +8,12 @@ export class ServicioMovimientos {
             'x-access-token': `${store.state.token}`
         }
     }
-
+    /* 
+        Autor: Gino Rubio Pacheco
+        fecha: 12/12/2022
+        llamada a la api al CUS de listar movimiento aprobados desde el Front-End al
+        Back-End 
+    */
     async mostrar() {
         try {
             //ruta para obtener información del back
@@ -19,6 +24,12 @@ export class ServicioMovimientos {
             return error
         }
     }
+    /* 
+        Autor: Deyvi Ramos Panaifo
+        fecha: 13/12/2022
+        llamada a la api al CUS de listar movimiento anulados desde el Front-End al
+        Back-End 
+    */
     async mostrarAnulados() {
         try {
             //ruta para obtener información del back
@@ -87,9 +98,10 @@ export class ServicioMovimientos {
         }
     }
     /*
-        Autor: 
-        fecha: 
-        
+        Autor: Aldo Ramirez
+        fecha: 13/12/2022
+        llamada a la api a generar reporte desde el Front-End al
+        Back-End 
     */
     async generarReporte(codigo_movimiento){
         try {
