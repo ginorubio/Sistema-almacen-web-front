@@ -28,8 +28,8 @@
 
         Modal para el resgistro, descripcion y edicion del producto
     -->
-    <teleport to="body"> 
-          <!-- use the modal component, pass in the prop -->
+    <teleport to="body">
+        <!-- use the modal component, pass in the prop -->
         <modal :show="showModal" @close="showModal = false; v$.$reset()">
             <template #header>
                 <h3>{{ tituloModal }}</h3>
@@ -44,7 +44,8 @@
 
                             <input v-if="modificar == 3 || modificar == 2" disabled class="form-control" id="codigo"
                                 v-model="producto.codigo" />
-                            <input v-else class="form-control" id="codigo" placeholder="Digite el codigo" v-model="producto.codigo" />
+                            <input v-else class="form-control" id="codigo" placeholder="Digite el codigo"
+                                v-model="producto.codigo" />
 
                         </div>
                         <div class="text-danger" v-if="v$.producto.codigo.$error">
@@ -57,7 +58,8 @@
                             <label for="nombre">Nombre</label>
                             <input v-if="modificar == 3 || modificar == 2" disabled class="form-control" id="nombre"
                                 v-model="producto.nombre" />
-                            <input v-else class="form-control" id="nombre" placeholder="Digite el nombre" v-model="producto.nombre" />
+                            <input v-else class="form-control" id="nombre" placeholder="Digite el nombre"
+                                v-model="producto.nombre" />
                         </div>
                         <div class="text-danger" v-if="v$.producto.nombre.$error">
                             {{ v$.producto.nombre.$errors[0].$message }}
@@ -69,8 +71,8 @@
                             <label for="descripcion">Descripcion</label>
                             <textarea v-if="modificar == 3" disabled class="form-control" id="descripcion"
                                 v-model="producto.descripcion" style="height: 100px"></textarea>
-                            <textarea v-else class="form-control" id="descripcion" placeholder="Digite la descripcion" v-model="producto.descripcion"
-                                style="height: 100px"></textarea>
+                            <textarea v-else class="form-control" id="descripcion" placeholder="Digite la descripcion"
+                                v-model="producto.descripcion" style="height: 100px"></textarea>
                         </div>
                         <div class="text-danger" v-if="v$.producto.descripcion.$error">
                             {{ v$.producto.descripcion.$errors[0].$message }}
@@ -170,11 +172,12 @@
         <data-table :lista="productos" @getValues="setValues">
             <template #button_buscar>
                 <label class="mr-2" for="">BUSCAR:</label>
-                <input class="rounded-pill input-buscar-datatable" placeholder="Buscar por código" type="search" v-model="cadena_buscar">
+                <input class="rounded-pill input-buscar-datatable" placeholder="Buscar por código" type="search"
+                    v-model="cadena_buscar">
                 <button class="btn btn-primary mr-2" @click="buscar(cadena_buscar)"><i class="fas fa-search"
                         aria-hidden="true"></i></button>
-                <button v-if="activeProductoHabilitados" class="btn btn-primary" @click="mostrarStockMinimo()"><i class="fas fa-search mr-1"
-                        aria-hidden="true"></i>Stock Mínimo</button>
+                <button v-if="activeProductoHabilitados" class="btn btn-primary" @click="mostrarStockMinimo()"><i
+                        class="fas fa-search mr-1" aria-hidden="true"></i>Stock Mínimo</button>
             </template>
             <template #thead>
                 <tr>
@@ -194,7 +197,7 @@
                     <td>{{ producto.codigo }}</td>
                     <td>{{ producto.nombre }}</td>
                     <td>{{ producto.descripcion }}</td>
-                    <td>{{ producto.precio }}</td>
+                    <td>S/ {{ producto.precio }}</td>
                     <td>{{ producto.stock }}</td>
                     <td>{{ producto.stockMinimo }}</td>
                     <td>{{ producto.nomCategoria }}</td>
@@ -498,38 +501,46 @@ export default {
                 reverseButtons: true
             }).then(async (result) => {
 
-                if (result.isConfirmed) {
-                    //instancia del servicio de producto
-                    const servicioproducto = new ServicioProducto()
-                    //se llama al metodo eliminar productos
-                    servicioproducto.descenderProducto(producto._id).then(data => {
-                        const response = data
-                        if (response.status === 200) {
-                            alertEliminar.fire(
-                                'Se dio de baja!',
-                                `El producto ${producto.nombre} fue dado de baja.`,
-                                'success'
-                            )
-                            this.mostrarProductos();
-                        } else {
+                if (this.producto.stock === 0) {
+                    if (result.isConfirmed) {
+                        //instancia del servicio de producto
+                        const servicioproducto = new ServicioProducto()
+                        //se llama al metodo eliminar productos
+                        servicioproducto.descenderProducto(producto._id).then(data => {
+                            const response = data
+                            if (response.status === 200) {
+                                alertEliminar.fire(
+                                    'Se dio de baja!',
+                                    `El producto ${producto.nombre} fue dado de baja.`,
+                                    'success'
+                                )
+                                this.mostrarProductos();
+                            } else {
+                                alertEliminar.fire(
+                                    'Cancelado',
+                                    `El producto ${producto.nombre} no se pudo dar de baja.`,
+                                    'error'
+                                )
+                            }
+                        }, error => {
                             alertEliminar.fire(
                                 'Cancelado',
                                 `El producto ${producto.nombre} no se pudo dar de baja.`,
                                 'error'
                             )
-                        }
-                    }, error => {
+                        })
+
+                    } else if (result.dismiss === this.$swal.DismissReason.cancel) {
                         alertEliminar.fire(
                             'Cancelado',
                             `El producto ${producto.nombre} no se pudo dar de baja.`,
                             'error'
                         )
-                    })
-
-                } else if (result.dismiss === this.$swal.DismissReason.cancel) {
+                    }
+                } else {
                     alertEliminar.fire(
-                        'Cancelado',
-                        `El producto ${producto.nombre} no se pudo dar de baja.`,
+                        `El producto ${producto.nombre} no se pudo dar de baja`,
+                        'Aún se cuenta con stock',
                         'error'
                     )
                 }
@@ -586,7 +597,7 @@ export default {
                         función relacionada al CUS de Registrar Productos
                     */
 
-                    console.log("agregando producto: "+this.producto)
+                    console.log("agregando producto: " + this.producto)
                     //instancia del servicio de producto
                     const servicioproducto = new ServicioProducto()
                     //se llama al metodo registrar productos

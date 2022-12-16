@@ -374,6 +374,12 @@ export default {
             //retorno de la lista paginada
             this.movimientosPaginados = obj;
         },
+        /* 
+           Autor: Gino Rubio Pacheco
+           fecha: 12/12/2022
+           función relacionada al CUS de listar movimientos aprobados,
+           permite obtener la lista de los movimientos aprobados
+       */
         mostrarMovimientos() {
 
             this.activeMovimientosAprobados = true;
@@ -387,6 +393,12 @@ export default {
                 console.log(error)
             })
         },
+        /* 
+           Autor: Deyvi Ramos Panaifo
+           fecha: 13/12/2022
+           función relacionada al CUS de listar movimientos anulados,
+           permite obtener la lista de los movimientos anulados
+       */
         mostrarMovimientosAnulados() {
             this.activeMovimientosAprobados = false;
             this.activeMovimientosAnulados = true;
@@ -575,39 +587,30 @@ export default {
                     })
                 } else {
                     //validacion de la cantidad
-                    if (this.cantidad <= this.producto.stock) {
-                        if (this.cantidad >= 0) {
-                            this.listaDetalleProductos.push(detalleProducto)
-                            this.producto = {
-                                codigo: '',
-                                nombre: '',
-                                descripcion: '',
-                                nomCategoria: '',
-                                stock: 0,
-                                precio: 0
-                            };
-                            this.cantidad = 1;
-                            this.$swal.fire({
-                                icon: 'success',
-                                title: 'Producto agregado al movimiento',
-                                text: "Click en el botón para salir!",
-                                showConfirmButton: true,
-                                confirmButtonText: 'ok',
-                                confirmButtonColor: 'btn btn-success',
-                            })
-                        } else {
-                            this.$swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: 'La cantidad no puede ser negativa!',
-                            })
-                        }
-
+                    if (this.cantidad >= 0) {
+                        this.listaDetalleProductos.push(detalleProducto)
+                        this.producto = {
+                            codigo: '',
+                            nombre: '',
+                            descripcion: '',
+                            nomCategoria: '',
+                            stock: 0,
+                            precio: 0
+                        };
+                        this.cantidad = 1;
+                        this.$swal.fire({
+                            icon: 'success',
+                            title: 'Producto agregado al movimiento',
+                            text: "Click en el botón para salir!",
+                            showConfirmButton: true,
+                            confirmButtonText: 'ok',
+                            confirmButtonColor: 'btn btn-success',
+                        })
                     } else {
                         this.$swal.fire({
                             icon: 'error',
                             title: 'Oops...',
-                            text: 'La cantidad debe ser menor o igual que el stock!',
+                            text: 'La cantidad no puede ser negativa!',
                         })
                     }
                 }
@@ -724,9 +727,18 @@ export default {
                     this.mostrarMovimientos()
                 })
             } else {
-                this.mostrarMovimientos()
+                this.$swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'El campo del código no puede estar vacío!',
+                })
             }
         },
+        /* 
+            Autor: Aldo Ramirez
+            fecha: 13/12/2022
+            permite generar el reporte de 1 un movimiento
+        */
         getReporte(movimiento) {
             const serviciomovimientos = new ServicioMovimientos()
             serviciomovimientos.generarReporte(movimiento.codigo).then(data => {
@@ -739,6 +751,7 @@ export default {
                     link.href = this.url_pdf;
                     link.target = "_blank";
                     link.id = "enlace-reporte"
+                    link.rel = "noreferrer noopener"
                     document.body.appendChild(link);
                     link.click();
                     document.getElementById("enlace-reporte").remove();
