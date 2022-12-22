@@ -193,7 +193,7 @@
             </template>
 
             <template #tbody>
-                <tr v-for="producto in productosPaginados" :key="producto._id">
+                <tr v-for="producto in productosPaginados" :key="producto._id" data-test="producto">
                     <td>{{ producto.codigo }}</td>
                     <td>{{ producto.nombre }}</td>
                     <td>{{ producto.descripcion }}</td>
@@ -233,7 +233,7 @@ import { required, minValue, minLength, helpers, maxLength } from '@vuelidate/va
 //Expresion que solo admite digitos
 const numeroEntero = helpers.regex(/^\d+$/);
 //expresion que solo admite letras de a-z y A-Z, incluido los espacios
-const caracterValido = helpers.regex(/^[a-zA-Z]+(\s[a-zA-Z]+)*$/);
+const caracterValido = helpers.regex(/^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s[a-zA-ZÀ-ÿ\u00f1\u00d1]+)*$/);
 //cadena: /^[a-zA-Z]+(\s*[a-zA-Z]*)*[a-zA-Z]+$/
 //expresion de codigo de producto
 const codigoValido = helpers.regex(/^[A-Za-z0-9]+$/);
@@ -359,7 +359,15 @@ export default {
             //se llama al metodo mostrar productos
             servicioproducto.mostrar().then(data => {
                 const response = data
-                this.productos = response.data;
+                if (response.status === 200) {
+                    this.productos = response.data;
+                } else {
+                    this.$swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: `${response.message}`,
+                    })
+                }
             }, error => {
                 console.log(error)
             })
@@ -379,7 +387,11 @@ export default {
                     this.productos = response.data;
 
                 } else {
-                    console.log(error)
+                    this.$swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: `${response.message}`,
+                    })
                 }
 
             }, error => {
@@ -392,7 +404,11 @@ export default {
             //se llama al metodo mostrar categorias
             servicioCategorias.mostrar().then(data => {
                 const response = data
-                this.categorias = response.data;
+                if(response.status === 200){
+                    this.categorias = response.data;
+                }else{
+                    this.console("Error")
+                }     
             }, error => {
                 console.log(error)
             })
@@ -413,7 +429,11 @@ export default {
                 if (response.status === 200) {
                     this.productos = response.data;
                 } else {
-                    console.log(error)
+                    this.$swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: `${response.message}`,
+                    })
                 }
             }, error => {
                 console.log(error)
