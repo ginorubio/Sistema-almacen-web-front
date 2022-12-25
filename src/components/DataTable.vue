@@ -17,7 +17,7 @@
                 <!--Paginacion-->
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-end">
-                        <li :class="{ disabled: page == 1 }" class="page-item ">
+                        <li class="page-item " :class="{ disabled: page == 1 }" >
                             <button @click="page--; listaPaginada()" class="page-link">Anterior</button>
                         </li>
                         <li v-for="pageNumber in pages" :key="pageNumber" class="page-item ">

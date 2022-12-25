@@ -98,7 +98,7 @@
             </template>
 
             <template #tbody>
-                <tr v-for="categoria in categoriasPaginadas" :key="categoria._id">
+                <tr v-for="categoria in categoriasPaginadas" :key="categoria._id" data-test="categoria">
                     <td>{{ categoria._id }}</td>
                     <td>{{ categoria.codigo }}</td>
                     <td>{{ categoria.nombre }}</td>
@@ -129,7 +129,7 @@ import { useVuelidate } from '@vuelidate/core'
 import { required, helpers, minLength, maxLength } from '@vuelidate/validators'
 
 //expresion que solo admite letras de a-z y A-Z, incluido los espacios
-const caracterValido = helpers.regex(/^[a-zA-Z]+(\s[a-zA-Z]+)*$/);
+const caracterValido = helpers.regex(/^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s[a-zA-ZÀ-ÿ\u00f1\u00d1]+)*$/);
 //Expresion que solo admite digitos
 const numberValido = helpers.regex(/^\d+$/);
 
@@ -206,7 +206,11 @@ export default {
                 if (response.status === 200) {
                     this.categorias = response.data;
                 } else {
-                    console.log(error)
+                    this.$swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: `${response.message}`,
+                    })
                 }
 
             }, error => {
@@ -229,7 +233,11 @@ export default {
                 if (response.status === 200) {
                     this.categorias = response.data;
                 } else {
-                    console.log(error)
+                    this.$swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: `${response.message}`,
+                    })
                 }
             }, error => {
                 console.log(error)

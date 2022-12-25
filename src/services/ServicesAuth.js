@@ -1,6 +1,6 @@
 export class ServicioAuth {
 
-    URL = "http://localhost:4000/api"
+    URL = process.env.VUE_APP_SERVICE_URL;
 
     constructor(){
         this.cabecera = {
