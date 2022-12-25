@@ -319,13 +319,13 @@ export default {
                     required: helpers.withMessage('El valor es requerido', required),
                     minValue: helpers.withMessage('El mínimo valor es 0', minValue(0)),
                     numeroEntero: helpers.withMessage('Solo número entero', numeroEntero),
-                    maxLength: helpers.withMessage('El máximo número de dígitos es 8', maxLength(8))
+                    maxLength: helpers.withMessage('El máximo número de dígitos es 5', maxLength(5))
                 },
                 stockMinimo: {
                     required: helpers.withMessage('El valor es requerido', required),
                     minValue: helpers.withMessage('El mínimo valor es 0', minValue(0)),
                     numeroEntero: helpers.withMessage('Solo número entero', numeroEntero),
-                    maxLength: helpers.withMessage('El máximo número de dígitos es 8', maxLength(8))
+                    maxLength: helpers.withMessage('El máximo número de dígitos es 5', maxLength(5))
                 },
                 //validaciones para el campo de costo
                 costo: {

@@ -38,6 +38,86 @@ const UserManagementComponent = {
         }
     },
     template: `
+                <div class="row">
+                    <div class="col-12 mb-2">
+                        <div class="form-group">
+                            <label  for="nombre">NOMBRE</label>
+                            <input data-test="tNombre"  type="text" class="form-control"
+                                v-model="usuario.username"/>
+                        
+                        </div>
+                    </div>
+
+                    <div class="col-12 mb-2">
+                        <div class="form-group">
+                            <label for="dni">DNI</label>
+                            <input data-test="tDni" v-if="modificar == 2" disabled class="form-control" type="text"
+                                v-model="usuario.dni" />
+                            <input data-test="tDni" v-else class="form-control" type="text" placeholder="Digite el dni"
+                                v-model="usuario.dni" />
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-12 mb-2">
+                        <div class="form-group">
+                            <label for="email">CORREO</label>
+                            <input data-test="tCorreo" v-if="modificar == 3" disabled class="form-control" type="email"
+                                v-model="usuario.email" />
+                            <input data-test="tCorreo" v-else class="form-control" type="email" placeholder="Digite el correo"
+                                v-model="usuario.email" />
+                        </div>
+
+                    </div>
+
+                    <div class="col-12 mb-2">
+                        <div class="form-group">
+                            <label for="contrasena">CONTRASEÑA</label>
+                            <input data-test="tContra" v-if="modificar == 3" disabled class="form-control" type="password"
+                                v-model="usuario.password" />
+                            <input data-test="tContra" v-else class="form-control" type="password" placeholder="Digite la contraseña"
+                                v-model="usuario.password" />
+                        </div>
+                    </div>
+
+                    <div v-if="modificar != 3" class="col-12 mb-2">
+                        <div class="form-group">
+                            <label for="contrasena">REPETIR CONTRASEÑA</label>
+                            <input data-test="tRepContra" class="form-control" type="password" placeholder="Repetir la contraseña"
+                                v-model="usuario.repassword" />
+                        </div>
+                    </div>
+
+                    <div class="col-12 mb-2">
+                        <div class="form-group">
+                            <label for="rol">ROL</label>
+                            <select data-test="tRol" v-if="modificar == 3" disabled id="rol" name="rol" class="form-control"
+                                v-model="usuario.roles">
+                                <option disabled selected value="">--Seleccione un rol--</option>
+                                <option v-for="rol in data_roles">{{ rol.nombre }}</option>
+                            </select>
+                            <select data-test="tRol" v-else id="rol" name="rol" class="form-control" v-model="usuario.roles">
+                                <option disabled selected value="">--Seleccione un rol--</option>
+                                <option v-for="rol in data_roles">{{ rol.nombre }}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-12 mb-2">
+                        <div class="form-group">
+                            <label v-if="modificar == 3" for="estado">ESTADO</label>
+                            <select data-test="tEstado" v-if="modificar == 3" disabled id="estado" name="estado" class="form-control"
+                                v-model="usuario.estado">
+                                <option disabled selected value="">--Seleccione un estado--</option>
+                                <option v-for="estado in data_estado">{{ estado }}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+        <button v-if="modificar != 3" @click.prevent="guardar()" data-test="guardar" type="button" class="btn btn-success"
+            data-dismiss="modal">Guardar</button>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered" aria-label="tabla-description">
@@ -52,7 +132,7 @@ const UserManagementComponent = {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="usuario in usuariosPaginados" :key="usuario._id" data-tes="usuario-item">
+                        <tr v-for="usuario in usuarios" :key="usuario._id" data-test="usuario-item">
                             <td>{{ usuario._id }}</td>
                             <td data-test="usuario-nombre">{{ usuario.username }}</td>
                             <td>{{ usuario.dni }}</td>
@@ -78,7 +158,15 @@ const UserManagementComponent = {
                 </table>
             </div>
         </div>
-    `
+    `,
+    methods: {
+        guardar(){
+            this.usuarios.push(this.usuario)
+            
+        }
+
+    },
+
 }
 
 
@@ -98,9 +186,10 @@ describe('UserManagementComponent Test', () => {
                         passwordNE: '',
                         roles: '',
                         estado: ''
-                    }
+                    },
+                    usuarios: [],
                 }
-            }
+            },
         })
     })
 
@@ -136,7 +225,7 @@ describe('UserManagementComponent Test', () => {
             usuario: {
                 username: 'Deyvi Carlos',
                 email: 'deyvi@gmail.com',
-                dni: '',
+                dni: '58479652',
                 password: '12345',
                 repassword: '12345',
                 passwordNE: '',
@@ -162,16 +251,24 @@ describe('UserManagementComponent Test', () => {
     })
     test('renderizar datos de usuarios en tabla', async () => {
         
-        await flushPromises()
+        console.log(wrapper.html())
 
-        expect(wrapper.findAll())
+        expect(wrapper.findAll('[data-test="usuario-item"]')).toHaveLength(0)
 
-    })
-    test('', async () => {
         
-    })
-    test('Test para validar data de entrada', async () => {
+        await wrapper.get('[data-test="tNombre"]').setValue('Deyvi Ramos')
+        await wrapper.get('[data-test="tDni"]').setValue('45216325')
+        await wrapper.get('[data-test="tCorreo"]').setValue('deyvi.r@gmail.com')
+        await wrapper.get('[data-test="tContra"]').setValue('152634')
+        await wrapper.get('[data-test="tRepContra"]').setValue('152634s')
+        await wrapper.get('[data-test="tRol"]').setValue('jefe_almacen')
         
+        await wrapper.get('[data-test="guardar"]').trigger('click')
+        console.log(wrapper.html())
+
+        expect(wrapper.findAll('[data-test="usuario-item"]')).toHaveLength(1)
+
+
     })
     /*
     let wrapper = null
