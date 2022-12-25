@@ -33,10 +33,11 @@
                 <div class="row">
                     <div class="col-12 mb-2">
                         <div class="form-group">
-                            <label for="nombre">NOMBRE</label>
+                            <label data-test="tNombre" for="nombre">NOMBRE</label>
                             <input v-if="modificar == 3" disabled type="text" class="form-control"
+                                v-model="usuario.username" data-test="username"/>
+                            <input v-else type="text" class="form-control" data-test="nombre" placeholder="Digite el nombre"
                                 v-model="usuario.username" />
-                            <input v-else type="text" class="form-control" placeholder="Digite el nombre" v-model="usuario.username" />
                         </div>
                         <div class="text-danger" v-if="v$.usuario.username.$error">
                             {{ v$.usuario.username.$errors[0].$message }}
@@ -48,7 +49,8 @@
                             <label for="dni">DNI</label>
                             <input v-if="modificar == 2" disabled class="form-control" type="text"
                                 v-model="usuario.dni" />
-                            <input v-else class="form-control" type="text" placeholder="Digite el dni" v-model="usuario.dni" />
+                            <input v-else class="form-control" type="text" placeholder="Digite el dni"
+                                v-model="usuario.dni" />
                         </div>
                         <div class="text-danger" v-if="v$.usuario.dni.$error">
                             {{ v$.usuario.dni.$errors[0].$message }}
@@ -61,7 +63,8 @@
                             <label for="email">CORREO</label>
                             <input v-if="modificar == 3" disabled class="form-control" type="email"
                                 v-model="usuario.email" />
-                            <input v-else class="form-control" type="email" placeholder="Digite el correo" v-model="usuario.email" />
+                            <input v-else class="form-control" type="email" placeholder="Digite el correo"
+                                v-model="usuario.email" />
                         </div>
                         <div class="text-danger" v-if="v$.usuario.email.$error">
                             {{ v$.usuario.email.$errors[0].$message }}
@@ -73,7 +76,8 @@
                             <label for="contrasena">CONTRASEÑA</label>
                             <input v-if="modificar == 3" disabled class="form-control" type="password"
                                 v-model="usuario.password" />
-                            <input v-else class="form-control" type="password" placeholder="Digite la contraseña" v-model="usuario.password" />
+                            <input v-else class="form-control" type="password" placeholder="Digite la contraseña"
+                                v-model="usuario.password" />
                         </div>
                         <div class="text-danger" v-if="v$.usuario.password.$error">
                             {{ v$.usuario.password.$errors[0].$message }}
@@ -83,7 +87,8 @@
                     <div v-if="modificar != 3" class="col-12 mb-2">
                         <div class="form-group">
                             <label for="contrasena">REPETIR CONTRASEÑA</label>
-                            <input class="form-control" type="password" placeholder="Repetir la contraseña" v-model="usuario.repassword" />
+                            <input class="form-control" type="password" placeholder="Repetir la contraseña"
+                                v-model="usuario.repassword" />
                         </div>
                         <div class="text-danger" v-if="v$.usuario.repassword.$error">
                             {{ v$.usuario.repassword.$errors[0].$message }}
@@ -123,7 +128,7 @@
 
             </template>
             <template #footer>
-                <button v-if="modificar != 3" @click.prevent="guardar()" type="button" class="btn btn-success"
+                <button v-if="modificar != 3" @click.prevent="guardar()" data-test="guardar" type="button" class="btn btn-success"
                     data-dismiss="modal">Guardar</button>
 
             </template>
@@ -135,7 +140,8 @@
 
             <template #button_buscar>
                 <label class="mr-2" for="">BUSCAR:</label>
-                <input class="rounded-pill input-buscar-datatable" type="search" placeholder="Buscar por dni" v-model="cadena_buscar">
+                <input class="rounded-pill input-buscar-datatable" type="search" placeholder="Buscar por dni"
+                    v-model="cadena_buscar">
                 <button class="btn btn-primary" @click="buscar(cadena_buscar)"><i class="fas fa-search"
                         aria-hidden="true"></i></button>
 
@@ -152,9 +158,9 @@
             </template>
 
             <template #tbody>
-                <tr v-for="usuario in usuariosPaginados" :key="usuario._id">
+                <tr v-for="usuario in usuariosPaginados" :key="usuario._id" >
                     <td>{{ usuario._id }}</td>
-                    <td>{{ usuario.username }}</td>
+                    <td data-test="usuario-nombre">{{ usuario.username }}</td>
                     <td>{{ usuario.dni }}</td>
                     <td>{{ usuario.email }}</td>
                     <td v-if="usuario.roles == '63636e8e8d3546d90542ad6a'">{{ data_roles[0].nombre }}</td>
@@ -163,14 +169,15 @@
                     <td>
                         <button v-if="false" @click="showModal = true; modificar = 3; abrirModal(usuario)"
                             class="btn btn-info mr-2"><i class="fa fa-eye" aria-hidden="true"></i></button>
-                        <button v-if="usuario.estado != 'inhabilitado'" @click="showModal = true; modificar = 2; abrirModal(usuario)"
+                        <button v-if="usuario.estado != 'inhabilitado'"
+                            @click="showModal = true; modificar = 2; abrirModal(usuario)"
                             class="btn btn-success mr-2"><i class="far fa-edit" aria-hidden="true"></i></button>
                         <button v-if="false" type="button" @click="borrarUsuario(usuario)" class="btn btn-danger"><i
                                 class="fa fa-eye-slash" aria-hidden="true"></i></button>
-                        <button v-if="usuario.estado != 'habilitado'" type="button" @click="ascenderUsuario(usuario)" class="btn btn-primary mr-2"><i
-                                class="fas fa-arrow-up" aria-hidden="true"></i></button>
-                        <button v-if="usuario.estado != 'inhabilitado'" type="button" @click="descenderUsuario(usuario)" class="btn btn-danger "><i
-                                class="fas fa-arrow-down" aria-hidden="true"></i></button>
+                        <button v-if="usuario.estado != 'habilitado'" type="button" @click="ascenderUsuario(usuario)"
+                            class="btn btn-primary mr-2"><i class="fas fa-arrow-up" aria-hidden="true"></i></button>
+                        <button v-if="usuario.estado != 'inhabilitado'" type="button" @click="descenderUsuario(usuario)"
+                            class="btn btn-danger "><i class="fas fa-arrow-down" aria-hidden="true"></i></button>
                     </td>
                 </tr>
             </template>
@@ -188,7 +195,7 @@ import { useVuelidate } from '@vuelidate/core'
 import { required, email, minLength, sameAs, helpers, maxLength } from '@vuelidate/validators'
 
 //expresion que solo admite letras de a-z y A-Z, incluido los espacios
-const caracterValido = helpers.regex(/^[a-zA-Z]+(\s[a-zA-Z]+)*$/);
+const caracterValido = helpers.regex(/^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s[a-zA-ZÀ-ÿ\u00f1\u00d1]+)*$/);
 const numberValido = helpers.regex(/^\d+$/);
 
 export default {
@@ -237,7 +244,7 @@ export default {
                 username: {
                     required: helpers.withMessage('El campo es requerido', required),
                     minLength: helpers.withMessage('El mínimo número de caracteres es 3', minLength(3)),
-                    maxLength: helpers.withMessage('El mínimo número de caracteres es 3', minLength(120)),
+                    maxLength: helpers.withMessage('El maximo número de caracteres es 100', maxLength(100)),
                     caracteres: helpers.withMessage('Caracter no valido', caracterValido)
                 },
                 dni: {
@@ -284,11 +291,14 @@ export default {
             serviciousuario.mostrar().then(data => {
                 const response = data
 
-                console.log(response)
                 if (response.status === 200) {
                     this.usuarios = response.data;
                 } else {
-                    console.log(error)
+                    this.$swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: `${response.message}`,
+                    })
                 }
             }, error => {
                 console.log(error)
@@ -305,7 +315,11 @@ export default {
                 if (response.status === 200) {
                     this.usuarios = response.data;
                 } else {
-                    console.log(error)
+                    this.$swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: `${response.message}`,
+                    })
                 }
             }, error => {
                 console.log(error)
@@ -464,6 +478,7 @@ export default {
                             //cerrar modal
                             //por definir
                         } else {
+                            
                             this.$swal.fire({
                                 icon: 'error',
                                 title: 'Oops...',
@@ -471,6 +486,7 @@ export default {
                             })
                         }
                     }, error => {
+                        
                         this.$swal.fire({
                             icon: 'error',
                             title: 'Oops...',
@@ -489,6 +505,7 @@ export default {
                     serviciousuario.registrar(this.usuario).then(data => {
                         const response = data
                         if (response.status === 200) {
+                            
                             this.$swal.fire({
                                 icon: 'success',
                                 title: 'Usuario Registrado',
@@ -500,13 +517,15 @@ export default {
                             this.mostrarUsuarios();
                             this.limpiarFormuralio();
                         } else {
+                            
                             this.$swal.fire({
                                 icon: 'error',
                                 title: 'Oops...',
-                                text: 'No se pudo registrar!',
+                                text: `${response.message}!`,
                             })
                         }
                     }, error => {
+                        
                         this.$swal.fire({
                             icon: 'error',
                             title: 'Oops...',

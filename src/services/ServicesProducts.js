@@ -2,7 +2,7 @@ import store from '../store'
 
 export class ServicioProducto {
     //URI del back al cual pertenece este servicio
-    URL = "http://localhost:4000/api/productos"
+    URL = process.env.VUE_APP_SERVICE_URL+"/productos"
     constructor() {
         //cabecera de las peticiones Http
         this.cabecera = {

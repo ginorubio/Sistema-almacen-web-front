@@ -259,7 +259,7 @@
             </template>
 
             <template #tbody>
-                <tr v-for="movimiento in movimientosPaginados" :key="producto._id">
+                <tr v-for="movimiento in movimientosPaginados" :key="producto._id" data-test="movimiento"> 
                     <td>{{ movimiento.codigo }}</td>
                     <td>{{ movimiento.factura }}</td>
                     <td>{{ movimiento.fecha }}</td>
@@ -295,6 +295,7 @@ import { ServicioProducto } from '@/services/ServicesProducts';
 const codigoMovimientoValido = helpers.regex(/^MOV-(\d+){1,6}$/);
 //expresion de codigo de la factura
 const codigoFacturaValida = helpers.regex(/^E(\d+){3}-(\d+){3}$/);
+
 
 export default {
     components: {
@@ -395,7 +396,15 @@ export default {
             const serviciomovimientos = new ServicioMovimientos()
             serviciomovimientos.mostrar().then(res => {
                 const response = res
-                this.movimientos = response.data;
+                if (response.status === 200) {
+                    this.movimientos = response.data;
+                } else {
+                    this.$swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: `${response.message}`,
+                    })
+                }
             }, error => {
                 console.log(error)
             })
@@ -412,7 +421,15 @@ export default {
             const serviciomovimientos = new ServicioMovimientos()
             serviciomovimientos.mostrarAnulados().then(res => {
                 const response = res
-                this.movimientos = response.data;
+                if (response.status === 200) {
+                    this.movimientos = response.data;
+                } else {
+                    this.$swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: `${response.message}`,
+                    })
+                }
             }, error => {
                 console.log(error)
             })

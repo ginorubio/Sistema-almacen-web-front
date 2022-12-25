@@ -1,7 +1,7 @@
 import store from '../store'
 
 export class ServicioUsuario {
-    URL = "http://localhost:4000/api/users"
+    URL = process.env.VUE_APP_SERVICE_URL+"/users";
     constructor() {
         this.cabecera = {
             'Content-Type': 'application/json',

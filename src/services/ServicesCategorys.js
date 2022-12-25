@@ -1,7 +1,7 @@
 import store from '../store'
 
 export class ServicioCategorias {
-    URL = "http://localhost:4000/api/categoria"
+    URL = process.env.VUE_APP_SERVICE_URL+"/categoria";
     constructor(){
         this.cabecera = {
             'Content-Type': 'application/json',
